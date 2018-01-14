@@ -10,6 +10,11 @@ LANGUAGE_MAP = {
   'lang:fr_CA' => 'fr',
 }.freeze
 
+# This is 'member of the House of Commons of Canada'
+position_item_id = 'Q15964890'
+# This is '42nd Canadian Parliament'
+term_item_id = 'Q21157957'
+
 query = <<~SPARQL
   SELECT ?statement
          ?item ?name_en ?name_fr
@@ -18,13 +23,13 @@ query = <<~SPARQL
          ?role ?role_en ?role_fr
          ?start ?end ?facebook
   WHERE {
-    BIND(wd:Q15964890 as ?role) .
+    BIND(wd:#{position_item_id} as ?role) .
     ?item p:P39 ?statement ;
           rdfs:label ?name_en, ?name_fr .
     ?role rdfs:label ?role_en, ?role_fr .
     FILTER(LANG(?role_en) = "en").
     FILTER(LANG(?role_fr) = "fr").
-    ?statement ps:P39 ?role ; pq:P2937 wd:Q21157957 .
+    ?statement ps:P39 ?role ; pq:P2937 wd:#{term_item_id} .
     OPTIONAL { ?statement pq:P580 ?start }
     OPTIONAL { ?statement pq:P582 ?end }
     OPTIONAL {
