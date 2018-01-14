@@ -10,45 +10,45 @@ LANGUAGE_MAP = {
   'lang:fr_CA' => 'fr',
 }.freeze
 
-# This is 'member of the House of Commons of Canada'
-position_item_id = 'Q15964890'
-# This is '42nd Canadian Parliament'
-term_item_id = 'Q21157957'
+legislative_dir = Pathname.new(__FILE__).dirname.join('legislative')
+index_file = legislative_dir.join('index.json')
 
-query = <<~SPARQL
-  SELECT ?statement
-         ?item ?name_en ?name_fr
-         ?party ?party_name_en ?party_name_fr
-         ?district ?district_name_en ?district_name_fr
-         ?role ?role_en ?role_fr
-         ?start ?end ?facebook
-  WHERE {
-    BIND(wd:#{position_item_id} as ?role) .
-    ?item p:P39 ?statement ;
-          rdfs:label ?name_en, ?name_fr .
-    ?role rdfs:label ?role_en, ?role_fr .
-    FILTER(LANG(?role_en) = "en").
-    FILTER(LANG(?role_fr) = "fr").
-    ?statement ps:P39 ?role ; pq:P2937 wd:#{term_item_id} .
-    OPTIONAL { ?statement pq:P580 ?start }
-    OPTIONAL { ?statement pq:P582 ?end }
-    OPTIONAL {
-      ?statement pq:P768 ?district.
-      ?district rdfs:label ?district_name_en, ?district_name_fr .
-      FILTER(LANG(?district_name_en) = "en").
-      FILTER(LANG(?district_name_fr) = "fr").
-    }
-    OPTIONAL {
-      ?statement pq:P4100 ?party.
-      ?party rdfs:label ?party_name_en, ?party_name_fr .
-      FILTER(LANG(?party_name_en) = "en").
-      FILTER(LANG(?party_name_fr) = "fr").
-    }
-    OPTIONAL { ?item wdt:P2013 ?facebook }
-    FILTER(LANG(?name_en) = "en").
-    FILTER(LANG(?name_fr) = "fr").
-  } ORDER BY ?name_en ?name_fr ?item
+def query(position_item_id:, term_item_id:)
+  <<~SPARQL
+    SELECT ?statement
+           ?item ?name_en ?name_fr
+           ?party ?party_name_en ?party_name_fr
+           ?district ?district_name_en ?district_name_fr
+           ?role ?role_en ?role_fr
+           ?start ?end ?facebook
+    WHERE {
+      BIND(wd:#{position_item_id} as ?role) .
+      ?item p:P39 ?statement ;
+            rdfs:label ?name_en, ?name_fr .
+      ?role rdfs:label ?role_en, ?role_fr .
+      FILTER(LANG(?role_en) = "en").
+      FILTER(LANG(?role_fr) = "fr").
+      ?statement ps:P39 ?role ; pq:P2937 wd:#{term_item_id} .
+      OPTIONAL { ?statement pq:P580 ?start }
+      OPTIONAL { ?statement pq:P582 ?end }
+      OPTIONAL {
+        ?statement pq:P768 ?district.
+        ?district rdfs:label ?district_name_en, ?district_name_fr .
+        FILTER(LANG(?district_name_en) = "en").
+        FILTER(LANG(?district_name_fr) = "fr").
+      }
+      OPTIONAL {
+        ?statement pq:P4100 ?party.
+        ?party rdfs:label ?party_name_en, ?party_name_fr .
+        FILTER(LANG(?party_name_en) = "en").
+        FILTER(LANG(?party_name_fr) = "fr").
+      }
+      OPTIONAL { ?item wdt:P2013 ?facebook }
+      FILTER(LANG(?name_en) = "en").
+      FILTER(LANG(?name_fr) = "fr").
+    } ORDER BY ?name_en ?name_fr ?item
 SPARQL
+end
 
 class Cell
   def initialize(value_h)
@@ -110,100 +110,111 @@ class Row
   attr_reader :row_h
 end
 
-result = RestClient.get(URL, params: { query: query, format: 'json' })
-data = JSON.parse result, symbolize_names: true
+JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
+  output_pathname = legislative_dir.join(legislature_h[:house_item_id], 'popolo-m17n.json')
 
-membership_rows = data[:results][:bindings].map do |row|
-  Row.new(row)
-end
-
-persons = membership_rows.map do |membership|
-  {
-    name: membership.name_object('name', LANGUAGE_MAP),
-    id: membership[:item].value,
-    identifiers: [
-      {
-        scheme: 'wikidata',
-        identifier: membership[:item].value,
-      },
-    ],
-    links: [
-      {
-        note: 'facebook',
-        url: membership[:facebook]&.value&.prepend('https://www.facebook.com/'),
-      },
-    ].select { |o| o[:url] },
+  query_params = {
+    query: query(
+      position_item_id: legislature_h[:position_item_id],
+      term_item_id: legislature_h[:term_item_id]
+    ),
+    format: 'json',
   }
-end.uniq
+  result = RestClient.get(URL, params: query_params)
+  data = JSON.parse result, symbolize_names: true
 
-organizations = membership_rows.map do |membership|
-  {
-    name: membership.name_object('party_name', LANGUAGE_MAP),
-    id: membership[:party].value,
-    classification: 'party',
-    identifiers: [
-      {
-        scheme: 'wikidata',
-        identifier: membership[:party].value,
+  membership_rows = data[:results][:bindings].map do |row|
+    Row.new(row)
+  end
+
+  persons = membership_rows.map do |membership|
+    {
+      name: membership.name_object('name', LANGUAGE_MAP),
+      id: membership[:item].value,
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: membership[:item].value,
+        },
+      ],
+      links: [
+        {
+          note: 'facebook',
+          url: membership[:facebook]&.value&.prepend('https://www.facebook.com/'),
+        },
+      ].select { |o| o[:url] },
+    }
+  end.uniq
+
+  organizations = membership_rows.map do |membership|
+    {
+      name: membership.name_object('party_name', LANGUAGE_MAP),
+      id: membership[:party].value,
+      classification: 'party',
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: membership[:party].value,
+        },
+      ],
+    }
+  end.uniq
+
+  areas = membership_rows.map do |membership|
+    {
+      name: membership.name_object('district_name', LANGUAGE_MAP),
+      id: membership[:district].value,
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: membership[:district].value,
+        },
+      ],
+      type: {
+        'lang:en_CA': 'federal electoral district of Canada',
+             'lang:fr_CA': 'circonscription électorale fédérale canadienne',
       },
-    ],
-  }
-end.uniq
+      parent_id: 'Q16',
+    }
+  end.uniq
 
-areas = membership_rows.map do |membership|
-  {
-    name: membership.name_object('district_name', LANGUAGE_MAP),
-    id: membership[:district].value,
+  area_country = {
+    name: {
+      'lang:en_CA': 'Canada',
+           'lang:fr_CA': 'Canada',
+    },
+    id: 'Q16',
     identifiers: [
       {
         scheme: 'wikidata',
-        identifier: membership[:district].value,
+        identifier: 'Q16',
       },
     ],
     type: {
-      'lang:en_CA': 'federal electoral district of Canada',
-      'lang:fr_CA': 'circonscription électorale fédérale canadienne',
+      'lang:en_CA': 'Country',
+           'lang:fr_CA': 'Pays',
     },
-    parent_id: 'Q16',
   }
-end.uniq
 
-area_country = {
-  name: {
-    'lang:en_CA': 'Canada',
-    'lang:fr_CA': 'Canada',
-  },
-  id: 'Q16',
-  identifiers: [
+  memberships = membership_rows.map do |membership|
     {
-      scheme: 'wikidata',
-      identifier: 'Q16',
-    },
-  ],
-  type: {
-    'lang:en_CA': 'Country',
-    'lang:fr_CA': 'Pays',
-  },
-}
+      id: membership[:statement].value,
+      person_id: membership[:item].value,
+      on_behalf_of_id: membership[:party].value,
+      area_id: membership[:district].value,
+      start_date: membership[:start]&.value,
+      end_date: membership[:end]&.value,
+      role_code: membership[:role].value,
+      role: membership.name_object('role', LANGUAGE_MAP),
+    }.reject { |_, v| v.to_s.empty? }
+  end
 
-memberships = membership_rows.map do |membership|
-  {
-    id: membership[:statement].value,
-    person_id: membership[:item].value,
-    on_behalf_of_id: membership[:party].value,
-    area_id: membership[:district].value,
-    start_date: membership[:start]&.value,
-    end_date: membership[:end]&.value,
-    role_code: membership[:role].value,
-    role: membership.name_object('role', LANGUAGE_MAP),
-  }.reject { |_, v| v.to_s.empty? }
+  all_data = {
+    persons: persons,
+    organizations: organizations,
+    areas: [area_country] + areas,
+    memberships: memberships,
+  }
+
+  output_pathname.write(JSON.pretty_generate(all_data) + "\n")
 end
-
-all_data = {
-  persons: persons,
-  organizations: organizations,
-  areas: [area_country] + areas,
-  memberships: memberships,
-}
-
-puts JSON.pretty_generate(all_data)
