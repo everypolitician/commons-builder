@@ -164,7 +164,9 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
-  organizations = membership_rows.map do |membership|
+  organizations = membership_rows.select do |membership|
+    membership[:party]
+  end.map do |membership|
     {
       name: membership.name_object('party_name', LANGUAGE_MAP),
       id: membership[:party].value,
@@ -178,7 +180,9 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
-  areas = membership_rows.map do |membership|
+  areas = membership_rows.select do |membership|
+    membership[:district]
+  end.map do |membership|
     {
       name: membership.name_object('district_name', LANGUAGE_MAP),
       id: membership[:district].value,
@@ -218,8 +222,8 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     {
       id: membership[:statement].value,
       person_id: membership[:item].value,
-      on_behalf_of_id: membership[:party].value,
-      area_id: membership[:district].value,
+      on_behalf_of_id: membership[:party]&.value,
+      area_id: membership[:district]&.value,
       start_date: membership[:start]&.value,
       end_date: membership[:end]&.value,
       role_code: membership[:role].value,
