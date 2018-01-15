@@ -8,7 +8,7 @@ URL = 'https://query.wikidata.org/sparql'
 LANGUAGE_MAP = {
   'lang:en_CA' => 'en',
   'lang:fr_CA' => 'fr',
-}
+}.freeze
 
 query = <<~SPARQL
   SELECT ?statement
@@ -95,7 +95,7 @@ class Row
     language_map.map do |key_lang, wikidata_lang|
       [
         key_lang,
-        self["#{var_prefix}_#{wikidata_lang}".to_sym].value
+        self["#{var_prefix}_#{wikidata_lang}".to_sym].value,
       ]
     end.to_h
   end
