@@ -13,12 +13,26 @@ LANGUAGE_MAP = {
 legislative_dir = Pathname.new(__FILE__).dirname.join('legislative')
 index_file = legislative_dir.join('index.json')
 
+def date_condition(start_date, end_date)
+  return '' unless start_date
+  end_date ||= '9999-12-31'
+  <<~DATE_CONDITION
+    BIND(COALESCE(?start, "1000-01-01T00:00:00Z"^^xsd:dateTime) AS ?start_or_sentinel)
+    BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
+    FILTER (?end_or_sentinel >= "#{start_date}"^^xsd:dateTime)
+    FILTER (?start_or_sentinel <= "#{end_date}"^^xsd:dateTime)
+DATE_CONDITION
+end
+
 def term_condition(term_item_id)
   return '' unless term_item_id
   "?statement pq:P2937 wd:#{term_item_id} ."
 end
 
-def query(position_item_id:, term_item_id:)
+def query(position_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
+  unless !!term_item_id ^ !!(start_date and end_date)
+    raise 'You must specify either a term item or a start and end date (and not both)'
+  end
   <<~SPARQL
     SELECT ?statement
            ?item ?name_en ?name_fr
@@ -52,6 +66,7 @@ def query(position_item_id:, term_item_id:)
       OPTIONAL { ?item wdt:P2013 ?facebook }
       FILTER(LANG(?name_en) = "en").
       FILTER(LANG(?name_fr) = "fr").
+      #{date_condition(start_date, end_date)}
     } ORDER BY ?name_en ?name_fr ?item
 SPARQL
 end
@@ -120,10 +135,7 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
   output_pathname = legislative_dir.join(legislature_h[:house_item_id], 'popolo-m17n.json')
 
   query_params = {
-    query: query(
-      position_item_id: legislature_h[:position_item_id],
-      term_item_id: legislature_h[:term_item_id]
-    ),
+    query: query(**legislature_h),
     format: 'json',
   }
   result = RestClient.get(URL, params: query_params)
