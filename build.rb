@@ -152,7 +152,7 @@ areas = membership_rows.map do |membership|
     identifiers: [
       {
         scheme: 'wikidata',
-        identifier: membership[:party].value,
+        identifier: membership[:district].value,
       },
     ],
     type: {
