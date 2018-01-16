@@ -42,7 +42,7 @@ query = <<~SPARQL
     OPTIONAL { ?item wdt:P2013 ?facebook }
     FILTER(LANG(?name_en) = "en").
     FILTER(LANG(?name_fr) = "fr").
-  } ORDER BY ?name_en ?name_fr
+  } ORDER BY ?name_en ?name_fr ?item
 SPARQL
 
 class Cell
