@@ -13,6 +13,11 @@ LANGUAGE_MAP = {
 legislative_dir = Pathname.new(__FILE__).dirname.join('legislative')
 index_file = legislative_dir.join('index.json')
 
+def term_condition(term_item_id)
+  return '' unless term_item_id
+  "?statement pq:P2937 wd:#{term_item_id} ."
+end
+
 def query(position_item_id:, term_item_id:)
   <<~SPARQL
     SELECT ?statement
@@ -28,7 +33,8 @@ def query(position_item_id:, term_item_id:)
       ?role rdfs:label ?role_en, ?role_fr .
       FILTER(LANG(?role_en) = "en").
       FILTER(LANG(?role_fr) = "fr").
-      ?statement ps:P39 ?role ; pq:P2937 wd:#{term_item_id} .
+      ?statement ps:P39 ?role .
+      #{term_condition(term_item_id)}
       OPTIONAL { ?statement pq:P580 ?start }
       OPTIONAL { ?statement pq:P582 ?end }
       OPTIONAL {
