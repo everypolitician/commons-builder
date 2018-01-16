@@ -132,10 +132,14 @@ class Row
 end
 
 JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
-  output_pathname = legislative_dir.join(legislature_h[:house_item_id], 'popolo-m17n.json')
+  legislature_dir = legislative_dir.join(legislature_h[:house_item_id])
+  output_pathname = legislature_dir.join('popolo-m17n.json')
+
+  sparql_query = query(**legislature_h)
+  legislature_dir.join('query-used.rq').write(sparql_query)
 
   query_params = {
-    query: query(**legislature_h),
+    query: sparql_query,
     format: 'json',
   }
   result = RestClient.get(URL, params: query_params)
