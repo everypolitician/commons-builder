@@ -4,6 +4,7 @@ require 'rest-client'
 require 'json'
 
 require_relative 'lib/results'
+require_relative 'lib/boundary_data'
 
 URL = 'https://query.wikidata.org/sparql'
 
@@ -126,16 +127,23 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
+  boundary_data = BoundaryData.new(legislature_h[:position_item_id])
+
   areas = membership_rows.select do |membership|
     membership[:district]
   end.map do |membership|
+    district_item_id = membership[:district].value
     {
       name: membership.name_object('district_name', LANGUAGE_MAP),
       id: membership[:district].value,
       identifiers: [
         {
           scheme: 'wikidata',
-          identifier: membership[:district].value,
+          identifier: district_item_id,
+        },
+        {
+          scheme: 'MS_FB',
+          identifier: boundary_data.ms_fb_id(district_item_id),
         },
       ],
       type: {
@@ -145,6 +153,13 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
       parent_id: 'Q16',
     }
   end.uniq
+
+  # Now add any areas we know about from the boundary data, but which
+  # isn't associated with a membership yet.
+  district_wikidata_ids_seen = Set.new(areas.map { |a| a[:id] })
+  areas += boundary_data.popolo_areas.reject do |a|
+    district_wikidata_ids_seen.include? a[:id]
+  end
 
   area_country = {
     name: {
