@@ -172,6 +172,10 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
         scheme: 'wikidata',
         identifier: 'Q16',
       },
+      {
+        scheme: 'MS_FB',
+        identifier: 'country:ca',
+      },
     ],
     type: {
       'lang:en_CA': 'Country',
