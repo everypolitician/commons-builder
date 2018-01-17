@@ -38,7 +38,24 @@ class BoundaryData
   end
 
   def popolo_areas
-    @popolo_areas ||= index_data.flat_map do |metadata|
+    @popolo_areas ||= popolo_areas_before_parent_mapping.map do |area|
+      cloned_area = area.clone
+      cloned_area[:parent_id] = ms_fb_to_wikidata[area[:parent_ms_fb_id]]
+      cloned_area.delete(:parent_ms_fb_id)
+      cloned_area
+    end
+  end
+
+  def ms_fb_id(area_wikidata_item_id)
+    wikidata_to_ms_fb[area_wikidata_item_id]
+  end
+
+  private
+
+  attr_reader :position_item_id
+
+  def popolo_areas_before_parent_mapping
+    @popolo_areas_before_parent_mapping ||= index_data.flat_map do |metadata|
       directory = metadata[:directory]
       area_type_names = labels(metadata[:area_type_wikidata_item_id])
       name_columns = metadata[:name_columns]
@@ -61,26 +78,23 @@ class BoundaryData
           end,
           type: area_type_names,
           name: name_object(name_columns, feature_data),
+          parent_ms_fb_id: feature_data['MS_FB_PARE'],
         }
       end
     end
   end
 
-  def ms_fb_id(area_wikidata_item_id)
-    wikidata_to_ms_fb[area_wikidata_item_id]
-  end
-
-  private
-
-  attr_reader :position_item_id
-
   def wikidata_to_ms_fb
-    @wikidata_to_ms_fb ||= popolo_areas.map do |area|
+    @wikidata_to_ms_fb ||= popolo_areas_before_parent_mapping.map do |area|
       [
         area[:identifiers].find { |i| i[:scheme] == 'wikidata' }[:identifier],
         area[:identifiers].find { |i| i[:scheme] == 'MS_FB' }[:identifier],
       ]
     end.to_h
+  end
+
+  def ms_fb_to_wikidata
+    @ms_fb_to_wikidata ||= wikidata_to_ms_fb.map { |k,v| [v, k] }.to_h
   end
 
   def boundaries_dir
