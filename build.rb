@@ -129,6 +129,14 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
+  # TODO: these areas derived from the Wikidata query should all be
+  # included in the boundary data, so we could leave them out (and
+  # emit an warning or error if a person's district isn't found in the
+  # boundary data). That would save duplicating code to construct this
+  # structure. In situations where we don't have boundaries
+  # (e.g. Quebec's sub-provincial senatorial regions) qwe should at
+  # least always have the names of the area so could construct the
+  # boundary feature data CSV file even without the geometries.
   areas = membership_rows.select do |membership|
     membership[:district]
   end.map do |membership|
