@@ -74,6 +74,8 @@ def query(position_item_id:, term_item_id: nil, start_date: nil, end_date: nil, 
 SPARQL
 end
 
+boundary_data = BoundaryData.new
+
 JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
   legislature_dir = legislative_dir.join(legislature_h[:house_item_id])
   output_pathname = legislature_dir.join('popolo-m17n.json')
@@ -127,8 +129,6 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
-  boundary_data = BoundaryData.new(legislature_h[:position_item_id])
-
   areas = membership_rows.select do |membership|
     membership[:district]
   end.map do |membership|
@@ -158,7 +158,8 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
   # isn't associated with a membership yet.
   district_wikidata_ids_seen = Set.new(areas.map { |a| a[:id] })
   areas += boundary_data.popolo_areas.reject do |a|
-    district_wikidata_ids_seen.include? a[:id]
+    district_wikidata_ids_seen.include?(a[:id]) ||
+      !a[:associated_wikidata_positions].include?(legislature_h[:position_item_id])
   end
 
   area_country = {
