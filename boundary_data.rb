@@ -26,9 +26,6 @@ end
 # repository.
 
 class BoundaryData
-  def initialize(position_item_id)
-    @position_item_id = position_item_id
-  end
 
   def name_object(name_columns, feature_data)
     name_columns.map do |locale, column|
@@ -45,26 +42,26 @@ class BoundaryData
       directory = metadata[:directory]
       area_type_names = labels(metadata[:area_type_wikidata_item_id])
       name_columns = metadata[:name_columns]
-      metadata[:associations].flat_map do |association|
-        next [] unless association[:position_item_id] == position_item_id
-        shapefile_csv = boundaries_dir.join(directory, "#{directory}.csv")
-        CSV.read(shapefile_csv, headers: true).map(&:to_h).map do |feature_data|
-          {
-            id: feature_data['WIKIDATA'],
-            identifiers: [
-              {
-                scheme: 'MS_FB',
-                identifier: feature_data['MS_FB'],
-              },
-              {
-                scheme: 'wikidata',
-                identifier: feature_data['WIKIDATA'],
-              },
-            ],
-            type: area_type_names,
-            name: name_object(name_columns, feature_data),
-          }
-        end
+      shapefile_csv = boundaries_dir.join(directory, "#{directory}.csv")
+      CSV.read(shapefile_csv, headers: true).map(&:to_h).map do |feature_data|
+        {
+          id: feature_data['WIKIDATA'],
+          identifiers: [
+            {
+              scheme: 'MS_FB',
+              identifier: feature_data['MS_FB'],
+            },
+            {
+              scheme: 'wikidata',
+              identifier: feature_data['WIKIDATA'],
+            },
+          ],
+          associated_wikidata_positions: metadata[:associations].map do |a|
+            a[:position_item_id]
+          end,
+          type: area_type_names,
+          name: name_object(name_columns, feature_data),
+        }
       end
     end
   end
