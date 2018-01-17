@@ -162,27 +162,7 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
       !a[:associated_wikidata_positions].include?(legislature_h[:position_item_id])
   end
 
-  area_country = {
-    name: {
-      'lang:en_CA': 'Canada',
-           'lang:fr_CA': 'Canada',
-    },
-    id: 'Q16',
-    identifiers: [
-      {
-        scheme: 'wikidata',
-        identifier: 'Q16',
-      },
-      {
-        scheme: 'MS_FB',
-        identifier: 'country:ca',
-      },
-    ],
-    type: {
-      'lang:en_CA': 'Country',
-           'lang:fr_CA': 'Pays',
-    },
-  }
+  area_country = boundary_data.popolo_areas.find { |a| a[:id] == 'Q16' }
 
   memberships = membership_rows.map do |membership|
     {
