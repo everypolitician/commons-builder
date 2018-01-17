@@ -129,45 +129,18 @@ JSON.parse(index_file.read, symbolize_names: true).each do |legislature_h|
     }
   end.uniq
 
-  # TODO: these areas derived from the Wikidata query should all be
-  # included in the boundary data, so we could leave them out (and
-  # emit an warning or error if a person's district isn't found in the
-  # boundary data). That would save duplicating code to construct this
-  # structure. In situations where we don't have boundaries
-  # (e.g. Quebec's sub-provincial senatorial regions) qwe should at
-  # least always have the names of the area so could construct the
-  # boundary feature data CSV file even without the geometries.
-  areas = membership_rows.select do |membership|
-    membership[:district]
-  end.map do |membership|
-    district_item_id = membership[:district].value
-    {
-      name: membership.name_object('district_name', LANGUAGE_MAP),
-      id: membership[:district].value,
-      identifiers: [
-        {
-          scheme: 'wikidata',
-          identifier: district_item_id,
-        },
-        {
-          scheme: 'MS_FB',
-          identifier: boundary_data.ms_fb_id(district_item_id),
-        },
-      ],
-      type: {
-        'lang:en_CA': 'federal electoral district of Canada',
-             'lang:fr_CA': 'circonscription électorale fédérale canadienne',
-      },
-      parent_id: 'Q16',
-    }
-  end.uniq
-
-  # Now add any areas we know about from the boundary data, but which
-  # isn't associated with a membership yet.
-  district_wikidata_ids_seen = Set.new(areas.map { |a| a[:id] })
-  areas += boundary_data.popolo_areas.reject do |a|
-    district_wikidata_ids_seen.include?(a[:id]) ||
-      !a[:associated_wikidata_positions].include?(legislature_h[:position_item_id])
+  # We should have all the relevant areas from the boundary data...
+  areas = boundary_data.popolo_areas.reject do |a|
+    !a[:associated_wikidata_positions].include?(legislature_h[:position_item_id])
+  end
+  # ... but warn about any districts found from Wikidata that aren't
+  # in that set:
+  known_areas = Set.new(areas.map { |a| a[:id] })
+  membership_rows.select { |m| m[:district] }.map do |m|
+    area_wikidata_id = m[:district].value
+    unless known_areas.include?(area_wikidata_id)
+      puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data (row #{m})"
+    end
   end
 
   area_country = boundary_data.popolo_areas.find { |a| a[:id] == 'Q16' }
