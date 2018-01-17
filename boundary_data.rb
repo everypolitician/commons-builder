@@ -30,6 +30,16 @@ class BoundaryData
     @position_item_id = position_item_id
   end
 
+  def name_object(name_columns, feature_data)
+    name_columns.map do |locale, column|
+      [locale, feature_data[column]]
+    end.to_h.compact.tap do |names_h|
+      if names_h.empty?
+        raise "No names found from the #{name_columns} columns of #{feature_data}"
+      end
+    end
+  end
+
   def popolo_areas
     @popolo_areas ||= index_data.flat_map do |metadata|
       directory = metadata[:directory]
@@ -52,9 +62,7 @@ class BoundaryData
               },
             ],
             type: area_type_names,
-            name: name_columns.map do |locale, column|
-              [locale, feature_data[column]]
-            end.to_h,
+            name: name_object(name_columns, feature_data),
           }
         end
       end
