@@ -156,7 +156,7 @@ boundary_data = BoundaryData.new
     membership_rows.select { |m| m[:district] }.map do |m|
       area_wikidata_id = m[:district].value
       unless known_areas.include?(area_wikidata_id)
-        puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data (row #{m})"
+        puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data for position #{m[:role]&.value}"
       end
     end
 
