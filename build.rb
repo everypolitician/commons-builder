@@ -73,17 +73,57 @@ def query_legislative(position_item_id:, term_item_id: nil, start_date: nil, end
 SPARQL
 end
 
+def query_executive(executive_item_id:, positions:, **_)
+  space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
+  <<~SPARQL
+    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?superclass_role ?facebook WHERE {
+      VALUES ?role_superclass { #{space_separated_role_superclass} }
+      BIND(wd:#{executive_item_id} AS ?executive)
+      ?item p:P39 ?statement ;
+         rdfs:label ?name_en, ?name_fr .
+      FILTER(LANG(?name_en) = "en").
+      FILTER(LANG(?name_fr) = "fr").
+      ?statement ps:P39 ?role .
+      ?role rdfs:label ?role_en, ?role_fr .
+      FILTER(LANG(?role_en) = "en").
+      FILTER(LANG(?role_fr) = "fr").
+      ?role wdt:P279* ?role_superclass .
+      ?role wdt:P361 ?executive .
+      OPTIONAL {
+        ?role wdt:P1001 ?district .
+        ?district rdfs:label ?district_name_en, ?district_name_fr .
+        FILTER(LANG(?district_name_en) = "en").
+        FILTER(LANG(?district_name_fr) = "fr").
+      }
+      OPTIONAL { ?statement pq:P580 ?start }
+      OPTIONAL { ?statement pq:P582 ?end }
+      BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
+      FILTER(?end_or_sentinel >= NOW())
+    }
+SPARQL
+end
+
 def query(entity_kind, political_entity_h)
   if entity_kind == 'legislative'
     query_legislative(**political_entity_h)
+  elsif entity_kind == 'executive'
+    query_executive(**political_entity_h)
   else
     raise "Unknown political entity kind: #{entity_kind}"
   end
 end
 
+# FIXME: writing this at all is further evidence that indicates that
+# the political_entity_h variants should be represented by a class
+def positions_item_ids(political_entity_h)
+  for_legislature = [political_entity_h[:position_item_id]]
+  for_executive = political_entity_h.fetch(:positions, []).map { |p| p[:position_item_id] }
+  (for_legislature + for_executive).compact
+end
+
 boundary_data = BoundaryData.new
 
-['legislative'].each do |political_entity_kind|
+['legislative', 'executive'].each do |political_entity_kind|
   political_entity_kind_dir = root_dir.join(political_entity_kind)
   index_file = political_entity_kind_dir.join('index.json')
 
@@ -148,8 +188,9 @@ boundary_data = BoundaryData.new
     end.uniq
 
     # We should have all the relevant areas from the boundary data...
+    related_positions = positions_item_ids(political_entity_h)
     areas = boundary_data.popolo_areas.reject do |a|
-      !a[:associated_wikidata_positions].include?(political_entity_h[:position_item_id])
+      (a[:associated_wikidata_positions] & related_positions).empty?
     end
     # ... but warn about any districts found from Wikidata that aren't
     # in that set:
