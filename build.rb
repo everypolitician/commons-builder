@@ -76,7 +76,7 @@ end
 def query_executive(executive_item_id:, positions:, **_)
   space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
   <<~SPARQL
-    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?facebook WHERE {
+    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?role_superclass_en ?role_superclass_fr ?facebook WHERE {
       VALUES ?role_superclass { #{space_separated_role_superclass} }
       BIND(wd:#{executive_item_id} AS ?executive)
       ?item p:P39 ?statement ;
@@ -88,6 +88,9 @@ def query_executive(executive_item_id:, positions:, **_)
       FILTER(LANG(?role_en) = "en").
       FILTER(LANG(?role_fr) = "fr").
       ?role wdt:P279* ?role_superclass .
+      ?role_superclass rdfs:label ?role_superclass_en, ?role_superclass_fr .
+      FILTER(LANG(?role_superclass_en) = "en").
+      FILTER(LANG(?role_superclass_fr) = "fr").
       ?role wdt:P361 ?executive .
       OPTIONAL {
         ?role wdt:P1001 ?district .
@@ -212,6 +215,8 @@ boundary_data = BoundaryData.new
         area_id: membership[:district]&.value,
         start_date: membership[:start]&.value,
         end_date: membership[:end]&.value,
+        role_superclass_code: membership[:role_superclass]&.value,
+        role_superclass: membership[:role_superclass] && membership.name_object('role_superclass', LANGUAGE_MAP),
         role_code: membership[:role].value,
         role: membership.name_object('role', LANGUAGE_MAP),
       }.reject { |_, v| v.to_s.empty? }
