@@ -95,6 +95,7 @@ boundary_data = BoundaryData.new
       }.fetch(political_entity_kind)
     ]
     output_dir = political_entity_kind_dir.join(output_relative)
+    output_dir.mkpath
     output_pathname = output_dir.join('popolo-m17n.json')
 
     sparql_query = query(political_entity_kind, political_entity_h)
