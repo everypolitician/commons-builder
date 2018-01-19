@@ -44,30 +44,50 @@ def query_legislative(position_item_id:, term_item_id: nil, start_date: nil, end
            ?start ?end ?facebook
     WHERE {
       BIND(wd:#{position_item_id} as ?role) .
-      ?item p:P39 ?statement ;
-            rdfs:label ?name_en, ?name_fr .
-      ?role rdfs:label ?role_en, ?role_fr .
-      FILTER(LANG(?role_en) = "en").
-      FILTER(LANG(?role_fr) = "fr").
+      ?item p:P39 ?statement .
+      OPTIONAL {
+        ?item rdfs:label ?name_en
+        FILTER(LANG(?name_en) = "en")
+      }
+      OPTIONAL {
+        ?item rdfs:label ?name_fr
+        FILTER(LANG(?name_fr) = "fr")
+      }
       ?statement ps:P39 ?role .
+      OPTIONAL {
+        ?role rdfs:label ?role_en
+        FILTER(LANG(?role_en) = "en")
+      }
+      OPTIONAL {
+        ?role rdfs:label ?role_fr
+        FILTER(LANG(?role_fr) = "fr")
+      }
       #{term_condition(term_item_id)}
       OPTIONAL { ?statement pq:P580 ?start }
       OPTIONAL { ?statement pq:P582 ?end }
       OPTIONAL {
         ?statement pq:P768 ?district.
-        ?district rdfs:label ?district_name_en, ?district_name_fr .
-        FILTER(LANG(?district_name_en) = "en").
-        FILTER(LANG(?district_name_fr) = "fr").
+        OPTIONAL {
+          ?district rdfs:label ?district_name_en
+          FILTER(LANG(?district_name_en) = "en")
+        }
+        OPTIONAL {
+          ?district rdfs:label ?district_name_fr
+          FILTER(LANG(?district_name_fr) = "fr")
+        }
       }
       OPTIONAL {
         ?statement pq:P4100 ?party.
-        ?party rdfs:label ?party_name_en, ?party_name_fr .
-        FILTER(LANG(?party_name_en) = "en").
-        FILTER(LANG(?party_name_fr) = "fr").
+        OPTIONAL {
+          ?party rdfs:label ?party_name_en
+          FILTER(LANG(?party_name_en) = "en")
+        }
+        OPTIONAL {
+          ?party rdfs:label ?party_name_fr
+          FILTER(LANG(?party_name_fr) = "fr")
+        }
       }
       OPTIONAL { ?item wdt:P2013 ?facebook }
-      FILTER(LANG(?name_en) = "en").
-      FILTER(LANG(?name_fr) = "fr").
       #{date_condition(start_date, end_date)}
     } ORDER BY ?name_en ?name_fr ?item
 SPARQL
@@ -79,24 +99,44 @@ def query_executive(executive_item_id:, positions:, **_)
     SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?role_superclass_en ?role_superclass_fr ?facebook WHERE {
       VALUES ?role_superclass { #{space_separated_role_superclass} }
       BIND(wd:#{executive_item_id} AS ?executive)
-      ?item p:P39 ?statement ;
-         rdfs:label ?name_en, ?name_fr .
-      FILTER(LANG(?name_en) = "en").
-      FILTER(LANG(?name_fr) = "fr").
+      ?item p:P39 ?statement .
+      OPTIONAL {
+        ?item rdfs:label ?name_en
+        FILTER(LANG(?name_en) = "en")
+      }
+      OPTIONAL {
+        ?item rdfs:label ?name_fr
+        FILTER(LANG(?name_fr) = "fr")
+      }
       ?statement ps:P39 ?role .
-      ?role rdfs:label ?role_en, ?role_fr .
-      FILTER(LANG(?role_en) = "en").
-      FILTER(LANG(?role_fr) = "fr").
+      OPTIONAL {
+        ?role rdfs:label ?role_en
+        FILTER(LANG(?role_en) = "en")
+      }
+      OPTIONAL {
+        ?role rdfs:label ?role_fr
+        FILTER(LANG(?role_fr) = "fr")
+      }
       ?role wdt:P279* ?role_superclass .
-      ?role_superclass rdfs:label ?role_superclass_en, ?role_superclass_fr .
-      FILTER(LANG(?role_superclass_en) = "en").
-      FILTER(LANG(?role_superclass_fr) = "fr").
+      OPTIONAL {
+        ?role_superclass rdfs:label ?role_superclass_en
+        FILTER(LANG(?role_superclass_en) = "en")
+      }
+      OPTIONAL {
+        ?role_superclass rdfs:label ?role_superclass_fr
+        FILTER(LANG(?role_superclass_fr) = "fr")
+      }
       ?role wdt:P361 ?executive .
       OPTIONAL {
         ?role wdt:P1001 ?district .
-        ?district rdfs:label ?district_name_en, ?district_name_fr .
-        FILTER(LANG(?district_name_en) = "en").
-        FILTER(LANG(?district_name_fr) = "fr").
+        OPTIONAL {
+          ?district rdfs:label ?district_name_en
+          FILTER(LANG(?district_name_en) = "en")
+        }
+        OPTIONAL {
+          ?district rdfs:label ?district_name_fr
+          FILTER(LANG(?district_name_fr) = "fr")
+        }
       }
       OPTIONAL { ?statement pq:P580 ?start }
       OPTIONAL { ?statement pq:P582 ?end }
