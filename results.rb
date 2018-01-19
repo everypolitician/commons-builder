@@ -51,11 +51,12 @@ class Row
 
   def name_object(var_prefix, language_map)
     language_map.map do |key_lang, wikidata_lang|
+      column = "#{var_prefix}_#{wikidata_lang}".to_sym
       [
         key_lang,
-        self["#{var_prefix}_#{wikidata_lang}".to_sym].value,
+        self[column]&.value,
       ]
-    end.to_h
+    end.to_h.compact
   end
 
   private

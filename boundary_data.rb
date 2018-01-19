@@ -8,17 +8,22 @@ require_relative 'results'
 def labels(wikidata_item_id)
   query = <<~SPARQL
       SELECT ?name_en ?name_fr WHERE {
-      BIND(wd:#{wikidata_item_id} as ?item)
-      ?item rdfs:label ?name_en, ?name_fr .
-      FILTER(LANG(?name_en) = "en").
-      FILTER(LANG(?name_fr) = "fr").
-    }
+        BIND(wd:#{wikidata_item_id} as ?item)
+        OPTIONAL {
+          ?item rdfs:label ?name_en
+          FILTER(LANG(?name_en) = "en")
+        }
+        OPTIONAL {
+          ?item rdfs:label ?name_fr
+          FILTER(LANG(?name_fr) = "fr")
+        }
+      }
 SPARQL
   result = RestClient.get(URL, params: { query: query, format: 'json' })
   bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-  raise "0 rows found when looking for multi-lingual labels of #{wikidata_item_id}" if bindings.empty?
-  raise "BUG: more than one row of labels found for #{wikidata_item_id}" if bindings.length > 1
-  Row.new(bindings[0]).name_object('name', LANGUAGE_MAP)
+  result = Row.new(bindings[0]).name_object('name', LANGUAGE_MAP)
+  raise "No language labels found for #{wikidata_item_id}" if result.empty?
+  result
 end
 
 # This class parses the metadata we have about boundaries associated
