@@ -142,6 +142,7 @@ def query_executive(executive_item_id:, positions:, **_)
       OPTIONAL { ?statement pq:P582 ?end }
       BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
       FILTER(?end_or_sentinel >= NOW())
+      OPTIONAL { ?item wdt:P2013 ?facebook }
     }
 SPARQL
 end
