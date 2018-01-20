@@ -142,6 +142,22 @@ def query_executive(executive_item_id:, positions:, **_)
       OPTIONAL { ?statement pq:P582 ?end }
       BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
       FILTER(?end_or_sentinel >= NOW())
+      # Find any current party membership:
+      OPTIONAL {
+        ?item p:P102 ?party_statement .
+        ?party_statement ps:P102 ?party .
+        OPTIONAL {
+          ?party rdfs:label ?party_name_en
+          FILTER(LANG(?party_name_en) = "en")
+        }
+        OPTIONAL {
+          ?party rdfs:label ?party_name_fr
+          FILTER(LANG(?party_name_fr) = "fr")
+        }
+        OPTIONAL { ?party_statement pq:P582 ?end_party }
+        BIND(COALESCE(?end_party, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?party_end_or_sentinel)
+        FILTER(?party_end_or_sentinel >= NOW())
+      }
       OPTIONAL { ?item wdt:P2013 ?facebook }
     }
 SPARQL
