@@ -15,6 +15,8 @@ LANGUAGE_MAP = {
 
 root_dir = Pathname.new(__FILE__).dirname
 
+COUNTRY_WIKIDATA_ID = 'Q16'
+
 def date_condition(start_date, end_date)
   return '' unless start_date
   end_date ||= '9999-12-31'
@@ -262,7 +264,19 @@ boundary_data = BoundaryData.new
       end
     end
 
-    area_country = boundary_data.popolo_areas.find { |a| a[:id] == 'Q16' }
+    # Check that none of these have a null person_id - we should only
+    # allow that for the whole-country area.
+    areas_with_bad_parents = areas.select do |area|
+      area[:parent_id].nil? && ! area[:id] == COUNTRY_WIKIDATA_ID
+    end
+    unless areas_with_bad_parents.empty?
+      areas_with_bad_parents.each do |area|
+        puts "Error: no parent area found for: #{area[:id]}"
+      end
+      raise "Some areas has a null parent_id"
+    end
+
+    area_country = boundary_data.popolo_areas.find { |a| a[:id] == COUNTRY_WIKIDATA_ID }
 
     memberships = membership_rows.map do |membership|
       {
