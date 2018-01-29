@@ -17,6 +17,16 @@ root_dir = Pathname.new(__FILE__).dirname
 
 COUNTRY_WIKIDATA_ID = 'Q16'
 
+valid_actions = %w(update build)
+
+unknown_args = Set.new(ARGV) - Set.new(valid_actions)
+if unknown_args.length > 0
+  STDERR.puts "Usage: #{$0} update|build"
+  exit(1)
+end
+
+actions = valid_actions.clone
+
 def date_condition(start_date, end_date)
   return '' unless start_date
   end_date ||= '9999-12-31'
@@ -199,107 +209,115 @@ boundary_data = BoundaryData.new
     output_dir = political_entity_kind_dir.join(output_relative)
     output_dir.mkpath
     output_pathname = output_dir.join('popolo-m17n.json')
+    raw_results_pathname = output_dir.join('query-results.json')
 
-    sparql_query = query(political_entity_kind, political_entity_h)
-    output_dir.join('query-used.rq').write(sparql_query)
+    if actions.include? 'update'
+      sparql_query = query(political_entity_kind, political_entity_h)
+      output_dir.join('query-used.rq').write(sparql_query)
 
-    query_params = {
-      query: sparql_query,
-      format: 'json',
-    }
-    result = RestClient.get(URL, params: query_params)
-    data = JSON.parse result, symbolize_names: true
-
-    membership_rows = data[:results][:bindings].map do |row|
-      Row.new(row)
-    end
-
-    persons = membership_rows.map do |membership|
-      {
-        name: membership.name_object('name', LANGUAGE_MAP),
-        id: membership[:item].value,
-        identifiers: [
-          {
-            scheme: 'wikidata',
-            identifier: membership[:item].value,
-          },
-        ],
-        links: [
-          {
-            note: 'facebook',
-            url: membership[:facebook]&.value&.prepend('https://www.facebook.com/'),
-          },
-        ].select { |o| o[:url] },
+      query_params = {
+        query: sparql_query,
+        format: 'json',
       }
-    end.uniq
+      result = RestClient.get(URL, params: query_params)
 
-    organizations = membership_rows.select do |membership|
-      membership[:party]
-    end.map do |membership|
-      {
-        name: membership.name_object('party_name', LANGUAGE_MAP),
-        id: membership[:party].value,
-        classification: 'party',
-        identifiers: [
-          {
-            scheme: 'wikidata',
-            identifier: membership[:party].value,
-          },
-        ],
+      raw_results_pathname.write(result)
+    end
+
+    if actions.include?('build')
+      data = JSON.parse(raw_results_pathname.read(), symbolize_names: true)
+
+      membership_rows = data[:results][:bindings].map do |row|
+        Row.new(row)
+      end
+
+      persons = membership_rows.map do |membership|
+        {
+          name: membership.name_object('name', LANGUAGE_MAP),
+          id: membership[:item].value,
+          identifiers: [
+            {
+              scheme: 'wikidata',
+              identifier: membership[:item].value,
+            },
+          ],
+          links: [
+            {
+              note: 'facebook',
+              url: membership[:facebook]&.value&.prepend('https://www.facebook.com/'),
+            },
+          ].select { |o| o[:url] },
+        }
+      end.uniq
+
+      organizations = membership_rows.select do |membership|
+        membership[:party]
+      end.map do |membership|
+        {
+          name: membership.name_object('party_name', LANGUAGE_MAP),
+          id: membership[:party].value,
+          classification: 'party',
+          identifiers: [
+            {
+              scheme: 'wikidata',
+              identifier: membership[:party].value,
+            },
+          ],
+        }
+      end.uniq
+
+      # We should have all the relevant areas from the boundary data...
+      related_positions = positions_item_ids(political_entity_h)
+      areas = boundary_data.popolo_areas.reject do |a|
+        (a[:associated_wikidata_positions] & related_positions).empty?
+      end
+      # ... but warn about any districts found from Wikidata that aren't
+      # in that set:
+      known_areas = Set.new(areas.map { |a| a[:id] })
+      membership_rows.select { |m| m[:district] }.map do |m|
+        area_wikidata_id = m[:district].value
+        unless known_areas.include?(area_wikidata_id)
+          puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data for position #{m[:role]&.value}"
+        end
+      end
+
+      # Check that none of these have a null person_id - we should only
+      # allow that for the whole-country area.
+      areas_with_bad_parents = areas.select do |area|
+        area[:parent_id].nil? && ! area[:id] == COUNTRY_WIKIDATA_ID
+      end
+      unless areas_with_bad_parents.empty?
+        areas_with_bad_parents.each do |area|
+          puts "Error: no parent area found for: #{area[:id]}"
+        end
+        raise "Some areas has a null parent_id"
+      end
+
+      area_country = boundary_data.popolo_areas.find { |a| a[:id] == COUNTRY_WIKIDATA_ID }
+
+      memberships = membership_rows.map do |membership|
+        {
+          id: membership[:statement].value,
+          person_id: membership[:item].value,
+          on_behalf_of_id: membership[:party]&.value,
+          area_id: membership[:district]&.value,
+          start_date: membership[:start]&.value,
+          end_date: membership[:end]&.value,
+          role_superclass_code: membership[:role_superclass]&.value,
+          role_superclass: membership[:role_superclass] && membership.name_object('role_superclass', LANGUAGE_MAP),
+          role_code: membership[:role].value,
+          role: membership.name_object('role', LANGUAGE_MAP),
+        }.reject { |_, v| v.to_s.empty? }
+      end
+
+      all_data = {
+        persons: persons,
+        organizations: organizations,
+        areas: [area_country] + areas,
+        memberships: memberships,
       }
-    end.uniq
 
-    # We should have all the relevant areas from the boundary data...
-    related_positions = positions_item_ids(political_entity_h)
-    areas = boundary_data.popolo_areas.reject do |a|
-      (a[:associated_wikidata_positions] & related_positions).empty?
+      output_pathname.write(JSON.pretty_generate(all_data) + "\n")
     end
-    # ... but warn about any districts found from Wikidata that aren't
-    # in that set:
-    known_areas = Set.new(areas.map { |a| a[:id] })
-    membership_rows.select { |m| m[:district] }.map do |m|
-      area_wikidata_id = m[:district].value
-      unless known_areas.include?(area_wikidata_id)
-        puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data for position #{m[:role]&.value}"
-      end
-    end
-
-    # Check that none of these have a null person_id - we should only
-    # allow that for the whole-country area.
-    areas_with_bad_parents = areas.select do |area|
-      area[:parent_id].nil? && ! area[:id] == COUNTRY_WIKIDATA_ID
-    end
-    unless areas_with_bad_parents.empty?
-      areas_with_bad_parents.each do |area|
-        puts "Error: no parent area found for: #{area[:id]}"
-      end
-      raise "Some areas has a null parent_id"
-    end
-
-    area_country = boundary_data.popolo_areas.find { |a| a[:id] == COUNTRY_WIKIDATA_ID }
-
-    memberships = membership_rows.map do |membership|
-      {
-        id: membership[:statement].value,
-        person_id: membership[:item].value,
-        on_behalf_of_id: membership[:party]&.value,
-        area_id: membership[:district]&.value,
-        start_date: membership[:start]&.value,
-        end_date: membership[:end]&.value,
-        role_superclass_code: membership[:role_superclass]&.value,
-        role_superclass: membership[:role_superclass] && membership.name_object('role_superclass', LANGUAGE_MAP),
-        role_code: membership[:role].value,
-        role: membership.name_object('role', LANGUAGE_MAP),
-      }.reject { |_, v| v.to_s.empty? }
-    end
-
-    all_data = {
-      persons: persons,
-      organizations: organizations,
-      areas: [area_country] + areas,
-      memberships: memberships,
-    }
-
-    output_pathname.write(JSON.pretty_generate(all_data) + "\n")
   end
 end
