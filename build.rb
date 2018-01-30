@@ -217,7 +217,8 @@ def positions_item_ids(political_entity_h)
   (for_legislature + for_executive).compact
 end
 
-boundary_data = BoundaryData.new
+wikidata_labels = WikidataLabels.new
+boundary_data = BoundaryData.new(wikidata_labels)
 
 ['legislative', 'executive'].each do |political_entity_kind|
   political_entity_kind_dir = root_dir.join(political_entity_kind)
@@ -301,7 +302,7 @@ boundary_data = BoundaryData.new
       membership_rows.select { |m| m[:district] }.map do |m|
         area_wikidata_id = m[:district].value
         unless known_areas.include?(area_wikidata_id)
-          puts "WARNING: the district #{area_wikidata_id} wasn't found in the boundary data for position #{m[:role]&.value}"
+          puts "WARNING: the district #{wikidata_labels.item_with_label(area_wikidata_id)} wasn't found in the boundary data for position #{wikidata_labels.item_with_label(m[:role]&.value)}"
         end
       end
 
