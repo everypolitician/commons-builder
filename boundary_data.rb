@@ -67,7 +67,9 @@ class BoundaryData
       shapefile_csv = boundaries_dir.join(directory, "#{directory}.csv")
       CSV.read(shapefile_csv, headers: true).map(&:to_h).map do |feature_data|
         {
-          id: feature_data['WIKIDATA'],
+          id: feature_data.fetch('WIKIDATA').tap do |area_id|
+            raise "No Wikidata ID found in area row #{feature_data}" if area_id.to_s.empty?
+          end,
           identifiers: [
             {
               scheme: 'MS_FB',
