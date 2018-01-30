@@ -270,7 +270,7 @@ boundary_data = BoundaryData.new
       related_positions = positions_item_ids(political_entity_h)
       areas = boundary_data.popolo_areas.reject do |a|
         (a[:associated_wikidata_positions] & related_positions).empty?
-      end.sort_by { |a| a[:id] }
+      end.uniq.sort_by { |a| a[:id] }
       # ... but warn about any districts found from Wikidata that aren't
       # in that set:
       known_areas = Set.new(areas.map { |a| a[:id] })
@@ -308,7 +308,7 @@ boundary_data = BoundaryData.new
           role_code: membership[:role].value,
           role: membership.name_object('role', LANGUAGE_MAP),
         }.reject { |_, v| v.to_s.empty? }
-      end.sort_by { |m| m[:id] }
+      end.uniq.sort_by { |m| m[:id] }
 
       all_data = {
         persons: persons,
