@@ -275,7 +275,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
         }
       end.uniq.sort_by { |p| p[:id] }
 
-      organizations = membership_rows.select do |membership|
+      party_organizations = membership_rows.select do |membership|
         membership[:party]
       end.map do |membership|
         {
@@ -290,6 +290,27 @@ boundary_data = BoundaryData.new(wikidata_labels)
           ],
         }
       end.uniq.sort_by { |o| o[:id] }
+
+      entity_organizations = membership_rows.map do |membership|
+        {
+          name: membership.name_object('org', LANGUAGE_MAP),
+          id: membership[:org].value,
+          classification: political_entity_kind,
+          identifiers: [
+            {
+              scheme: 'wikidata',
+              identifier: membership[:org].value,
+            }
+          ],
+          area_id: membership[:org_jurisdiction]&.value,
+        }
+      end.uniq.sort_by { |o| o[:id] }
+
+      missing_jurisdictions = entity_organizations.reject { |o| o[:area_id] }
+      missing_jurisdictions.each do |o|
+        puts "ERROR: no P1001 (applies to jurisdiction) on #{political_entity_kind} #{wikidata_labels.item_with_label(o[:id])}"
+      end
+      exit(1) unless missing_jurisdictions.empty?
 
       # We should have all the relevant areas from the boundary data...
       related_positions = positions_item_ids(political_entity_h)
@@ -325,6 +346,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
           id: membership[:statement].value,
           person_id: membership[:item].value,
           on_behalf_of_id: membership[:party]&.value,
+          organization_id: membership[:org].value,
           area_id: membership[:district]&.value,
           start_date: membership[:start]&.value,
           end_date: membership[:end]&.value,
@@ -337,7 +359,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
 
       all_data = {
         persons: persons,
-        organizations: organizations,
+        organizations: entity_organizations + party_organizations,
         areas: [area_country] + areas,
         memberships: memberships,
       }
