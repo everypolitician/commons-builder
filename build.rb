@@ -295,7 +295,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
         {
           name: membership.name_object('org', LANGUAGE_MAP),
           id: membership[:org].value,
-          classification: political_entity_kind,
+          classification: 'branch',
           identifiers: [
             {
               scheme: 'wikidata',
