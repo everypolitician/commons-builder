@@ -108,9 +108,20 @@ end
 def query_executive(executive_item_id:, positions:, **_)
   space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
   <<~SPARQL
-    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?role_superclass_en ?role_superclass_fr ?facebook WHERE {
+    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?role_superclass_en ?role_superclass_fr ?facebook ?org ?org_en ?org_fr ?org_jurisdiction WHERE {
       VALUES ?role_superclass { #{space_separated_role_superclass} }
-      BIND(wd:#{executive_item_id} AS ?executive)
+      BIND(wd:#{executive_item_id} AS ?org)
+      OPTIONAL {
+        ?org rdfs:label ?org_en
+        FILTER(LANG(?org_en) = "en")
+      }
+      OPTIONAL {
+        ?org rdfs:label ?org_fr
+        FILTER(LANG(?org_fr) = "fr")
+      }
+      OPTIONAL {
+        ?org wdt:P1001 ?org_jurisdiction
+      }
       ?item p:P39 ?statement .
       OPTIONAL {
         ?item rdfs:label ?name_en
@@ -138,7 +149,7 @@ def query_executive(executive_item_id:, positions:, **_)
         ?role_superclass rdfs:label ?role_superclass_fr
         FILTER(LANG(?role_superclass_fr) = "fr")
       }
-      ?role wdt:P361 ?executive .
+      ?role wdt:P361 ?org .
       OPTIONAL {
         ?role wdt:P1001 ?district .
         OPTIONAL {
