@@ -91,7 +91,7 @@ def query_legislative(position_item_id:, term_item_id: nil, start_date: nil, end
       }
       OPTIONAL { ?item wdt:P2013 ?facebook }
       #{date_condition(start_date, end_date)}
-    } ORDER BY ?name_en ?name_fr ?item
+    } ORDER BY ?item ?role #{term_item_id ? '?term ' : ''}?start ?end
 SPARQL
 end
 
@@ -161,7 +161,7 @@ def query_executive(executive_item_id:, positions:, **_)
         FILTER(?party_end_or_sentinel >= NOW())
       }
       OPTIONAL { ?item wdt:P2013 ?facebook }
-    }
+    } ORDER BY ?item ?role ?start ?end
 SPARQL
 end
 
