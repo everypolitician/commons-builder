@@ -43,7 +43,7 @@ def term_condition(term_item_id)
   "?statement pq:P2937 wd:#{term_item_id} ."
 end
 
-def query_legislative(position_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
+def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
   unless !!term_item_id ^ !!(start_date and end_date)
     raise 'You must specify either a term item or a start and end date (and not both)'
   end
@@ -54,8 +54,21 @@ def query_legislative(position_item_id:, term_item_id: nil, start_date: nil, end
            ?district ?district_name_en ?district_name_fr
            ?role ?role_en ?role_fr
            ?start ?end ?facebook
+           ?org ?org_en ?org_fr ?org_jurisdiction
     WHERE {
       BIND(wd:#{position_item_id} as ?role) .
+      BIND(wd:#{house_item_id} as ?org) .
+      OPTIONAL {
+        ?org rdfs:label ?org_en
+        FILTER(LANG(?org_en) = "en")
+      }
+      OPTIONAL {
+        ?org rdfs:label ?org_fr
+        FILTER(LANG(?org_fr) = "fr")
+      }
+      OPTIONAL {
+        ?org wdt:P1001 ?org_jurisdiction
+      }
       ?item p:P39 ?statement .
       OPTIONAL {
         ?item rdfs:label ?name_en
