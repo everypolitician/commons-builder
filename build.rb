@@ -25,7 +25,11 @@ if unknown_args.length > 0
   exit(1)
 end
 
-actions = ARGV.clone
+if ARGV.empty?
+  actions = valid_actions.clone
+else
+  actions = ARGV.clone
+end
 
 def date_condition(start_date, end_date)
   return '' unless start_date
