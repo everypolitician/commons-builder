@@ -4,6 +4,7 @@ require 'rest-client'
 require 'json'
 
 require_relative 'lib/results'
+require_relative 'lib/labels'
 require_relative 'lib/boundary_data'
 require_relative 'lib/config'
 
