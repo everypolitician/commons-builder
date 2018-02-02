@@ -5,17 +5,14 @@ require 'json'
 
 require_relative 'lib/results'
 require_relative 'lib/boundary_data'
+require_relative 'lib/config'
 
 URL = 'https://query.wikidata.org/sparql'
 
-LANGUAGE_MAP = {
-  'lang:en_CA' => 'en',
-  'lang:fr_CA' => 'fr',
-}.freeze
+LANGUAGE_MAP = CONFIG[:language_map]
+COUNTRY_WIKIDATA_ID = CONFIG[:country_wikidata_id]
 
 root_dir = Pathname.new(__FILE__).dirname
-
-COUNTRY_WIKIDATA_ID = 'Q16'
 
 valid_actions = %w(update build)
 
