@@ -7,6 +7,7 @@ require_relative 'lib/results'
 require_relative 'lib/labels'
 require_relative 'lib/boundary_data'
 require_relative 'lib/config'
+require_relative 'lib/queries'
 
 URL = 'https://query.wikidata.org/sparql'
 
@@ -29,217 +30,80 @@ else
   actions = ARGV.clone
 end
 
-def date_condition(start_date, end_date)
-  return '' unless start_date
-  end_date ||= '9999-12-31'
-  <<~DATE_CONDITION
-    BIND(COALESCE(?start, "1000-01-01T00:00:00Z"^^xsd:dateTime) AS ?start_or_sentinel)
-    BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
-    FILTER (?end_or_sentinel >= "#{start_date}"^^xsd:dateTime)
-    FILTER (?start_or_sentinel <= "#{end_date}"^^xsd:dateTime)
-DATE_CONDITION
-end
-
-def term_condition(term_item_id)
-  return '' unless term_item_id
-  "?statement pq:P2937 wd:#{term_item_id} ."
-end
-
-def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
-  unless !!term_item_id ^ !!(start_date and end_date)
-    raise 'You must specify either a term item or a start and end date (and not both)'
-  end
-  <<~SPARQL
-    SELECT ?statement
-           ?item ?name_en ?name_fr
-           ?party ?party_name_en ?party_name_fr
-           ?district ?district_name_en ?district_name_fr
-           ?role ?role_en ?role_fr
-           ?start ?end ?facebook
-           ?org ?org_en ?org_fr ?org_jurisdiction
-    WHERE {
-      BIND(wd:#{position_item_id} as ?role) .
-      BIND(wd:#{house_item_id} as ?org) .
-      OPTIONAL {
-        ?org rdfs:label ?org_en
-        FILTER(LANG(?org_en) = "en")
-      }
-      OPTIONAL {
-        ?org rdfs:label ?org_fr
-        FILTER(LANG(?org_fr) = "fr")
-      }
-      OPTIONAL {
-        ?org wdt:P1001 ?org_jurisdiction
-      }
-      ?item p:P39 ?statement .
-      OPTIONAL {
-        ?item rdfs:label ?name_en
-        FILTER(LANG(?name_en) = "en")
-      }
-      OPTIONAL {
-        ?item rdfs:label ?name_fr
-        FILTER(LANG(?name_fr) = "fr")
-      }
-      ?statement ps:P39 ?role .
-      OPTIONAL {
-        ?role rdfs:label ?role_en
-        FILTER(LANG(?role_en) = "en")
-      }
-      OPTIONAL {
-        ?role rdfs:label ?role_fr
-        FILTER(LANG(?role_fr) = "fr")
-      }
-      #{term_condition(term_item_id)}
-      OPTIONAL { ?statement pq:P580 ?start }
-      OPTIONAL { ?statement pq:P582 ?end }
-      OPTIONAL {
-        ?statement pq:P768 ?district.
-        OPTIONAL {
-          ?district rdfs:label ?district_name_en
-          FILTER(LANG(?district_name_en) = "en")
-        }
-        OPTIONAL {
-          ?district rdfs:label ?district_name_fr
-          FILTER(LANG(?district_name_fr) = "fr")
-        }
-      }
-      OPTIONAL {
-        ?statement pq:P4100 ?party.
-        OPTIONAL {
-          ?party rdfs:label ?party_name_en
-          FILTER(LANG(?party_name_en) = "en")
-        }
-        OPTIONAL {
-          ?party rdfs:label ?party_name_fr
-          FILTER(LANG(?party_name_fr) = "fr")
-        }
-      }
-      OPTIONAL { ?item wdt:P2013 ?facebook }
-      #{date_condition(start_date, end_date)}
-    } ORDER BY ?item ?role #{term_item_id ? '?term ' : ''}?start ?end
-SPARQL
-end
-
-def query_executive(executive_item_id:, positions:, **_)
-  space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
-  <<~SPARQL
-    SELECT ?statement ?item ?name_en ?name_fr ?party ?party_name_en ?party_name_fr ?district ?district_name_en ?district_name_fr ?role ?role_en ?role_fr ?start ?end ?role_superclass ?role_superclass_en ?role_superclass_fr ?facebook ?org ?org_en ?org_fr ?org_jurisdiction WHERE {
-      VALUES ?role_superclass { #{space_separated_role_superclass} }
-      BIND(wd:#{executive_item_id} AS ?org)
-      OPTIONAL {
-        ?org rdfs:label ?org_en
-        FILTER(LANG(?org_en) = "en")
-      }
-      OPTIONAL {
-        ?org rdfs:label ?org_fr
-        FILTER(LANG(?org_fr) = "fr")
-      }
-      OPTIONAL {
-        ?org wdt:P1001 ?org_jurisdiction
-      }
-      ?item p:P39 ?statement .
-      OPTIONAL {
-        ?item rdfs:label ?name_en
-        FILTER(LANG(?name_en) = "en")
-      }
-      OPTIONAL {
-        ?item rdfs:label ?name_fr
-        FILTER(LANG(?name_fr) = "fr")
-      }
-      ?statement ps:P39 ?role .
-      OPTIONAL {
-        ?role rdfs:label ?role_en
-        FILTER(LANG(?role_en) = "en")
-      }
-      OPTIONAL {
-        ?role rdfs:label ?role_fr
-        FILTER(LANG(?role_fr) = "fr")
-      }
-      ?role wdt:P279* ?role_superclass .
-      OPTIONAL {
-        ?role_superclass rdfs:label ?role_superclass_en
-        FILTER(LANG(?role_superclass_en) = "en")
-      }
-      OPTIONAL {
-        ?role_superclass rdfs:label ?role_superclass_fr
-        FILTER(LANG(?role_superclass_fr) = "fr")
-      }
-      ?role wdt:P361 ?org .
-      OPTIONAL {
-        ?role wdt:P1001 ?district .
-        OPTIONAL {
-          ?district rdfs:label ?district_name_en
-          FILTER(LANG(?district_name_en) = "en")
-        }
-        OPTIONAL {
-          ?district rdfs:label ?district_name_fr
-          FILTER(LANG(?district_name_fr) = "fr")
-        }
-      }
-      OPTIONAL { ?statement pq:P580 ?start }
-      OPTIONAL { ?statement pq:P582 ?end }
-      BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
-      FILTER(?end_or_sentinel >= NOW())
-      # Find any current party membership:
-      OPTIONAL {
-        ?item p:P102 ?party_statement .
-        ?party_statement ps:P102 ?party .
-        OPTIONAL {
-          ?party rdfs:label ?party_name_en
-          FILTER(LANG(?party_name_en) = "en")
-        }
-        OPTIONAL {
-          ?party rdfs:label ?party_name_fr
-          FILTER(LANG(?party_name_fr) = "fr")
-        }
-        OPTIONAL { ?party_statement pq:P582 ?end_party }
-        BIND(COALESCE(?end_party, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?party_end_or_sentinel)
-        FILTER(?party_end_or_sentinel >= NOW())
-      }
-      OPTIONAL { ?item wdt:P2013 ?facebook }
-    } ORDER BY ?item ?role ?start ?end
-SPARQL
-end
-
-def query(entity_kind, political_entity_h)
-  if entity_kind == 'legislative'
-    query_legislative(**political_entity_h)
-  elsif entity_kind == 'executive'
-    query_executive(**political_entity_h)
-  else
-    raise "Unknown political entity kind: #{entity_kind}"
-  end
-end
-
-# FIXME: writing this at all is further evidence that indicates that
-# the political_entity_h variants should be represented by a class
-def positions_item_ids(political_entity_h)
-  for_legislature = [political_entity_h[:position_item_id]]
-  for_executive = political_entity_h.fetch(:positions, []).map { |p| p[:position_item_id] }
-  (for_legislature + for_executive).compact
-end
-
 wikidata_labels = WikidataLabels.new
 boundary_data = BoundaryData.new(wikidata_labels)
+
+class Branch
+  def initialize(**properties)
+    self.class::KNOWN_PROPERTIES.each do |p|
+      self.class.send(:attr_accessor, p)
+      self.send("#{p}=", properties.delete(p))
+    end
+    raise "Unknown properties: #{properties}" unless properties.empty?
+  end
+
+  def self.for(type, properties)
+    {
+      'legislative' => Legislature,
+      'executive' => Executive
+    }.fetch(type).new(**properties)
+  end
+end
+
+class Legislature < Branch
+  KNOWN_PROPERTIES = %i(comment house_item_id position_item_id term_item_id start_date end_date)
+
+  def output_relative
+    house_item_id
+  end
+
+  def query
+    query_legislative(
+      position_item_id: position_item_id,
+      house_item_id: house_item_id,
+      term_item_id: term_item_id,
+      start_date: start_date,
+      end_date: end_date,
+    )
+  end
+
+  def positions_item_ids
+    [position_item_id]
+  end
+end
+
+class Executive < Branch
+  KNOWN_PROPERTIES = %i(comment executive_item_id positions)
+
+  def output_relative
+    executive_item_id
+  end
+
+  def query
+    query_executive(
+      executive_item_id: executive_item_id,
+      positions: positions,
+    )
+  end
+
+  def positions_item_ids
+    positions.map { |p| p[:position_item_id] }
+  end
+end
 
 ['legislative', 'executive'].each do |political_entity_kind|
   political_entity_kind_dir = root_dir.join(political_entity_kind)
   index_file = political_entity_kind_dir.join('index.json')
 
   JSON.parse(index_file.read, symbolize_names: true).each do |political_entity_h|
-    output_relative = political_entity_h[
-      {
-        "legislative" => :house_item_id,
-        "executive" => :executive_item_id,
-      }.fetch(political_entity_kind)
-    ]
-    output_dir = political_entity_kind_dir.join(output_relative)
+    branch = Branch.for(political_entity_kind, political_entity_h)
+    output_dir = political_entity_kind_dir.join(branch.output_relative)
     output_dir.mkpath
     output_pathname = output_dir.join('popolo-m17n.json')
     raw_results_pathname = output_dir.join('query-results.json')
 
     if actions.include? 'update'
-      sparql_query = query(political_entity_kind, political_entity_h)
+      sparql_query = branch.query
       output_dir.join('query-used.rq').write(sparql_query)
 
       query_params = {
@@ -315,7 +179,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
       exit(1) unless missing_jurisdictions.empty?
 
       # We should have all the relevant areas from the boundary data...
-      related_positions = positions_item_ids(political_entity_h)
+      related_positions = branch.positions_item_ids
       areas = boundary_data.popolo_areas.reject do |a|
         (a[:associated_wikidata_positions] & related_positions).empty?
       end.uniq.sort_by { |a| a[:id] }
