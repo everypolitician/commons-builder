@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def date_condition(start_date, end_date)
   return '' unless start_date
   end_date ||= '9999-12-31'

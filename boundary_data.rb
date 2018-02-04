@@ -9,7 +9,6 @@ require_relative 'results'
 # repository.
 
 class BoundaryData
-
   def initialize(wikidata_labels)
     @wikidata_labels = wikidata_labels
   end
@@ -18,9 +17,7 @@ class BoundaryData
     name_columns.map do |locale, column|
       [locale, feature_data[column]]
     end.to_h.compact.tap do |names_h|
-      if names_h.empty?
-        raise "No names found from the #{name_columns} columns of #{feature_data}"
-      end
+      raise "No names found from the #{name_columns} columns of #{feature_data}" if names_h.empty?
     end
   end
 
@@ -85,7 +82,7 @@ class BoundaryData
   end
 
   def ms_fb_to_wikidata
-    @ms_fb_to_wikidata ||= wikidata_to_ms_fb.map { |k,v| [v, k] }.to_h
+    @ms_fb_to_wikidata ||= wikidata_to_ms_fb.map { |k, v| [v, k] }.to_h
   end
 
   def boundaries_dir

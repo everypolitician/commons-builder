@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WikidataLabels
   def item_with_label(wikidata_item_id)
     return '[no item]' if wikidata_item_id.nil?
@@ -11,7 +13,7 @@ class WikidataLabels
     languages = all_labels.keys.sort_by do |l|
       preferred_language_order.index(l)
     end
-    return all_labels.values_at(*languages).first
+    all_labels.values_at(*languages).first
   end
 
   def labels_for(wikidata_item_id)
@@ -34,17 +36,17 @@ class WikidataLabels
   # This function returns a multilingual name object for a Wikidata item
   def fetch_labels(wikidata_item_id)
     query = <<~SPARQL
-        SELECT ?name_en ?name_fr WHERE {
-          BIND(wd:#{wikidata_item_id} as ?item)
-          OPTIONAL {
-            ?item rdfs:label ?name_en
-            FILTER(LANG(?name_en) = "en")
-          }
-          OPTIONAL {
-            ?item rdfs:label ?name_fr
-            FILTER(LANG(?name_fr) = "fr")
-          }
+      SELECT ?name_en ?name_fr WHERE {
+        BIND(wd:#{wikidata_item_id} as ?item)
+        OPTIONAL {
+          ?item rdfs:label ?name_en
+          FILTER(LANG(?name_en) = "en")
         }
+        OPTIONAL {
+          ?item rdfs:label ?name_fr
+          FILTER(LANG(?name_fr) = "fr")
+        }
+      }
   SPARQL
     result = RestClient.get(URL, params: { query: query, format: 'json' })
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
