@@ -6,12 +6,11 @@ require 'commons/builder/version'
 Gem::Specification.new do |spec|
   spec.name          = 'commons-builder'
   spec.version       = Commons::Builder::VERSION
-  spec.authors       = ['Louise Crow']
-  spec.email         = ['louise.crow@gmail.com']
+  spec.authors       = ['Louise Crow', 'Mark Longair']
+  spec.email         = ['parliaments@mysociety.org']
 
-  spec.summary       = 'TODO: Write a short summary, because RubyGems requires one.'
-  spec.description   = 'TODO: Write a longer description or delete this line.'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = 'Build scripts for Democratic Commons repos'
+  spec.homepage      = 'https://github.com/everypolitician/commons-builder'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
