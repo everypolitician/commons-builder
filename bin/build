@@ -10,7 +10,7 @@ URL = 'https://query.wikidata.org/sparql'
 LANGUAGE_MAP = CONFIG[:language_map]
 COUNTRY_WIKIDATA_ID = CONFIG[:country_wikidata_id]
 
-root_dir = Pathname.new(__FILE__).dirname
+root_dir = Pathname.new('').dirname
 
 valid_actions = %w[update build]
 
