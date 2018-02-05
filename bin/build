@@ -1,13 +1,9 @@
+#!/usr/bin/env ruby
+
 # frozen_string_literal: true
-
-require 'rest-client'
+require 'bundler/setup'
 require 'json'
-
-require_relative 'lib/results'
-require_relative 'lib/labels'
-require_relative 'lib/boundary_data'
-require_relative 'lib/config'
-require_relative 'lib/queries'
+require 'commons/builder'
 
 URL = 'https://query.wikidata.org/sparql'
 
