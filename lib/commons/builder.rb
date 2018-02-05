@@ -1,4 +1,4 @@
-require "commons/builder/version"
+require 'commons/builder/version'
 
 module Commons
   module Builder
