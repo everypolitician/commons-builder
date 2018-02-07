@@ -4,6 +4,7 @@
 require 'bundler/setup'
 require 'json'
 require 'commons/builder'
+require 'rest-client'
 
 URL = 'https://query.wikidata.org/sparql'
 
