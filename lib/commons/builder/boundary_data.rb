@@ -86,7 +86,7 @@ class BoundaryData
   end
 
   def boundaries_dir
-    @boundaries_dir ||= Pathname.new(__FILE__).dirname.join('..', 'boundaries')
+    @boundaries_dir ||= Pathname.new('boundaries')
   end
 
   def index_json_pathname
