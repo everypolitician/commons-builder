@@ -33,19 +33,25 @@ class WikidataLabels
     @labels_cache ||= {}
   end
 
+  def lang_select
+    LANGUAGE_MAP.values.map { |l| "?name_#{l}" }.join(' ')
+  end
+
+  def lang_options
+    LANGUAGE_MAP.values.map do |l|
+      "OPTIONAL {
+        ?item rdfs:label ?name_#{l}
+        FILTER(LANG(?name_#{l}) = \"#{l}\")
+      }"
+    end.join('\n')
+  end
+
   # This function returns a multilingual name object for a Wikidata item
   def fetch_labels(wikidata_item_id)
     query = <<~SPARQL
-      SELECT ?name_en ?name_fr WHERE {
+      SELECT #{lang_select} WHERE {
         BIND(wd:#{wikidata_item_id} as ?item)
-        OPTIONAL {
-          ?item rdfs:label ?name_en
-          FILTER(LANG(?name_en) = "en")
-        }
-        OPTIONAL {
-          ?item rdfs:label ?name_fr
-          FILTER(LANG(?name_fr) = "fr")
-        }
+        #{lang_options}
       }
   SPARQL
     result = RestClient.get(URL, params: { query: query, format: 'json' })
