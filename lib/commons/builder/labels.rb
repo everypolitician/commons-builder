@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+def lang_select(prefix='name')
+  LANGUAGE_MAP.values.map { |l| "?#{prefix}_#{l}" }.join(' ')
+end
+
+def lang_options(prefix='name', item='?item')
+  LANGUAGE_MAP.values.map do |l|
+    "OPTIONAL {
+        #{item} rdfs:label ?#{prefix}_#{l}
+        FILTER(LANG(?#{prefix}_#{l}) = \"#{l}\")
+      }"
+  end.join("\n")
+end
+
 class WikidataLabels
   def item_with_label(wikidata_item_id)
     return '[no item]' if wikidata_item_id.nil?
@@ -31,19 +44,6 @@ class WikidataLabels
 
   def labels_cache
     @labels_cache ||= {}
-  end
-
-  def lang_select
-    LANGUAGE_MAP.values.map { |l| "?name_#{l}" }.join(' ')
-  end
-
-  def lang_options
-    LANGUAGE_MAP.values.map do |l|
-      "OPTIONAL {
-        ?item rdfs:label ?name_#{l}
-        FILTER(LANG(?name_#{l}) = \"#{l}\")
-      }"
-    end.join('\n')
   end
 
   # This function returns a multilingual name object for a Wikidata item
