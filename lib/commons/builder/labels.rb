@@ -4,10 +4,10 @@ def lang_select(prefix='name')
   LANGUAGE_MAP.values.map { |l| "?#{prefix}_#{l}" }.join(' ')
 end
 
-def lang_options(prefix='name')
+def lang_options(prefix='name', item='?item')
   LANGUAGE_MAP.values.map do |l|
     "OPTIONAL {
-        ?item rdfs:label ?#{prefix}_#{l}
+        #{item} rdfs:label ?#{prefix}_#{l}
         FILTER(LANG(?#{prefix}_#{l}) = \"#{l}\")
       }"
   end.join("\n")
