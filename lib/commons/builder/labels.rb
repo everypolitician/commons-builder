@@ -8,9 +8,9 @@ def lang_options(prefix='name')
   LANGUAGE_MAP.values.map do |l|
     "OPTIONAL {
         ?item rdfs:label ?#{prefix}_#{l}
-        FILTER(LANG(?name_#{l}) = \"#{l}\")
+        FILTER(LANG(?#{prefix}_#{l}) = \"#{l}\")
       }"
-  end.join('\n')
+  end.join("\n")
 end
 
 class WikidataLabels
