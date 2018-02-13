@@ -48,7 +48,7 @@ def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, star
       }
       OPTIONAL {
         ?statement pq:P4100 ?party.
-        #{lang_options('party_name', '?party')
+        #{lang_options('party_name', '?party')}
       }
       OPTIONAL { ?item wdt:P2013 ?facebook }
       #{date_condition(start_date, end_date)}
