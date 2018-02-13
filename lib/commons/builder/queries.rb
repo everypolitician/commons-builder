@@ -66,7 +66,7 @@ def query_executive(executive_item_id:, positions:, **_)
            ?role #{lang_select('role')}
            ?start ?end ?facebook
            ?role_superclass #{lang_select('role_superclass')}
-           ?org #{lang_select('org') ?org_jurisdiction
+           ?org #{lang_select('org')} ?org_jurisdiction
     WHERE {
       VALUES ?role_superclass { #{space_separated_role_superclass} }
       BIND(wd:#{executive_item_id} AS ?org)
