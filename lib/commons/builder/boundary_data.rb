@@ -36,6 +36,23 @@ class BoundaryData
 
   attr_reader :wikidata_labels
 
+  def ms_fb_id_to_area
+    @ms_fb_id_to_area ||= popolo_areas.map do |area|
+      [area[:id], area]
+    end.to_h
+  end
+
+  def all_parents(ms_fb_id)
+    area = ms_fb_id_to_area[ms_fb_id]
+    results = []
+    while area[:parent_id]
+      parent_area = ms_fb_id_to_area[area[:parent_id]]
+      results.push parent_area
+      area = parent_area
+    end
+    results
+  end
+
   private
 
   attr_reader :position_item_id

@@ -224,10 +224,18 @@ end
       related_positions = branch.positions_item_ids
       areas = boundary_data.popolo_areas.reject do |a|
         (a[:associated_wikidata_positions] & related_positions).empty?
-      end.uniq.sort_by { |a| a[:id] }
-      # ... but warn about any districts found from Wikidata that aren't
-      # in that set:
+      end
       known_areas = Set.new(areas.map { |a| a[:id] })
+      # Make sure that all their parents are included:
+      all_parents = areas.flat_map { |a| boundary_data.all_parents(a[:id]) }
+      all_parents.each do |parent_area|
+        next if known_areas.include? parent_area[:id]
+        areas.push parent_area
+        known_areas.add(parent_area[:id])
+      end
+      areas = areas.uniq.sort_by { |a| a[:id] }
+      # Warn about any districts found from Wikidata that aren't in
+      # in our boundary data:
       membership_rows.select { |m| m[:district] }.map do |m|
         area_wikidata_id = m[:district].value
         unless known_areas.include?(area_wikidata_id)
@@ -246,8 +254,6 @@ end
         end
         raise 'Some areas has a null parent_id'
       end
-
-      area_country = boundary_data.popolo_areas.find { |a| a[:id] == COUNTRY_WIKIDATA_ID }
 
       memberships = membership_rows.map do |membership|
         {
@@ -268,7 +274,7 @@ end
       all_data = {
         persons: persons,
         organizations: entity_organizations + party_organizations,
-        areas: [area_country] + areas,
+        areas: areas,
         memberships: memberships,
       }
 
