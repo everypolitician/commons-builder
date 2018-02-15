@@ -82,7 +82,7 @@ def query_executive(executive_item_id:, positions:, **_)
       #{lang_options('role_superclass', '?role_superclass')}
       ?role wdt:P361 ?org .
       OPTIONAL {
-        ?role wdt:P1001 ?district .
+        ?role p:P1001/ps:P1001 ?district .
         #{lang_options('district_name', '?district')}
       }
       OPTIONAL { ?statement pq:P580 ?start }
