@@ -4,6 +4,37 @@ require 'csv'
 
 require_relative 'results'
 
+class AreaIdentityFilter
+  def should_include?(area_feature_data)
+    true
+  end
+end
+
+class AreaParentFilter
+  def initialize(required_parent)
+    @required_parent = required_parent
+  end
+
+  def should_include?(area_feature_data)
+    area_feature_data['MS_FB_PARE'] == required_parent
+  end
+
+  private
+
+  attr_reader :required_parent
+end
+
+class AreaFilterFactory
+  def self.for(filter_data)
+    return AreaIdentityFilter.new unless filter_data
+    if filter_data[:parent]
+      return AreaParentFilter.new(filter_data[:parent])
+    end
+    raise "Unknown filter specification: #{filter_data}"
+  end
+end
+
+
 # This class parses the metadata we have about boundaries associated
 # with a particular position (e.g. "Member of Parliament") in this
 # repository.
@@ -62,8 +93,10 @@ class BoundaryData
       directory = metadata[:directory]
       area_type_names = wikidata_labels.labels_for(metadata[:area_type_wikidata_item_id])
       name_columns = metadata[:name_columns]
+      filter = AreaFilterFactory.for(metadata[:filter])
       shapefile_csv = boundaries_dir.join(directory, "#{directory}.csv")
       CSV.read(shapefile_csv, headers: true).map(&:to_h).map do |feature_data|
+        next unless filter.should_include?(feature_data)
         {
           id: feature_data.fetch('WIKIDATA').tap do |area_id|
             raise "No Wikidata ID found in area row #{feature_data}" if area_id.to_s.empty?
@@ -85,7 +118,7 @@ class BoundaryData
           name: name_object(name_columns, feature_data),
           parent_ms_fb_id: feature_data['MS_FB_PARE'],
         }
-      end
+      end.compact
     end
   end
 
