@@ -36,4 +36,16 @@ class Commons::BuilderTest < Minitest::Test
     assert_equal($stdout, boundary_data.output_stream)
   end
 
+  def test_popolo_areas_warns_on_boundaries_without_area_type_wikidata_item_id
+    output_stream = StringIO.new
+    expected = <<-EOF
+WARNING: No :area_type_wikidata_item_id entry for boundary boundaries
+EOF
+    options = { boundaries_dir: 'test/fixtures/entry_without_area_type_wikidata_item',
+                output_stream: output_stream }
+    boundary_data = BoundaryData.new(WikidataLabels.new, options)
+    boundary_data.popolo_areas
+    assert_equal(expected, output_stream.string)
+  end
+
 end
