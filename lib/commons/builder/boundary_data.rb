@@ -91,6 +91,12 @@ class BoundaryData
   def popolo_areas_before_parent_mapping
     @popolo_areas_before_parent_mapping ||= index_data.flat_map do |metadata|
       directory = metadata[:directory]
+
+      unless metadata[:area_type_wikidata_item_id]
+        puts "WARNING: No :area_type_wikidata_item_id entry for " \
+             "#{metadata[:directory]} boundaries"
+        next
+      end
       area_type_names = wikidata_labels.labels_for(metadata[:area_type_wikidata_item_id])
       name_columns = metadata[:name_columns]
       filter = AreaFilterFactory.for(metadata[:filter])
@@ -119,7 +125,7 @@ class BoundaryData
           parent_ms_fb_id: feature_data['MS_FB_PARE'],
         }
       end.compact
-    end
+    end.compact
   end
 
   def wikidata_to_ms_fb
