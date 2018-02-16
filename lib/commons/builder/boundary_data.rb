@@ -40,8 +40,19 @@ end
 # repository.
 
 class BoundaryData
-  def initialize(wikidata_labels)
+
+  attr_reader :boundaries_dir_path, :index_file
+  # Public: Initialize a BoundaryData object
+  #
+  # wikidata_labels - a WikidataLabels instance
+  # options       - a Hash of options (default: {}):
+  # Valid options are:
+  #       :boundaries_dir - the directory for the boundaries and index file
+  #       :index_file - the filename of the index file
+  def initialize(wikidata_labels, options = {})
     @wikidata_labels = wikidata_labels
+    @boundaries_dir_path = options.fetch(:boundaries_dir){ 'boundaries' }
+    @index_file = options.fetch(:index_file){ 'index.json' }
   end
 
   def name_object(name_columns, feature_data)
@@ -142,14 +153,15 @@ class BoundaryData
   end
 
   def boundaries_dir
-    @boundaries_dir ||= Pathname.new('boundaries')
+    @boundaries_dir ||= Pathname.new(boundaries_dir_path)
   end
 
   def index_json_pathname
-    @index_json_pathname ||= boundaries_dir.join('index.json')
+    @index_json_pathname ||= boundaries_dir.join(index_file)
   end
 
   def index_data
     @index_data ||= JSON.parse(index_json_pathname.read, symbolize_names: true)
   end
+
 end
