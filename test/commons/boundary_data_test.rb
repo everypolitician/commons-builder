@@ -24,4 +24,16 @@ class Commons::BuilderTest < Minitest::Test
     assert_equal('index.json', boundary_data.index_file)
   end
 
+  def test_accepts_output
+    output_stream = StringIO.new
+    options = { output_stream: output_stream }
+    boundary_data = BoundaryData.new(WikidataLabels.new, options)
+    assert_equal(output_stream, boundary_data.output_stream)
+  end
+
+  def test_default_output
+    boundary_data = BoundaryData.new(WikidataLabels.new)
+    assert_equal($stdout, boundary_data.output_stream)
+  end
+
 end

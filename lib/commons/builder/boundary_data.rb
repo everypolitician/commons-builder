@@ -41,7 +41,7 @@ end
 
 class BoundaryData
 
-  attr_reader :boundaries_dir_path, :index_file
+  attr_reader :boundaries_dir_path, :index_file, :output_stream
   # Public: Initialize a BoundaryData object
   #
   # wikidata_labels - a WikidataLabels instance
@@ -49,10 +49,12 @@ class BoundaryData
   # Valid options are:
   #       :boundaries_dir - the directory for the boundaries and index file
   #       :index_file - the filename of the index file
+  #       :output_stream - IOStream for warnings
   def initialize(wikidata_labels, options = {})
     @wikidata_labels = wikidata_labels
     @boundaries_dir_path = options.fetch(:boundaries_dir){ 'boundaries' }
     @index_file = options.fetch(:index_file){ 'index.json' }
+    @output_stream = options.fetch(:output_stream){ $stdout }
   end
 
   def name_object(name_columns, feature_data)
@@ -104,8 +106,8 @@ class BoundaryData
       directory = metadata[:directory]
 
       unless metadata[:area_type_wikidata_item_id]
-        puts "WARNING: No :area_type_wikidata_item_id entry for " \
-             "#{metadata[:directory]} boundaries"
+        output_stream.puts "WARNING: No :area_type_wikidata_item_id entry for" \
+                           " #{metadata[:directory]} boundaries"
         next
       end
       area_type_names = wikidata_labels.labels_for(metadata[:area_type_wikidata_item_id])
