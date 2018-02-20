@@ -40,8 +40,21 @@ end
 # repository.
 
 class BoundaryData
-  def initialize(wikidata_labels)
+
+  attr_reader :boundaries_dir_path, :index_file, :output_stream
+  # Public: Initialize a BoundaryData object
+  #
+  # wikidata_labels - a WikidataLabels instance
+  # options       - a Hash of options (default: {}):
+  # Valid options are:
+  #       :boundaries_dir - the directory for the boundaries and index file
+  #       :index_file - the filename of the index file
+  #       :output_stream - IOStream for warnings
+  def initialize(wikidata_labels, options = {})
     @wikidata_labels = wikidata_labels
+    @boundaries_dir_path = options.fetch(:boundaries_dir){ 'boundaries' }
+    @index_file = options.fetch(:index_file){ 'index.json' }
+    @output_stream = options.fetch(:output_stream){ $stdout }
   end
 
   def name_object(name_columns, feature_data)
@@ -93,8 +106,8 @@ class BoundaryData
       directory = metadata[:directory]
 
       unless metadata[:area_type_wikidata_item_id]
-        puts "WARNING: No :area_type_wikidata_item_id entry for " \
-             "#{metadata[:directory]} boundaries"
+        output_stream.puts "WARNING: No :area_type_wikidata_item_id entry for" \
+                           " #{metadata[:directory]} boundaries"
         next
       end
       area_type_names = wikidata_labels.labels_for(metadata[:area_type_wikidata_item_id])
@@ -142,14 +155,15 @@ class BoundaryData
   end
 
   def boundaries_dir
-    @boundaries_dir ||= Pathname.new('boundaries')
+    @boundaries_dir ||= Pathname.new(boundaries_dir_path)
   end
 
   def index_json_pathname
-    @index_json_pathname ||= boundaries_dir.join('index.json')
+    @index_json_pathname ||= boundaries_dir.join(index_file)
   end
 
   def index_data
     @index_data ||= JSON.parse(index_json_pathname.read, symbolize_names: true)
   end
+
 end

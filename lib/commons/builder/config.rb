@@ -3,7 +3,14 @@
 require 'json'
 require 'pathname'
 
-CONFIG = JSON.parse(
-  Pathname.new('config.json').read,
-  symbolize_names: true
-)
+
+class Config
+
+  def initialize(file)
+    @config = JSON.parse(
+      Pathname.new(file).read,
+      symbolize_names: true
+    )
+  end
+
+end
