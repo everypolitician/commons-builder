@@ -4,7 +4,7 @@ This gem contains the build scripts for Democratic Commons repositories.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your Democratic Commons repository's Gemfile:
 
 ```ruby
 gem 'commons-builder'
@@ -20,7 +20,12 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In the Democratic Commons repository you should run:
+
+    $ bundle exec build
+
+... to build the output files. (FIXME: add information about
+setting up config.json and the index.json files.)
 
 ## Development
 
