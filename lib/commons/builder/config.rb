@@ -6,8 +6,10 @@ require 'pathname'
 
 class Config
 
+  attr_reader :values
+
   def initialize(file)
-    @config = JSON.parse(
+    @values = JSON.parse(
       Pathname.new(file).read,
       symbolize_names: true
     )
