@@ -5,8 +5,8 @@ class CurrentExecutive
 
   attr_accessor :executive
 
-  def query
-    query_executive(
+  def query(language_map)
+    WikidataQueries.new(language_map).query_executive(
       executive_item_id: executive.executive_item_id,
       positions: executive.positions
     )

@@ -28,7 +28,7 @@ actions = if ARGV.empty?
             ARGV.clone
           end
 
-wikidata_labels = WikidataLabels.new
+wikidata_labels = WikidataLabels.new(LANGUAGE_MAP)
 boundary_data = BoundaryData.new(wikidata_labels)
 
 %w[legislative executive].each do |political_entity_kind|
@@ -44,7 +44,7 @@ boundary_data = BoundaryData.new(wikidata_labels)
       raw_results_pathname = output_dir.join('query-results.json')
 
       if actions.include? 'update'
-        sparql_query = term.query
+        sparql_query = term.query(LANGUAGE_MAP)
         output_dir.join('query-used.rq').write(sparql_query)
 
         query_params = {

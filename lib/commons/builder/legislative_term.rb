@@ -8,8 +8,8 @@ class LegislativeTerm
 
   attr_accessor :legislature, :term_item_id, :start_date, :end_date
 
-  def query
-    query_legislative(
+  def query(language_map)
+    WikidataQueries.new(language_map).query_legislative(
       position_item_id: legislature.position_item_id,
       house_item_id: legislature.house_item_id,
       term_item_id: term_item_id,
