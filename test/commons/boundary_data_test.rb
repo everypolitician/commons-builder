@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Commons::BuilderTest < Minitest::Test
+class Commons::BoundaryDataTest < Minitest::Test
 
   def test_accepts_boundaries_dir
     options = { boundaries_dir: 'test/fixtures/boundaries_init' }
