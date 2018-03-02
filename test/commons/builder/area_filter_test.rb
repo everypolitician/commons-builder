@@ -7,9 +7,9 @@ class Commons::AreaFilterTest < Minitest::Test
     assert_kind_of(AreaIdentityFilter, filter)
   end
 
-  def test_factory_for_returns_parent_filter_for_hash_with_parent_key
+  def test_factory_for_returns_match_filter_for_hash_with_parent_key
     filter = AreaFilterFactory.for(parent: 'xxx')
-    assert_kind_of(AreaParentFilter, filter)
+    assert_kind_of(AreaMatchFilter, filter)
   end
 
   def test_factory_for_returns_match_filter_for_hash_with_match_and_column_keys
@@ -25,16 +25,6 @@ class Commons::AreaFilterTest < Minitest::Test
 
   def test_area_identity_filter_should_include_returns_true
     assert_equal(true, AreaIdentityFilter.new.should_include?({}))
-  end
-
-  def test_area_parent_filter_returns_false_if_parent_is_not_matched
-    filter = AreaParentFilter.new('xxx')
-    assert_equal(false, filter.should_include?('MS_FB_PARE' => 'yyy'))
-  end
-
-  def test_area_parent_filter_returns_true_if_parent_matched
-    filter = AreaParentFilter.new('xxx')
-    assert_equal(false, filter.should_include?('MS_FB_PARE': 'xxx'))
   end
 
   def test_area_match_filter_returns_false_if_regex_not_matched_in_column
