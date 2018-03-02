@@ -1,19 +1,6 @@
 # frozen_string_literal: true
 
-def lang_select(prefix='name')
-  LANGUAGE_MAP.values.map { |l| "?#{prefix}_#{l}" }.join(' ')
-end
-
-def lang_options(prefix='name', item='?item')
-  LANGUAGE_MAP.values.map do |l|
-    "OPTIONAL {
-        #{item} rdfs:label ?#{prefix}_#{l}
-        FILTER(LANG(?#{prefix}_#{l}) = \"#{l}\")
-      }"
-  end.join("\n")
-end
-
-class WikidataLabels
+class WikidataLabels < Wikidata
   def item_with_label(wikidata_item_id)
     return '[no item]' if wikidata_item_id.nil?
     "#{label_for(wikidata_item_id)} (#{wikidata_item_id})"
