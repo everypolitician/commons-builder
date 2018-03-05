@@ -168,7 +168,11 @@ boundary_data = BoundaryData.new(wikidata_labels)
           role_code: membership[:role].value,
           role: membership.name_object('role', LANGUAGE_MAP),
         }.reject { |_, v| v.to_s.empty? }
-      end.uniq.sort_by { |m| m[:id] }
+        # The id here is the statement UUID, so you would have thought
+        # that was enough to predictably order these, However, the
+        # on_behalf_of_id might be from a P102 on the *person* so we
+        # need to add that too.
+      end.uniq.sort_by { |m| [m[:id], m[:on_behalf_of_id] }
 
       all_data = {
         persons: persons,
