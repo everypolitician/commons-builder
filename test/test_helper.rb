@@ -1,4 +1,14 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'commons/builder'
 
+require 'simplecov'
+SimpleCov.start
+
+require 'commons/builder'
 require 'minitest/autorun'
+
+if ENV['CI']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
+
+
