@@ -110,7 +110,15 @@ boundary_data = BoundaryData.new(wikidata_labels)
             },
           ],
           area_id: membership[:org_jurisdiction]&.value,
-        }
+        }.tap do |o|
+          if political_entity_kind == 'legislative'
+            seat_count = membership[:org_seat_count].value
+            if seat_count.to_s.empty?
+              puts "WARNING: no seat count found for the legislature #{wikidata_labels.item_with_label(membership[:org].value)}"
+            end
+            o['seat_counts'] = {membership[:role].value => seat_count}
+          end
+        end
       end.uniq.sort_by { |o| o[:id] }
 
       missing_jurisdictions = entity_organizations.reject { |o| o[:area_id] }

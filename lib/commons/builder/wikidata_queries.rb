@@ -28,13 +28,16 @@ class WikidataQueries < Wikidata
              ?district #{lang_select('district_name')}
              ?role #{lang_select('role')}
              ?start ?end ?facebook
-             ?org #{lang_select('org')} ?org_jurisdiction
+             ?org #{lang_select('org')} ?org_jurisdiction ?org_seat_count
       WHERE {
         BIND(wd:#{position_item_id} as ?role) .
         BIND(wd:#{house_item_id} as ?org) .
         #{lang_options('org', '?org')}
         OPTIONAL {
           ?org wdt:P1001 ?org_jurisdiction
+        }
+        OPTIONAL {
+          ?org wdt:P1342 ?org_seat_count
         }
         ?item p:P39 ?statement .
         #{lang_options}
