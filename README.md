@@ -1,5 +1,7 @@
 # Commons::Builder
 
+[![Build Status](https://travis-ci.org/everypolitician/commons-builder.svg?branch=master)](https://travis-ci.org/everypolitician/commons-builder)
+
 This gem contains the build scripts for Democratic Commons repositories.
 
 ## Installation
