@@ -1,6 +1,6 @@
 # Commons::Builder
 
-[![Build Status](https://travis-ci.org/everypolitician/commons-builder.svg?branch=master)](https://travis-ci.org/everypolitician/commons-builder)
+[![Build Status](https://travis-ci.org/everypolitician/commons-builder.svg?branch=master)](https://travis-ci.org/everypolitician/commons-builder) [![codecov](https://codecov.io/gh/everypolitician/commons-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/everypolitician/commons-builder)
 
 This gem contains the build scripts for Democratic Commons repositories.
 
