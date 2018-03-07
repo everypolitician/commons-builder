@@ -20,4 +20,19 @@ class Commons::LegislativeIndexTest < Minitest::Test
       end_date:   "1970-12-31",
     }
   end
+
+  def test_legislature_as_json
+    term = {comment: "Term", term_item_id: "Q3"}
+    legislature = Legislature.new(terms: [term], house_item_id: "Q1",
+                                  position_item_id: "Q2", comment: "Test legislature")
+    assert_equal legislature.as_json, {
+      comment:          "Test legislature",
+      house_item_id:    "Q1",
+      position_item_id: "Q2",
+      terms: [{
+        comment:      "Term",
+        term_item_id: "Q3",
+      }]
+    }
+  end
 end

@@ -14,4 +14,13 @@ class Legislature < Branch
   def terms
     @terms.map { |t| LegislativeTerm.new(legislature: self, **t) }
   end
+
+  def as_json
+    {
+        comment: @comment,
+        house_item_id: @house_item_id,
+        position_item_id: @position_item_id,
+        terms: terms.map { |t| t.as_json },
+    }
+  end
 end
