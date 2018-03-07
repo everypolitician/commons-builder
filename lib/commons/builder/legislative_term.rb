@@ -26,4 +26,25 @@ class LegislativeTerm
       legislature.output_relative.join("#{start_date}-to-#{end_date}")
     end
   end
+
+  def ==(other)
+    other.instance_of?(self.class) &&
+      legislature == other.legislature &&
+      term_item_id == other.term_item_id &&
+      start_date == other.start_date &&
+      end_date == other.end_date &&
+      comment == other.comment
+  end
+
+  def as_json
+    result = {}
+    result[:comment] = @comment if @comment
+    if @term_item_id
+      result[:term_item_id] = @term_item_id if @term_item_id
+    else
+      result[:start_date] = @start_date
+      result[:end_date] = @end_date
+    end
+    result
+  end
 end
