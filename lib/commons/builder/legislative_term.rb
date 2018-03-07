@@ -1,12 +1,13 @@
 class LegislativeTerm
-  def initialize(legislature:, term_item_id: nil, start_date: nil, end_date: nil)
+  def initialize(legislature:, term_item_id: nil, start_date: nil, end_date: nil, comment: nil)
     @legislature = legislature
     @term_item_id = term_item_id
     @start_date = start_date
     @end_date = end_date
+    @comment = comment
   end
 
-  attr_accessor :legislature, :term_item_id, :start_date, :end_date
+  attr_accessor :legislature, :term_item_id, :start_date, :end_date, :comment
 
   def query(language_map)
     WikidataQueries.new(language_map).query_legislative(
