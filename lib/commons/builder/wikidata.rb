@@ -1,9 +1,21 @@
+# frozen_string_literal: true
+
+require 'rest-client'
+
 class Wikidata
+  attr_accessor :language_map, :url
 
-  attr_accessor :language_map
-
-  def initialize(language_map)
+  def initialize(language_map, url: 'https://query.wikidata.org/sparql')
     @language_map = language_map
+    @url = url
+  end
+
+  def perform(sparql_query)
+    headers = { 'Content-Type': 'application/sparql-query',
+                'Accept':       'application/sparql-results+json' }
+    result = RestClient.post(url, sparql_query, headers)
+    bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
+    bindings.map { |row| Row.new(row) }
   end
 
   def lang_select(prefix='name')
