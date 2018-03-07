@@ -7,13 +7,18 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     codecov (0.1.10)
       json
       simplecov
       url
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     docile (1.1.5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
+    hashdiff (0.3.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     json (2.1.0)
@@ -22,20 +27,27 @@ GEM
     mime-types-data (3.2016.0521)
     minitest (5.11.3)
     netrc (0.11.0)
+    public_suffix (3.0.2)
     rake (10.5.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    safe_yaml (1.0.4)
     simplecov (0.15.1)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    timecop (0.9.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
     url (0.3.2)
+    webmock (2.3.2)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
 
 PLATFORMS
   ruby
@@ -46,6 +58,8 @@ DEPENDENCIES
   commons-builder!
   minitest (~> 5.0)
   rake (~> 10.0)
+  timecop (~> 0.9.1)
+  webmock (~> 2.0)
 
 BUNDLED WITH
    1.16.1
