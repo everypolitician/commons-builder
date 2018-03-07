@@ -1,0 +1,150 @@
+{
+    "head": {
+        "vars": [
+            "country",
+            "countryLabel",
+            "body",
+            "bodyLabel",
+            "bodyType",
+            "bodyTypeLabel",
+            "legislature",
+            "legislatureLabel",
+            "legislaturePost",
+            "legislaturePostLabel",
+            "numberOfSeats"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "body": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1951"
+                },
+                "bodyLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Alberta"
+                },
+                "bodyType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q10864048"
+                },
+                "bodyTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "first-level administrative country subdivision"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1812866"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Legislative Assembly of Alberta"
+                },
+                "legislaturePost": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q15964815"
+                },
+                "legislaturePostLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "member of Alberta Legislative Assembly"
+                },
+                "numberOfSeats": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                    "type": "literal",
+                    "value": "87"
+                }
+            },
+            {
+                "body": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q16"
+                },
+                "bodyLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Canada"
+                },
+                "bodyType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q6256"
+                },
+                "bodyTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "country"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q841180"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Senate of Canada"
+                },
+                "legislaturePost": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q18524027"
+                },
+                "legislaturePostLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Member of the Senate of Canada"
+                },
+                "numberOfSeats": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                    "type": "literal",
+                    "value": "105"
+                }
+            },
+            {
+                "body": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q36312"
+                },
+                "bodyLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Calgary"
+                },
+                "bodyType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q515"
+                },
+                "bodyTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "city"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q4145705"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Calgary City Council"
+                },
+                "legislaturePost": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q45414913"
+                },
+                "legislaturePostLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Member of Calgary City Council"
+                },
+                "numberOfSeats": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                    "type": "literal",
+                    "value": "15"
+                }
+            }
+        ]
+    }
+}

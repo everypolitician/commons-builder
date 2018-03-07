@@ -35,4 +35,26 @@ class Commons::LegislativeIndexTest < Minitest::Test
       }]
     }
   end
+
+  def test_legislature_list
+    stub_request(:post, "https://query.wikidata.org/sparql").
+        to_return(body: open('test/fixtures/legislative-index.srj', 'r')).then.
+        to_return(body: open('test/fixtures/legislative-index-terms.srj', 'r'))
+
+    Timecop.freeze(Date.new(2010, 01, 01)) do
+      language_map = { "lang:en_US": "en" }
+      legislatures = Legislature.list("Q16", language_map)
+      assert_equal "Senate of Canada", legislatures[0].comment
+      assert_equal LegislativeTerm.new(legislature: legislatures[0],
+                                       term_item_id: 'Q21157957',
+                                       start_date: '2015-12-03',
+                                       comment: '42nd Canadian Parliament'), legislatures[0].terms[0]
+
+      # This one has no term in the fixture data
+      assert_equal "Calgary City Council", legislatures[2].comment
+      assert_equal LegislativeTerm.new(legislature: legislatures[2],
+                                       start_date: '2010-01-01',
+                                       end_date: '2010-12-31'), legislatures[2].terms[0]
+    end
+  end
 end
