@@ -11,24 +11,18 @@ class MembershipData
   end
 
   def persons
-    membership_rows.map do |membership|
-      {
-        name: membership.name_object('name'),
-        id: membership[:item].value,
-        identifiers: [
-          {
-            scheme: 'wikidata',
-            identifier: membership[:item].value,
-          },
-        ],
-        links: [
-          {
-            note: 'facebook',
-            url: membership[:facebook]&.value&.prepend('https://www.facebook.com/'),
-          },
-        ].select { |o| o[:url] },
-      }
-    end.uniq.sort_by { |p| p[:id] }
+    persons = {}
+    membership_rows.each do |membership|
+      person_id = membership[:item].value
+      unless persons[person_id]
+        persons[person_id] = person(membership)
+      end
+      link = link(membership)
+      if link
+        persons[person_id][:links] << link
+      end
+    end
+    persons.values.sort_by { |p| p[:id] }
   end
 
   def party_organizations
@@ -98,6 +92,32 @@ class MembershipData
       # on_behalf_of_id might be from a P102 on the *person* so we
       # need to add that too.
     end.uniq.sort_by { |m| [m[:id], m[:on_behalf_of_id]] }
+  end
+
+  private
+
+  def person(membership)
+    {
+      name: membership.name_object('name'),
+      id: membership[:item].value,
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: membership[:item].value,
+        },
+      ],
+      links: [],
+    }
+  end
+
+  def link(membership)
+    url = membership[:facebook]&.value&.prepend('https://www.facebook.com/')
+    if url
+      {
+        note: 'facebook',
+        url: url
+      }
+    end
   end
 
 end

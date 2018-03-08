@@ -46,4 +46,11 @@ class Commons::MembershipDataTest < Minitest::Test
     assert_equal(expected_data[:organizations], membership_data.organizations)
   end
 
+  def test_persons_assigns_multiple_links
+    membership_rows = membership_rows('test/fixtures/two_links/results.json')
+    membership_data = MembershipData.new(membership_rows, language_map, 'executive')
+    expected_data = json_data('test/fixtures/two_links/expected.json')
+    assert_equal(expected_data[:organizations], membership_data.organizations)
+  end
+
 end
