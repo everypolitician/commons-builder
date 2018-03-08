@@ -2,11 +2,12 @@
 
 class MembershipData
 
-  attr_reader :membership_rows, :language_map
+  attr_reader :membership_rows, :language_map, :political_entity_kind
 
-  def initialize(membership_rows, language_map)
+  def initialize(membership_rows, language_map, political_entity_kind)
     @membership_rows = membership_rows
     @language_map = language_map
+    @political_entity_kind = political_entity_kind
   end
 
   def persons
@@ -45,6 +46,31 @@ class MembershipData
           },
         ],
       }
+    end.uniq.sort_by { |o| o[:id] }
+  end
+
+  def entity_organizations
+    membership_rows.map do |membership|
+      {
+        name: membership.name_object('org'),
+        id: membership[:org].value,
+        classification: 'branch',
+        identifiers: [
+          {
+            scheme: 'wikidata',
+            identifier: membership[:org].value,
+          },
+        ],
+        area_id: membership[:org_jurisdiction]&.value,
+      }.tap do |o|
+        if political_entity_kind == 'legislative'
+          seat_count = membership[:org_seat_count].value
+          if seat_count.to_s.empty?
+            puts "WARNING: no seat count found for the legislature #{wikidata_labels.item_with_label(membership[:org].value)}"
+          end
+          o['seat_counts'] = {membership[:role].value => seat_count}
+        end
+      end
     end.uniq.sort_by { |o| o[:id] }
   end
 
