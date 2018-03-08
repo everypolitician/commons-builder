@@ -30,5 +30,22 @@ class MembershipData
     end.uniq.sort_by { |p| p[:id] }
   end
 
+  def party_organizations
+    membership_rows.select do |membership|
+      membership[:party]
+    end.map do |membership|
+      {
+        name: membership.name_object('party_name'),
+        id: membership[:party].value,
+        classification: 'party',
+        identifiers: [
+          {
+            scheme: 'wikidata',
+            identifier: membership[:party].value,
+          },
+        ],
+      }
+    end.uniq.sort_by { |o| o[:id] }
+  end
 
 end

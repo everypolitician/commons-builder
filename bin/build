@@ -69,22 +69,6 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
 
       membership_data = MembershipData.new(membership_rows, LANGUAGE_MAP)
 
-      party_organizations = membership_rows.select do |membership|
-        membership[:party]
-      end.map do |membership|
-        {
-          name: membership.name_object('party_name'),
-          id: membership[:party].value,
-          classification: 'party',
-          identifiers: [
-            {
-              scheme: 'wikidata',
-              identifier: membership[:party].value,
-            },
-          ],
-        }
-      end.uniq.sort_by { |o| o[:id] }
-
       entity_organizations = membership_rows.map do |membership|
         {
           name: membership.name_object('org'),
@@ -177,7 +161,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
 
       all_data = {
         persons: membership_data.persons,
-        organizations: entity_organizations + party_organizations,
+        organizations: entity_organizations + membership_data.party_organizations,
         areas: areas,
         memberships: memberships,
       }
