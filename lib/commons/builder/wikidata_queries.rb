@@ -27,6 +27,7 @@ class WikidataQueries < Wikidata
              ?party #{lang_select('party_name')}
              ?district #{lang_select('district_name')}
              ?role #{lang_select('role')}
+             ?role_superclass #{lang_select('role_superclass')}
              ?start ?end ?facebook
              ?org #{lang_select('org')} ?org_jurisdiction ?org_seat_count
       WHERE {
@@ -43,6 +44,11 @@ class WikidataQueries < Wikidata
         #{lang_options}
         ?statement ps:P39 ?role .
         #{lang_options('role', '?role')}
+        OPTIONAL {
+          ?role p:P279/ps:P279 ?role_superclass .
+          ?role_superclass p:P279/ps:P279* wd:Q4175034
+          #{lang_options('role_superclass', '?role_superclass')}
+        }
         #{term_condition(term_item_id)}
         OPTIONAL { ?statement pq:P580 ?start }
         OPTIONAL { ?statement pq:P582 ?end }
