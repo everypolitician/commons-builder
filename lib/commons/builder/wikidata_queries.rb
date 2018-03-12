@@ -45,8 +45,8 @@ class WikidataQueries < Wikidata
         ?statement ps:P39 ?role .
         #{lang_options('role', '?role')}
         OPTIONAL {
-          ?role p:P279/ps:P279 ?role_superclass .
-          ?role_superclass p:P279/ps:P279* wd:Q4175034
+          ?role wdt:P279 ?role_superclass .
+          ?role_superclass wdt:P279+ wd:Q4175034
           #{lang_options('role_superclass', '?role_superclass')}
         }
         #{term_condition(term_item_id)}
