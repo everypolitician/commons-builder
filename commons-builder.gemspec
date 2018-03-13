@@ -28,13 +28,15 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'bin'
-  spec.executables = ['build']
+  spec.executables = ['build', 'generate_legislative_index']
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'webmock', '~> 2.0'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'codecov'
+  spec.add_development_dependency 'timecop', '~> 0.9.1'
   spec.add_dependency 'rest-client', '~> 2.0.2'
 
 

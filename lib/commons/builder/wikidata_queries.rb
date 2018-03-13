@@ -112,4 +112,75 @@ class WikidataQueries < Wikidata
       } ORDER BY ?item ?role ?start ?end
   SPARQL
   end
+
+  def query_legislative_index(country)
+    country = "wd:#{country}" if not country.start_with?('wd:')
+    <<~SPARQL
+      SELECT DISTINCT ?country ?countryLabel ?body ?bodyLabel ?bodyType ?bodyTypeLabel ?legislature ?legislatureLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
+        {
+          # Find FLACSen of this country
+          ?body wdt:P17 #{country} ;
+            wdt:P31/wdt:P279* wd:Q10864048
+          VALUES ?bodyType { wd:Q10864048 }
+        } UNION {
+          # Find cities with populations of over 250k
+          ?body wdt:P17 #{country} ;
+            wdt:P31/wdt:P279* wd:Q515 ;
+            wdt:P1082 ?population .
+          FILTER (?population > 250000)
+          VALUES ?bodyType { wd:Q515 }
+        } UNION {
+          VALUES (?body ?bodyType) { (#{country} wd:Q6256) }
+        }
+
+        ?body wdt:P194/wdt:P527? ?legislature .
+
+        VALUES ?legislatureType { wd:Q11204 wd:Q10553309 }
+        ?legislature wdt:P31/wdt:P279* ?legislatureType .
+        FILTER (?legislatureType != wd:Q11204 || NOT EXISTS { ?legislature wdt:P527 ?legislaturePart . ?legislaturePart  wdt:P31/wdt:P279* wd:Q10553309 })
+
+        # Attempt to find the position for members of the legislature
+        OPTIONAL {
+          # Both "has part" and "has parts of class" seem to be used; with the latter not in keeping with the draft model
+          ?legislature wdt:P527|wdt:P2670 ?legislaturePost .
+          ?legislaturePost wdt:P31/wdt:P279* wd:Q4164871 .
+          # Make sure positions are either legislators or councillors (and so exclude e.g. mayors)
+          FILTER EXISTS {
+            VALUES ?legislaturePostSuperType { wd:Q4175034 wd:Q708492 }
+            ?legislaturePost wdt:P279+ ?legislaturePostSuperType .
+          }
+        }
+        OPTIONAL {
+          ?legislature wdt:P1342 ?numberOfSeats .
+        }
+
+        # Remove legislatures that have ended
+        FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+      } ORDER BY ?country ?bodyType ?legislature ?legislaturePost
+    SPARQL
+  end
+
+  def query_legislative_index_terms(*houses)
+    houses = houses.map { |house| "wd:#{house}" }.join(' ')
+    <<~SPARQL
+      SELECT DISTINCT ?house ?houseLabel ?legislature ?legislatureLabel ?term ?termLabel ?termStart ?termEnd WHERE {
+        VALUES ?house { #{houses} }
+        ?house (p:P361/ps:P361)* ?legislature .
+            ?baseTerm p:P31|p:P279 [ ps:P279|ps:P31 wd:Q15238777 ; pq:P642 ?legislature ] .
+            OPTIONAL { ?subTerm wdt:P31 ?baseTerm }
+
+        BIND(COALESCE(?subTerm, ?baseTerm) AS ?term)
+
+        OPTIONAL { ?term (wdt:P580|wdt:P571) ?termStart. }
+        OPTIONAL { ?term (wdt:P582|wdt:P576) ?termEnd. }
+        OPTIONAL { ?term (wdt:P155|wdt:P1365) ?termReplaces }
+        OPTIONAL { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+
+        FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
+        FILTER (!BOUND(?termReplacedBy))
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+      } ORDER BY ?termStart ?term
+    SPARQL
+  end
 end
