@@ -128,6 +128,8 @@ class WikidataQueries < Wikidata
             wdt:P31/wdt:P279* wd:Q515 ;
             wdt:P1082 ?population .
           FILTER (?population > 250000)
+          # Make sure the city is not also a FLACS
+          FILTER NOT EXISTS { ?body wdt:P31/wdt:P279* wd:Q10864048 }
           VALUES ?bodyType { wd:Q515 }
         } UNION {
           VALUES (?body ?bodyType) { (#{country} wd:Q6256) }
