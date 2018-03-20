@@ -77,7 +77,7 @@ class WikidataQueries < Wikidata
   end
 
   def query_executive(executive_item_id:, positions:, **_)
-    space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
+    space_separated_role_superclass = positions.map { |p| "wd:#{p.position_item_id}" }.join(' ')
     <<~SPARQL
       SELECT ?statement
              ?item #{lang_select}
