@@ -29,7 +29,9 @@ actions = if ARGV.empty?
           end
 
 wikidata_labels = WikidataLabels.new(LANGUAGE_MAP)
-boundary_data = BoundaryData.new(wikidata_labels)
+
+boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
+boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
 
 %w[legislative executive].each do |political_entity_kind|
   political_entity_kind_dir = root_dir.join(political_entity_kind)
