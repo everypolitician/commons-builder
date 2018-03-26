@@ -15,7 +15,7 @@ class Wikidata
                 'Accept':       'application/sparql-results+json' }
     result = RestClient.post(url, sparql_query, headers)
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-    bindings.map { |row| Row.new(row) }
+    bindings.map { |row| WikidataRow.new(row, language_map) }
   end
 
   def lang_select(prefix='name')

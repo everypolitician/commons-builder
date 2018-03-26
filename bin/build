@@ -62,7 +62,7 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
       data = JSON.parse(raw_results_pathname.read, symbolize_names: true)
 
       membership_rows = data[:results][:bindings].map do |row|
-        Row.new(row, LANGUAGE_MAP)
+        WikidataRow.new(row, LANGUAGE_MAP)
       end
 
       persons = membership_rows.map do |membership|

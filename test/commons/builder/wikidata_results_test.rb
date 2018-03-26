@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Commons::ResultsTest < Minitest::Test
+class Commons::WikidataResultsTest < Minitest::Test
 
   def test_row_name_object_extracts_simple_values
     data = { :party_name_en => { :"xml:lang" => "en",
