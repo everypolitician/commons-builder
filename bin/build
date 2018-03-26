@@ -62,12 +62,12 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
       data = JSON.parse(raw_results_pathname.read, symbolize_names: true)
 
       membership_rows = data[:results][:bindings].map do |row|
-        Row.new(row)
+        Row.new(row, LANGUAGE_MAP)
       end
 
       persons = membership_rows.map do |membership|
         {
-          name: membership.name_object('name', LANGUAGE_MAP),
+          name: membership.name_object('name'),
           id: membership[:item].value,
           identifiers: [
             {
@@ -88,7 +88,7 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
         membership[:party]
       end.map do |membership|
         {
-          name: membership.name_object('party_name', LANGUAGE_MAP),
+          name: membership.name_object('party_name'),
           id: membership[:party].value,
           classification: 'party',
           identifiers: [
@@ -102,7 +102,7 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
 
       entity_organizations = membership_rows.map do |membership|
         {
-          name: membership.name_object('org', LANGUAGE_MAP),
+          name: membership.name_object('org'),
           id: membership[:org].value,
           classification: 'branch',
           identifiers: [
@@ -174,9 +174,9 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
           start_date: membership[:start]&.value,
           end_date: membership[:end]&.value,
           role_superclass_code: membership[:role_superclass]&.value,
-          role_superclass: membership[:role_superclass] && membership.name_object('role_superclass', LANGUAGE_MAP),
+          role_superclass: membership[:role_superclass] && membership.name_object('role_superclass'),
           role_code: membership[:role].value,
-          role: membership.name_object('role', LANGUAGE_MAP),
+          role: membership.name_object('role'),
         }.reject { |_, v| v.to_s.empty? }
         # The id here is the statement UUID, so you would have thought
         # that was enough to predictably order these, However, the

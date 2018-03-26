@@ -43,7 +43,7 @@ class WikidataLabels < Wikidata
   SPARQL
     result = RestClient.get(URL, params: { query: query, format: 'json' })
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-    result = Row.new(bindings[0]).name_object('name', LANGUAGE_MAP)
+    result = Row.new(bindings[0], LANGUAGE_MAP).name_object('name')
     raise "No language labels found for #{wikidata_item_id}" if result.empty?
     result
   end

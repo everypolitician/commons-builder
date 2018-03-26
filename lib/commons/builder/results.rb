@@ -40,8 +40,12 @@ class Cell
 end
 
 class Row
-  def initialize(row_h)
+
+  attr_accessor :language_map
+
+  def initialize(row_h, language_map)
     @row_h = row_h
+    @language_map = language_map
   end
 
   def [](key)
@@ -49,7 +53,7 @@ class Row
     Cell.new(row_h[key])
   end
 
-  def name_object(var_prefix, language_map)
+  def name_object(var_prefix)
     language_map.map do |key_lang, wikidata_lang|
       column = "#{var_prefix}_#{wikidata_lang}".to_sym
       [
