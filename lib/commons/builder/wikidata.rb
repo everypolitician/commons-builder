@@ -22,8 +22,12 @@ class Wikidata
     language_map.values.map { |l| variable(prefix, l) }.join(' ')
   end
 
-  def variable(prefix, lang_code)
-    "?#{prefix}_#{lang_code.gsub('-', '_')}"
+  def variable(prefix, lang_code, query=true)
+    variable = "#{prefix}_#{lang_code.gsub('-', '_')}"
+    if query
+      variable = "?#{variable}"
+    end
+    variable
   end
 
   def lang_options(prefix='name', item='?item')
