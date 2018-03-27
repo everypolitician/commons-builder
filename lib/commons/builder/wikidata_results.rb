@@ -3,7 +3,8 @@
 # Classes for handling the JSON-formatted results from the Wikidata
 # query service https://query.wikidata.org/
 
-class Cell
+class WikidataCell < Wikidata
+
   def initialize(value_h)
     @value_h = value_h
   end
@@ -39,19 +40,23 @@ class Cell
   end
 end
 
-class Row
-  def initialize(row_h)
+class WikidataRow < Wikidata
+
+  attr_accessor :language_map
+
+  def initialize(row_h, language_map)
     @row_h = row_h
+    @language_map = language_map
   end
 
   def [](key)
     return unless row_h[key]
-    Cell.new(row_h[key])
+    WikidataCell.new(row_h[key])
   end
 
-  def name_object(var_prefix, language_map)
+  def name_object(var_prefix)
     language_map.map do |key_lang, wikidata_lang|
-      column = "#{var_prefix}_#{wikidata_lang}".to_sym
+      column = variable(var_prefix, wikidata_lang, false).to_sym
       [
         key_lang,
         self[column]&.value,

@@ -2,8 +2,6 @@
 
 require 'csv'
 
-require_relative 'results'
-
 # This class parses the metadata we have about boundaries associated
 # with a particular position (e.g. "Member of Parliament") in this
 # repository.

@@ -15,15 +15,19 @@ class Wikidata
                 'Accept':       'application/sparql-results+json' }
     result = RestClient.post(url, sparql_query, headers)
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-    bindings.map { |row| Row.new(row) }
+    bindings.map { |row| WikidataRow.new(row, language_map) }
   end
 
   def lang_select(prefix='name')
     language_map.values.map { |l| variable(prefix, l) }.join(' ')
   end
 
-  def variable(prefix, lang_code)
-    "?#{prefix}_#{lang_code.gsub('-', '_')}"
+  def variable(prefix, lang_code, query=true)
+    variable = "#{prefix}_#{lang_code.gsub('-', '_')}"
+    if query
+      variable = "?#{variable}"
+    end
+    variable
   end
 
   def lang_options(prefix='name', item='?item')

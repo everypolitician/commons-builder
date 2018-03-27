@@ -6,11 +6,11 @@ require 'commons/builder/current_executive'
 require 'commons/builder/executive'
 require 'commons/builder/legislative_term'
 require 'commons/builder/legislature'
-require 'commons/builder/results'
 require 'commons/builder/version'
 require 'commons/builder/wikidata'
 require 'commons/builder/wikidata_labels'
 require 'commons/builder/wikidata_queries'
+require 'commons/builder/wikidata_results'
 
 module Commons
   module Builder
