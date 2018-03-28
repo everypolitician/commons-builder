@@ -109,7 +109,7 @@ class WikidataQueries < Wikidata
           FILTER(?party_end_or_sentinel >= NOW())
         }
         OPTIONAL { ?item wdt:P2013 ?facebook }
-      } ORDER BY ?item ?role ?start ?end
+      } ORDER BY ?item ?role ?district ?start ?end
   SPARQL
   end
 
