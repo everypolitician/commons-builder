@@ -33,6 +33,8 @@ wikidata_labels = WikidataLabels.new(LANGUAGE_MAP)
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
 
+boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
+
 %w[legislative executive].each do |political_entity_kind|
   political_entity_kind_dir = root_dir.join(political_entity_kind)
   index_file = political_entity_kind_dir.join('index.json')
@@ -133,6 +135,12 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
       related_positions = branch.positions_item_ids
       areas = boundary_data.popolo_areas.reject do |a|
         (a[:associated_wikidata_positions] & related_positions).empty?
+      end
+      # All position_item_ids should be referenced somewhere in the boundary data
+      related_positions.each do |position_item_id|
+        unless boundary_position_ids.include? position_item_id
+          puts "WARNING: Position #{wikidata_labels.item_with_label(position_item_id)} not in boundary associated_wikidata_positions"
+        end
       end
       known_areas = Set.new(areas.map { |a| a[:id] })
       # Make sure that all their parents are included:
