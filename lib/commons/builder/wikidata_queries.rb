@@ -17,6 +17,16 @@ class WikidataQueries < Wikidata
     "?statement pq:P2937 wd:#{term_item_id} ."
   end
 
+  # Use this to generate a `SERVICE wikibase:label` SPARQL pattern, for use in
+  # situations where you want a single label to help the humans that maintain
+  # a democratic commons repository. Do not use it for labels to be presented
+  # to end-users, as that needs potentially multiple language-tagged labels.
+  # For that, use `lang_select` and `lang_options`.
+  def label_service
+    languages = (["en"] + language_map.values).uniq
+    "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages.join(',')}\". }"
+  end
+
   def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
     unless !!term_item_id ^ !!(start_date and end_date)
       raise 'You must specify either a term item or a start and end date (and not both)'
@@ -168,7 +178,7 @@ class WikidataQueries < Wikidata
 
         # Remove legislatures that have ended
         FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        #{label_service}
       } ORDER BY ?primarySort ?country ?adminAreaType ?legislature ?legislaturePost
     SPARQL
   end
@@ -191,7 +201,7 @@ class WikidataQueries < Wikidata
 
         FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
         FILTER (!BOUND(?termReplacedBy))
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        #{label_service}
       } ORDER BY ?termStart ?term
     SPARQL
   end
