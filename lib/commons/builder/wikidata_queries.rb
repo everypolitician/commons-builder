@@ -216,7 +216,9 @@ class WikidataQueries < Wikidata
 
         OPTIONAL {
           {
-            ?position wdt:P1001 ?adminArea; wdt:P31/wdt:P279* wd:Q4164871
+            ?position p:P1001 [ wikibase:rank ?appliesToJurisdictionRank ; ps:P1001 ?adminArea ] ;
+              wdt:P31/wdt:P279* wd:Q4164871 .
+            FILTER (?appliesToJurisdictionRank != wikibase:DeprecatedRank)
             FILTER EXISTS {
               VALUES ?positionSuperclass { wd:Q2285706 wd:Q30461 }
               ?position wdt:P279* ?positionSuperclass .
