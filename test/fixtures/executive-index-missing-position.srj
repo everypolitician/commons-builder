@@ -1,0 +1,38 @@
+{
+    "head": {
+        "vars": [
+            "executive",
+            "executiveLabel",
+            "adminArea",
+            "adminAreaLabel",
+            "adminAreaType",
+            "adminAreaTypeLabel",
+            "position",
+            "positionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q603676"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "District of Keewatin"
+                },
+                "adminAreaType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q10864048"
+                },
+                "adminAreaTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "first-level administrative country subdivision"
+                }
+            }
+        ]
+    }
+}

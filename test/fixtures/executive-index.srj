@@ -1,0 +1,132 @@
+{
+    "head": {
+        "vars": [
+            "executive",
+            "executiveLabel",
+            "adminArea",
+            "adminAreaLabel",
+            "adminAreaType",
+            "adminAreaTypeLabel",
+            "position",
+            "positionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1631137"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Queen's Privy Council for Canada"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q16"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Canada"
+                },
+                "adminAreaType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q6256"
+                },
+                "adminAreaTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "country"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q839078"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Prime Minister of Canada"
+                }
+            },
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q17108558"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Legislature of Yukon"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q2009"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Yukon"
+                },
+                "adminAreaType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q10864048"
+                },
+                "adminAreaTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "first-level administrative country subdivision"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q12270260"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Premier of Yukon"
+                }
+            },
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q5339025"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Edmonton City Council"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q2096"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Edmonton"
+                },
+                "adminAreaType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q515"
+                },
+                "adminAreaTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "city"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q21094906"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Mayor of Edmonton"
+                }
+            }
+        ]
+    }
+}

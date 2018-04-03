@@ -1,0 +1,46 @@
+{
+    "head": {
+        "vars": [
+            "executive",
+            "executiveLabel",
+            "adminArea",
+            "adminAreaLabel",
+            "adminAreaType",
+            "adminAreaTypeLabel",
+            "position",
+            "positionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1965"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "New Brunswick"
+                },
+                "adminAreaType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q10864048"
+                },
+                "adminAreaTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "first-level administrative country subdivision"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q28382706"
+                },
+                "positionLabel": {
+                    "type": "literal",
+                    "value": "Q28382706"
+                }
+            }
+        ]
+    }
+}

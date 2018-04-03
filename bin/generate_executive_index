@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+require 'bundler/setup'
+require 'json'
+require 'commons/builder'
+
+
+config = Config.new("config.json").values
+LANGUAGE_MAP = config[:language_map]
+COUNTRY_WIKIDATA_ID = config[:country_wikidata_id]
+
+executives = Executive.list(COUNTRY_WIKIDATA_ID, LANGUAGE_MAP,
+                            save_queries: true)
+
+open('executive/index.json', 'w') do |file|
+  file.write(JSON.pretty_generate(executives.map &:as_json ))
+end

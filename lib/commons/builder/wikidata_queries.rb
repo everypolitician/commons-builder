@@ -205,4 +205,37 @@ class WikidataQueries < Wikidata
       } ORDER BY ?termStart ?term
     SPARQL
   end
+
+  def query_executive_index(country)
+    country = "wd:#{country}" unless country.start_with?('wd:')
+    <<~SPARQL
+      SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?position ?positionLabel {
+        {
+          #{select_admin_areas_for_country(country)}
+        }
+
+        OPTIONAL {
+          {
+            ?position wdt:P1001 ?adminArea; wdt:P31/wdt:P279* wd:Q4164871
+            FILTER EXISTS {
+              VALUES ?positionSuperclass { wd:Q2285706 wd:Q30461 }
+              ?position wdt:P279* ?positionSuperclass .
+            }
+          } UNION {
+            ?adminArea wdt:P1313 ?position
+          }
+
+          OPTIONAL {
+            ?position wdt:P361 ?executive .
+            # Exclude executives that are privy councils
+            FILTER NOT EXISTS { ?executive wdt:P31/wdt:P279* wd:Q6528244 }
+            # Exclude executives which aren't direct parents of the position
+            FILTER NOT EXISTS { ?position wdt:P361 ?other . ?other wdt:P361+ ?executive }
+          }
+        }
+
+        #{label_service}
+      } ORDER BY ?primarySort ?country ?adminAreaType ?executive ?position
+    SPARQL
+  end
 end
