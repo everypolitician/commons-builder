@@ -120,7 +120,7 @@ class WikidataQueries < Wikidata
           VALUES (?adminArea ?primarySort ?adminAreaType) { (#{country} 1 wd:Q6256) }
         } UNION {
           # Find FLACSen of this country
-          ?body wdt:P17 #{country} ;
+          ?adminArea wdt:P17 #{country} ;
                 wdt:P31/wdt:P279* wd:Q10864048
           VALUES (?primarySort ?adminAreaType) { (2 wd:Q10864048) }
         } UNION {

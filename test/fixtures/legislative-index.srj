@@ -19,49 +19,6 @@
             {
                 "body": {
                     "type": "uri",
-                    "value": "http://www.wikidata.org/entity/Q1951"
-                },
-                "bodyLabel": {
-                    "xml:lang": "en",
-                    "type": "literal",
-                    "value": "Alberta"
-                },
-                "bodyType": {
-                    "type": "uri",
-                    "value": "http://www.wikidata.org/entity/Q10864048"
-                },
-                "bodyTypeLabel": {
-                    "xml:lang": "en",
-                    "type": "literal",
-                    "value": "first-level administrative country subdivision"
-                },
-                "legislature": {
-                    "type": "uri",
-                    "value": "http://www.wikidata.org/entity/Q1812866"
-                },
-                "legislatureLabel": {
-                    "xml:lang": "en",
-                    "type": "literal",
-                    "value": "Legislative Assembly of Alberta"
-                },
-                "legislaturePost": {
-                    "type": "uri",
-                    "value": "http://www.wikidata.org/entity/Q15964815"
-                },
-                "legislaturePostLabel": {
-                    "xml:lang": "en",
-                    "type": "literal",
-                    "value": "member of Alberta Legislative Assembly"
-                },
-                "numberOfSeats": {
-                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                    "type": "literal",
-                    "value": "87"
-                }
-            },
-            {
-                "body": {
-                    "type": "uri",
                     "value": "http://www.wikidata.org/entity/Q16"
                 },
                 "bodyLabel": {
@@ -100,6 +57,49 @@
                     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                     "type": "literal",
                     "value": "105"
+                }
+            },
+            {
+                "body": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1951"
+                },
+                "bodyLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Alberta"
+                },
+                "bodyType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q10864048"
+                },
+                "bodyTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "first-level administrative country subdivision"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1812866"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Legislative Assembly of Alberta"
+                },
+                "legislaturePost": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q15964815"
+                },
+                "legislaturePostLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "member of Alberta Legislative Assembly"
+                },
+                "numberOfSeats": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                    "type": "literal",
+                    "value": "87"
                 }
             },
             {
