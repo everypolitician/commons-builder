@@ -17,6 +17,16 @@ class WikidataQueries < Wikidata
     "?statement pq:P2937 wd:#{term_item_id} ."
   end
 
+  # Use this to generate a `SERVICE wikibase:label` SPARQL pattern, for use in
+  # situations where you want a single label to help the humans that maintain
+  # a democratic commons repository. Do not use it for labels to be presented
+  # to end-users, as that needs potentially multiple language-tagged labels.
+  # For that, use `lang_select` and `lang_options`.
+  def label_service
+    languages = (["en"] + language_map.values).uniq
+    "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages.join(',')}\". }"
+  end
+
   def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
     unless !!term_item_id ^ !!(start_date and end_date)
       raise 'You must specify either a term item or a start and end date (and not both)'
@@ -67,7 +77,7 @@ class WikidataQueries < Wikidata
   end
 
   def query_executive(executive_item_id:, positions:, **_)
-    space_separated_role_superclass = positions.map { |p| "wd:#{p[:position_item_id]}" }.join(' ')
+    space_separated_role_superclass = positions.map { |p| "wd:#{p.position_item_id}" }.join(' ')
     <<~SPARQL
       SELECT ?statement
              ?item #{lang_select}
@@ -113,29 +123,39 @@ class WikidataQueries < Wikidata
   SPARQL
   end
 
+  def select_admin_areas_for_country(country)
+    <<~SPARQL
+      SELECT DISTINCT ?primarySort ?adminArea ?adminAreaType {
+        {
+          VALUES (?adminArea ?primarySort ?adminAreaType) { (#{country} 1 wd:Q6256) }
+        } UNION {
+          # Find FLACSen of this country
+          ?adminArea wdt:P17 #{country} ;
+                wdt:P31/wdt:P279* wd:Q10864048
+          VALUES (?primarySort ?adminAreaType) { (2 wd:Q10864048) }
+        } UNION {
+          # Find cities with populations of over 250k
+          ?adminArea wdt:P17 #{country} ;
+             wdt:P31/wdt:P279* wd:Q515 ;
+             wdt:P1082 ?population .
+          FILTER (?population > 250000)
+          # Make sure the city is not also a FLACS
+          FILTER NOT EXISTS { ?adminArea wdt:P31/wdt:P279* wd:Q10864048 }
+          VALUES (?primarySort ?adminAreaType) { (3 wd:Q515) }
+        }
+      } ORDER BY ?primarySort
+    SPARQL
+  end
+
   def query_legislative_index(country)
     country = "wd:#{country}" if not country.start_with?('wd:')
     <<~SPARQL
-      SELECT DISTINCT ?country ?countryLabel ?body ?bodyLabel ?bodyType ?bodyTypeLabel ?legislature ?legislatureLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
+      SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
         {
-          # Find FLACSen of this country
-          ?body wdt:P17 #{country} ;
-            wdt:P31/wdt:P279* wd:Q10864048
-          VALUES ?bodyType { wd:Q10864048 }
-        } UNION {
-          # Find cities with populations of over 250k
-          ?body wdt:P17 #{country} ;
-            wdt:P31/wdt:P279* wd:Q515 ;
-            wdt:P1082 ?population .
-          FILTER (?population > 250000)
-          # Make sure the city is not also a FLACS
-          FILTER NOT EXISTS { ?body wdt:P31/wdt:P279* wd:Q10864048 }
-          VALUES ?bodyType { wd:Q515 }
-        } UNION {
-          VALUES (?body ?bodyType) { (#{country} wd:Q6256) }
+          #{select_admin_areas_for_country(country)}
         }
 
-        ?body wdt:P194/wdt:P527? ?legislature .
+        ?adminArea wdt:P194/wdt:P527? ?legislature .
 
         VALUES ?legislatureType { wd:Q11204 wd:Q10553309 }
         ?legislature wdt:P31/wdt:P279* ?legislatureType .
@@ -158,8 +178,8 @@ class WikidataQueries < Wikidata
 
         # Remove legislatures that have ended
         FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-      } ORDER BY ?country ?bodyType ?legislature ?legislaturePost
+        #{label_service}
+      } ORDER BY ?primarySort ?country ?adminAreaType ?legislature ?legislaturePost
     SPARQL
   end
 
@@ -181,8 +201,43 @@ class WikidataQueries < Wikidata
 
         FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
         FILTER (!BOUND(?termReplacedBy))
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+        #{label_service}
       } ORDER BY ?termStart ?term
+    SPARQL
+  end
+
+  def query_executive_index(country)
+    country = "wd:#{country}" unless country.start_with?('wd:')
+    <<~SPARQL
+      SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?position ?positionLabel {
+        {
+          #{select_admin_areas_for_country(country)}
+        }
+
+        OPTIONAL {
+          {
+            ?position p:P1001 [ wikibase:rank ?appliesToJurisdictionRank ; ps:P1001 ?adminArea ] ;
+              wdt:P31/wdt:P279* wd:Q4164871 .
+            FILTER (?appliesToJurisdictionRank != wikibase:DeprecatedRank)
+            FILTER EXISTS {
+              VALUES ?positionSuperclass { wd:Q2285706 wd:Q30461 }
+              ?position wdt:P279* ?positionSuperclass .
+            }
+          } UNION {
+            ?adminArea wdt:P1313 ?position
+          }
+
+          OPTIONAL {
+            ?position wdt:P361 ?executive .
+            # Exclude executives that are privy councils
+            FILTER NOT EXISTS { ?executive wdt:P31/wdt:P279* wd:Q6528244 }
+            # Exclude executives which aren't direct parents of the position
+            FILTER NOT EXISTS { ?position wdt:P361 ?other . ?other wdt:P361+ ?executive }
+          }
+        }
+
+        #{label_service}
+      } ORDER BY ?primarySort ?country ?adminAreaType ?executive ?position
     SPARQL
   end
 end

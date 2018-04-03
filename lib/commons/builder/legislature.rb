@@ -19,20 +19,8 @@ class Legislature < Branch
     wikidata_queries = WikidataQueries.new(language_map)
     sparql_query = wikidata_queries.query_legislative_index(country_id)
 
-    legislatures = wikidata_queries.perform(sparql_query)
     open('legislative/index-query-used.rq', 'w').write(sparql_query) if save_queries
-
-    legislatures.sort_by! do |row|
-      type_sort_key = case row[:bodyType].value
-                      when 'Q6256'      # country
-                        1
-                      when 'Q10864048'  # FLACS
-                        2
-                      when 'Q515'       # city
-                        3
-                      end
-      [type_sort_key, row[:legislature].value[1..-1].to_i]
-    end
+    legislatures = wikidata_queries.perform(sparql_query)
 
     # Now collect term information
     sparql_query = wikidata_queries.query_legislative_index_terms(
