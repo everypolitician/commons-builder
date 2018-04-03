@@ -113,29 +113,39 @@ class WikidataQueries < Wikidata
   SPARQL
   end
 
+  def select_admin_areas_for_country(country)
+    <<~SPARQL
+      SELECT DISTINCT ?primarySort ?adminArea ?adminAreaType {
+        {
+          VALUES (?adminArea ?primarySort ?adminAreaType) { (#{country} 1 wd:Q6256) }
+        } UNION {
+          # Find FLACSen of this country
+          ?body wdt:P17 #{country} ;
+                wdt:P31/wdt:P279* wd:Q10864048
+          VALUES (?primarySort ?adminAreaType) { (2 wd:Q10864048) }
+        } UNION {
+          # Find cities with populations of over 250k
+          ?adminArea wdt:P17 #{country} ;
+             wdt:P31/wdt:P279* wd:Q515 ;
+             wdt:P1082 ?population .
+          FILTER (?population > 250000)
+          # Make sure the city is not also a FLACS
+          FILTER NOT EXISTS { ?adminArea wdt:P31/wdt:P279* wd:Q10864048 }
+          VALUES (?primarySort ?adminAreaType) { (3 wd:Q515) }
+        }
+      } ORDER BY ?primarySort
+    SPARQL
+  end
+
   def query_legislative_index(country)
     country = "wd:#{country}" if not country.start_with?('wd:')
     <<~SPARQL
-      SELECT DISTINCT ?country ?countryLabel ?body ?bodyLabel ?bodyType ?bodyTypeLabel ?legislature ?legislatureLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
+      SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
         {
-          # Find FLACSen of this country
-          ?body wdt:P17 #{country} ;
-            wdt:P31/wdt:P279* wd:Q10864048
-          VALUES ?bodyType { wd:Q10864048 }
-        } UNION {
-          # Find cities with populations of over 250k
-          ?body wdt:P17 #{country} ;
-            wdt:P31/wdt:P279* wd:Q515 ;
-            wdt:P1082 ?population .
-          FILTER (?population > 250000)
-          # Make sure the city is not also a FLACS
-          FILTER NOT EXISTS { ?body wdt:P31/wdt:P279* wd:Q10864048 }
-          VALUES ?bodyType { wd:Q515 }
-        } UNION {
-          VALUES (?body ?bodyType) { (#{country} wd:Q6256) }
+          #{select_admin_areas_for_country(country)}
         }
 
-        ?body wdt:P194/wdt:P527? ?legislature .
+        ?adminArea wdt:P194/wdt:P527? ?legislature .
 
         VALUES ?legislatureType { wd:Q11204 wd:Q10553309 }
         ?legislature wdt:P31/wdt:P279* ?legislatureType .
@@ -159,7 +169,7 @@ class WikidataQueries < Wikidata
         # Remove legislatures that have ended
         FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-      } ORDER BY ?country ?bodyType ?legislature ?legislaturePost
+      } ORDER BY ?primarySort ?country ?adminAreaType ?legislature ?legislaturePost
     SPARQL
   end
 
