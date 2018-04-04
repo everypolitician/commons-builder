@@ -3,10 +3,10 @@
 require 'rest-client'
 
 class Wikidata
-  attr_accessor :language_map, :url
+  attr_accessor :languages, :url
 
-  def initialize(language_map, url: 'https://query.wikidata.org/sparql')
-    @language_map = language_map
+  def initialize(languages, url: 'https://query.wikidata.org/sparql')
+    @languages = languages
     @url = url
   end
 
@@ -15,11 +15,11 @@ class Wikidata
                 'Accept':       'application/sparql-results+json' }
     result = RestClient.post(url, sparql_query, headers)
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-    bindings.map { |row| WikidataRow.new(row, language_map) }
+    bindings.map { |row| WikidataRow.new(row, languages) }
   end
 
   def lang_select(prefix='name')
-    language_map.values.map { |l| variable(prefix, l) }.join(' ')
+    languages.map { |l| variable(prefix, l) }.join(' ')
   end
 
   def variable(prefix, lang_code, query=true)
@@ -31,7 +31,7 @@ class Wikidata
   end
 
   def lang_options(prefix='name', item='?item')
-    language_map.values.map do |l|
+    languages.map do |l|
       "OPTIONAL {
           #{item} rdfs:label #{variable(prefix, l)}
           FILTER(LANG(#{variable(prefix, l)}) = \"#{l}\")

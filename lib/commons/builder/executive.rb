@@ -21,9 +21,9 @@ class Executive < Branch
     @positions.map { |t| Position.new(branch: self, **t) }
   end
 
-  def self.list(country_id, language_map, save_queries: false)
-    wikidata_queries = WikidataQueries.new(language_map)
-    wikidata_labels = WikidataLabels.new(language_map)
+  def self.list(country_id, languages, save_queries: false)
+    wikidata_queries = WikidataQueries.new(languages)
+    wikidata_labels = WikidataLabels.new(languages)
     sparql_query = wikidata_queries.query_executive_index(country_id)
 
     executives = wikidata_queries.perform(sparql_query)

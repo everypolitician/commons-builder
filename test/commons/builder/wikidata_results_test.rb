@@ -7,11 +7,9 @@ class Commons::WikidataResultsTest < Minitest::Test
                                  :type => "literal",
                                  :value => "Kuomintang" }
             }
-    language_map = {
-      "lang:en_US": "en"
-    }
-    row = WikidataRow.new(data, language_map)
-    expected = { :"lang:en_US" => "Kuomintang" }
+    languages = ["en"]
+    row = WikidataRow.new(data, languages)
+    expected = { "lang:en" => "Kuomintang" }
     assert_equal(expected, row.name_object('party_name'))
   end
 
@@ -23,12 +21,9 @@ class Commons::WikidataResultsTest < Minitest::Test
                                     :type => "literal",
                                     :value => "中國國民黨" }
             }
-    language_map = {
-      "lang:zh_TW": "zh-tw",
-      "lang:en_US": "en"
-    }
-    row = WikidataRow.new(data, language_map)
-    expected = { :"lang:en_US" => "Kuomintang", :"lang:zh_TW" => "中國國民黨" }
+    languages = ["zh-tw", "en"]
+    row = WikidataRow.new(data, languages)
+    expected = { "lang:en" => "Kuomintang", "lang:zh-tw" => "中國國民黨" }
     assert_equal(expected, row.name_object('party_name'))
   end
 

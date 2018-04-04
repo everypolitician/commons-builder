@@ -42,11 +42,11 @@ end
 
 class WikidataRow < Wikidata
 
-  attr_accessor :language_map
+  attr_accessor :languages
 
-  def initialize(row_h, language_map)
+  def initialize(row_h, languages)
     @row_h = row_h
-    @language_map = language_map
+    @languages = languages
   end
 
   def [](key)
@@ -55,10 +55,10 @@ class WikidataRow < Wikidata
   end
 
   def name_object(var_prefix)
-    language_map.map do |key_lang, wikidata_lang|
+    languages.map do |wikidata_lang|
       column = variable(var_prefix, wikidata_lang, false).to_sym
       [
-        key_lang,
+        "lang:#{wikidata_lang}",
         self[column]&.value,
       ]
     end.to_h.compact
