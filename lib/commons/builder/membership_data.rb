@@ -3,12 +3,13 @@
 # This class handles the data we have from Wikidata about memberships
 
 class MembershipData
-  attr_reader :membership_rows, :language_map, :political_entity_kind
+  attr_reader :membership_rows, :wikidata_labels, :political_entity_kind
 
-  def initialize(membership_rows, language_map, political_entity_kind)
+  def initialize(membership_rows, wikidata_labels, political_entity_kind, options = {})
     @membership_rows = membership_rows
-    @language_map = language_map
+    @wikidata_labels = wikidata_labels
     @political_entity_kind = political_entity_kind
+    @output_stream = options.fetch(:output_stream) { $stdout }
   end
 
   def persons
@@ -55,10 +56,10 @@ class MembershipData
         area_id: membership[:org_jurisdiction]&.value,
       }.tap do |o|
         if political_entity_kind == 'legislative'
-          seat_count = membership[:org_seat_count].value
-          if seat_count.to_s.empty?
-            puts 'WARNING: no seat count found for the legislature %<legislature>s' %
-                 { legislature: wikidata_labels.item_with_label(membership[:org].value) }
+          seat_count = membership[:org_seat_count]&.value
+          unless seat_count
+            @output_stream.puts 'WARNING: no seat count found for the legislature ' +
+                                wikidata_labels.item_with_label(membership[:org].value)
           end
           o['seat_counts'] = { membership[:role].value => seat_count }
         end
