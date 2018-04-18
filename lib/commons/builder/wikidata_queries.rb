@@ -23,8 +23,8 @@ class WikidataQueries < Wikidata
   # to end-users, as that needs potentially multiple language-tagged labels.
   # For that, use `lang_select` and `lang_options`.
   def label_service
-    languages = (["en"] + language_map.values).uniq
-    "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages.join(',')}\". }"
+    languages_with_en = (["en"] + languages).uniq
+    "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages_with_en.join(',')}\". }"
   end
 
   def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)

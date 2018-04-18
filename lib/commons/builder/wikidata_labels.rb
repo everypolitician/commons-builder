@@ -9,11 +9,10 @@ class WikidataLabels < Wikidata
   def label_for(wikidata_item_id)
     all_labels = labels_for(wikidata_item_id)
     return nil if all_labels.nil?
-    preferred_language_order = LANGUAGE_MAP.keys
-    languages = all_labels.keys.sort_by do |l|
-      preferred_language_order.index(l)
+    label_languages = all_labels.keys.sort_by do |l|
+      languages.index(l)
     end
-    all_labels.values_at(*languages).first
+    all_labels.values_at(*label_languages).first
   end
 
   def labels_for(wikidata_item_id)

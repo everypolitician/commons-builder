@@ -6,11 +6,10 @@ require 'json'
 require 'commons/builder'
 
 
-config = Config.new("config.json").values
-LANGUAGE_MAP = config[:language_map]
-COUNTRY_WIKIDATA_ID = config[:country_wikidata_id]
+config = Config.new("config.json")
 
-legislatures = Legislature.list(COUNTRY_WIKIDATA_ID, LANGUAGE_MAP,
+legislatures = Legislature.list(config.country_wikidata_id,
+                                config.languages,
                                 save_queries: true)
 
 open("legislative/index.json", 'w') do |file|

@@ -2,29 +2,29 @@ require 'test_helper'
 
 class Commons::WikidataTest < Minitest::Test
 
-  def test_accepts_language_map
-    language_map = { "lang:en_US": "en" }
-    wikidata = Wikidata.new(language_map)
-    assert_equal(language_map, wikidata.language_map)
+  def test_accepts_languages
+    languages = ["en"]
+    wikidata = Wikidata.new(languages)
+    assert_equal(languages, wikidata.languages)
   end
 
   def test_lang_select_returns_space_delimited_names
-    language_map = { "lang:en_US": "en" }
-    wikidata = Wikidata.new(language_map)
+    languages = ["en"]
+    wikidata = Wikidata.new(languages)
     expected = "?name_en"
     assert_equal(expected, wikidata.lang_select)
   end
 
   def test_lang_select_converts_hypens
-    language_map = { "lang:zh_TW": "zh-tw" }
-    wikidata = Wikidata.new(language_map)
+    languages = ["zh-tw"]
+    wikidata = Wikidata.new(languages)
     expected = "?name_zh_tw"
     assert_equal(expected, wikidata.lang_select)
   end
 
   def test_lang_options_returns_optional_filter
-    language_map = { "lang:en_US": "en" }
-    wikidata = Wikidata.new(language_map)
+    languages = ["en"]
+    wikidata = Wikidata.new(languages)
     expected = <<-EOF
 OPTIONAL {
           ?item rdfs:label ?name_en
@@ -35,8 +35,8 @@ EOF
   end
 
   def test_lang_options_converts_hypens
-    language_map = { "lang:zh_TW": "zh-tw" }
-    wikidata = Wikidata.new(language_map)
+    languages = ["zh-tw"]
+    wikidata = Wikidata.new(languages)
     expected = <<-EOF
 OPTIONAL {
           ?item rdfs:label ?name_zh_tw

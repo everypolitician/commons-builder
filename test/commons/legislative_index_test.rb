@@ -42,8 +42,8 @@ class Commons::LegislativeIndexTest < Minitest::Test
         to_return(body: open('test/fixtures/legislative-index-terms.srj', 'r'))
 
     Timecop.freeze(Date.new(2010, 01, 01)) do
-      language_map = { "lang:en_US": "en" }
-      legislatures = Legislature.list("Q16", language_map)
+      languages = ["en"]
+      legislatures = Legislature.list("Q16", languages)
       assert_equal "Senate of Canada", legislatures[0].comment
       assert_equal LegislativeTerm.new(legislature: legislatures[0],
                                        term_item_id: 'Q21157957',
