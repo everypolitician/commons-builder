@@ -2,9 +2,9 @@
   "persons": [
     {
       "name": {
-        "lang:en_US": "Wellington Koo",
-        "lang:zh_TW": "顧維鈞",
-        "lang:zh_CN": "顧維鈞"
+        "lang:en": "Wellington Koo",
+        "lang:zh-tw": "顧維鈞",
+        "lang:zh": "顧維鈞"
       },
       "id": "Q317462",
       "identifiers": [
@@ -19,9 +19,9 @@
     },
     {
       "name": {
-        "lang:en_US": "William Lai",
-        "lang:zh_TW": "賴清德",
-        "lang:zh_CN": "賴清德"
+        "lang:en": "William Lai",
+        "lang:zh-tw": "賴清德",
+        "lang:zh": "賴清德"
       },
       "id": "Q3847080",
       "identifiers": [
@@ -39,8 +39,8 @@
     },
     {
       "name": {
-        "lang:en_US": "Wang Zhengting",
-        "lang:zh_CN": "王正廷"
+        "lang:en": "Wang Zhengting",
+        "lang:zh": "王正廷"
       },
       "id": "Q6127766",
       "identifiers": [
@@ -55,8 +55,8 @@
     },
     {
       "name": {
-        "lang:en_US": "Xiong Xiling",
-        "lang:zh_CN": "熊希齡"
+        "lang:en": "Xiong Xiling",
+        "lang:zh": "熊希齡"
       },
       "id": "Q6130548",
       "identifiers": [
@@ -73,9 +73,9 @@
   "organizations": [
     {
       "name": {
-        "lang:en_US": "Executive Yuan",
-        "lang:zh_TW": "中華民國行政院",
-        "lang:zh_CN": "中華民國行政院"
+        "lang:en": "Executive Yuan",
+        "lang:zh-tw": "中華民國行政院",
+        "lang:zh": "中華民國行政院"
       },
       "id": "Q715055",
       "classification": "branch",
@@ -89,9 +89,9 @@
     },
     {
       "name": {
-        "lang:en_US": "Kuomintang",
-        "lang:zh_TW": "中國國民黨",
-        "lang:zh_CN": "中國國民黨"
+        "lang:en": "Kuomintang",
+        "lang:zh-tw": "中國國民黨",
+        "lang:zh": "中國國民黨"
       },
       "id": "Q31113",
       "classification": "party",
@@ -104,9 +104,9 @@
     },
     {
       "name": {
-        "lang:en_US": "Democratic Progressive Party",
-        "lang:zh_TW": "民主進步黨",
-        "lang:zh_CN": "民主進步黨"
+        "lang:en": "Democratic Progressive Party",
+        "lang:zh-tw": "民主進步黨",
+        "lang:zh": "民主進步黨"
       },
       "id": "Q903822",
       "classification": "party",
@@ -119,9 +119,9 @@
     },
     {
       "name": {
-        "lang:en_US": "Tongmenghui",
-        "lang:zh_TW": "中國同盟會",
-        "lang:zh_CN": "中国同盟会"
+        "lang:en": "Tongmenghui",
+        "lang:zh-tw": "中國同盟會",
+        "lang:zh": "中国同盟会"
       },
       "id": "Q950326",
       "classification": "party",
@@ -150,12 +150,12 @@
         "Q702650"
       ],
       "type": {
-        "lang:zh_CN": "国家",
-        "lang:en_US": "country"
+        "lang:zh": "国家",
+        "lang:en": "country"
       },
       "name": {
-        "lang:en_US": "Taiwan",
-        "lang:zh_TW": "中華民國"
+        "lang:en": "Taiwan",
+        "lang:zh-tw": "中華民國"
       },
       "parent_id": null
     }
@@ -168,15 +168,15 @@
       "area_id": "Q865",
       "role_superclass_code": "Q702650",
       "role_superclass": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       },
       "role_code": "Q702650",
       "role": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       }
     },
     {
@@ -188,15 +188,15 @@
       "start_date": "2017-09-08",
       "role_superclass_code": "Q702650",
       "role_superclass": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       },
       "role_code": "Q702650",
       "role": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       }
     },
     {
@@ -207,15 +207,15 @@
       "area_id": "Q865",
       "role_superclass_code": "Q702650",
       "role_superclass": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       },
       "role_code": "Q702650",
       "role": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       }
     },
     {
@@ -226,15 +226,15 @@
       "area_id": "Q865",
       "role_superclass_code": "Q702650",
       "role_superclass": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       },
       "role_code": "Q702650",
       "role": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       }
     },
     {
@@ -244,15 +244,15 @@
       "area_id": "Q865",
       "role_superclass_code": "Q702650",
       "role_superclass": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       },
       "role_code": "Q702650",
       "role": {
-        "lang:en_US": "President of the Executive Yuan",
-        "lang:zh_TW": "台灣行政院院長",
-        "lang:zh_CN": "台灣行政院院長"
+        "lang:en": "President of the Executive Yuan",
+        "lang:zh-tw": "台灣行政院院長",
+        "lang:zh": "台灣行政院院長"
       }
     }
   ]

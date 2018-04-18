@@ -65,7 +65,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
         WikidataRow.new(row, config.languages)
       end
 
-      membership_data = MembershipData.new(membership_rows, LANGUAGE_MAP, political_entity_kind)
+      membership_data = MembershipData.new(membership_rows, config.languages, political_entity_kind)
 
       missing_jurisdictions = membership_data.entity_organizations.reject { |o| o[:area_id] }
       missing_jurisdictions.each do |o|

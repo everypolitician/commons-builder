@@ -9,7 +9,7 @@ class Commons::WikidataResultsTest < Minitest::Test
             }
     languages = ["en"]
     row = WikidataRow.new(data, languages)
-    expected = { "lang:en" => "Kuomintang" }
+    expected = { :"lang:en" => "Kuomintang" }
     assert_equal(expected, row.name_object('party_name'))
   end
 
@@ -23,7 +23,7 @@ class Commons::WikidataResultsTest < Minitest::Test
             }
     languages = ["zh-tw", "en"]
     row = WikidataRow.new(data, languages)
-    expected = { "lang:en" => "Kuomintang", "lang:zh-tw" => "中國國民黨" }
+    expected = { :"lang:en" => "Kuomintang", :"lang:zh-tw" => "中國國民黨" }
     assert_equal(expected, row.name_object('party_name'))
   end
 

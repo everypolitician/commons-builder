@@ -58,7 +58,7 @@ class WikidataRow < Wikidata
     languages.map do |wikidata_lang|
       column = variable(var_prefix, wikidata_lang, false).to_sym
       [
-        "lang:#{wikidata_lang}",
+        :"lang:#{wikidata_lang}",
         self[column]&.value,
       ]
     end.to_h.compact
