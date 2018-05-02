@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.4
+  Exclude:
+    - '**/*~'
 inherit_from:
   - https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/.rubocop_base.yml
   - .rubocop_todo.yml
