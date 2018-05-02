@@ -57,7 +57,8 @@ class MembershipData
         if political_entity_kind == 'legislative'
           seat_count = membership[:org_seat_count].value
           if seat_count.to_s.empty?
-            puts "WARNING: no seat count found for the legislature #{wikidata_labels.item_with_label(membership[:org].value)}"
+            puts 'WARNING: no seat count found for the legislature %<legislature>s' %
+                 { legislature: wikidata_labels.item_with_label(membership[:org].value) }
           end
           o['seat_counts'] = { membership[:role].value => seat_count }
         end

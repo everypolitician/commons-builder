@@ -13,7 +13,7 @@ Metrics/AbcSize:
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/BlockLength:
-  Max: 71
+  Max: 75
 
 # Offense count: 2
 # Configuration parameters: CountComments.
@@ -67,9 +67,3 @@ Style/MultilineBlockChain:
   Exclude:
     - 'lib/commons/builder/boundary_data.rb'
     - 'lib/commons/builder/membership_data.rb'
-
-# Offense count: 61
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 190
