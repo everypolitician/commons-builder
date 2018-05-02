@@ -109,11 +109,10 @@ class MembershipData
 
   def link(membership)
     url = membership[:facebook]&.value&.prepend('https://www.facebook.com/')
-    if url
-      {
-        note: 'facebook',
-        url: url,
-      }
-    end
+    return unless url
+    {
+      note: 'facebook',
+      url: url,
+    }
   end
 end
