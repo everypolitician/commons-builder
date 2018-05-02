@@ -39,9 +39,9 @@ class Commons::BoundaryDataTest < Minitest::Test
 
   def test_popolo_areas_warns_on_boundaries_without_area_type_wikidata_item_id
     output_stream = StringIO.new
-    expected = <<~EOF
+    expected = <<~WARNING
       WARNING: No :area_type_wikidata_item_id entry for boundary boundaries
-EOF
+    WARNING
     options = { boundaries_dir: 'test/fixtures/entry_without_area_type_wikidata_item',
                 output_stream: output_stream, }
     boundary_data = BoundaryData.new(nil, options)

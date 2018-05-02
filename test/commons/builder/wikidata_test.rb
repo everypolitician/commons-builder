@@ -26,24 +26,24 @@ class Commons::WikidataTest < Minitest::Test
   def test_lang_options_returns_optional_filter
     languages = ['en']
     wikidata = Wikidata.new(languages)
-    expected = <<~EOF
+    expected = <<~OPTIONAL_CLAUSE
       OPTIONAL {
                 ?item rdfs:label ?name_en
                 FILTER(LANG(?name_en) = "en")
               }
-EOF
+    OPTIONAL_CLAUSE
     assert_equal(expected.strip, wikidata.lang_options)
   end
 
   def test_lang_options_converts_hypens
     languages = ['zh-tw']
     wikidata = Wikidata.new(languages)
-    expected = <<~EOF
+    expected = <<~OPTIONAL_CLAUSE
       OPTIONAL {
                 ?item rdfs:label ?name_zh_tw
                 FILTER(LANG(?name_zh_tw) = "zh-tw")
               }
-EOF
+    OPTIONAL_CLAUSE
     assert_equal(expected.strip, wikidata.lang_options)
   end
 end

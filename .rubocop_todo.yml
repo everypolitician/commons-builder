@@ -30,14 +30,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Max: 6
 
-# Offense count: 3
-# Configuration parameters: Blacklist.
-# Blacklist: END, (?-mix:EO[A-Z]{1})
-Naming/HeredocDelimiterNaming:
-  Exclude:
-    - 'test/commons/builder/boundary_data_test.rb'
-    - 'test/commons/builder/wikidata_test.rb'
-
 # Offense count: 2
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id
