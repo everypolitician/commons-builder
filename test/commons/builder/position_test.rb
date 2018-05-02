@@ -7,7 +7,7 @@ class PositionTest < Minitest::Test
     position = Position.new(branch: Executive.new, comment: 'President', position_item_id: 'Q1')
     expected_json = {
       comment:          'President',
-      position_item_id: 'Q1'
+      position_item_id: 'Q1',
     }
     assert_equal expected_json, position.as_json
   end

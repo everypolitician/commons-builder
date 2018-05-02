@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class AreaIdentityFilter
-  def should_include?(area_feature_data)
+  def should_include?(_area_feature_data)
     true
   end
 end

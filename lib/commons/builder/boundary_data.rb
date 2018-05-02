@@ -7,7 +7,6 @@ require 'csv'
 # repository.
 
 class BoundaryData
-
   attr_reader :boundaries_dir_path, :index_file, :output_stream
   # Public: Initialize a BoundaryData object
   #
@@ -19,9 +18,9 @@ class BoundaryData
   #       :output_stream - IOStream for warnings
   def initialize(wikidata_labels, options = {})
     @wikidata_labels = wikidata_labels
-    @boundaries_dir_path = options.fetch(:boundaries_dir){ 'boundaries' }
-    @index_file = options.fetch(:index_file){ 'index.json' }
-    @output_stream = options.fetch(:output_stream){ $stdout }
+    @boundaries_dir_path = options.fetch(:boundaries_dir) { 'boundaries' }
+    @index_file = options.fetch(:index_file) { 'index.json' }
+    @output_stream = options.fetch(:output_stream) { $stdout }
   end
 
   def name_object(name_columns, feature_data)
@@ -73,7 +72,7 @@ class BoundaryData
       directory = metadata[:directory]
 
       unless metadata[:area_type_wikidata_item_id]
-        output_stream.puts "WARNING: No :area_type_wikidata_item_id entry for" \
+        output_stream.puts 'WARNING: No :area_type_wikidata_item_id entry for' \
                            " #{metadata[:directory]} boundaries"
         next
       end
@@ -132,5 +131,4 @@ class BoundaryData
   def index_data
     @index_data ||= JSON.parse(index_json_pathname.read, symbolize_names: true)
   end
-
 end

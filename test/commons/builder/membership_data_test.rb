@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Commons::MembershipDataTest < Minitest::Test
-
   def membership_rows(pathname)
     data = JSON.parse(File.read(pathname), symbolize_names: true)
     data[:results][:bindings].map do |row|
@@ -14,7 +15,7 @@ class Commons::MembershipDataTest < Minitest::Test
   end
 
   def languages
-    ["en", "zh-tw", "zh"]
+    ['en', 'zh-tw', 'zh']
   end
 
   def test_can_access_membership_rows
@@ -50,5 +51,4 @@ class Commons::MembershipDataTest < Minitest::Test
     expected_data = json_data('test/fixtures/two_links/expected.json')
     assert_equal(expected_data[:organizations], membership_data.organizations)
   end
-
 end

@@ -12,7 +12,7 @@ class Position
   def as_json
     {
       comment:          comment,
-      position_item_id: position_item_id
+      position_item_id: position_item_id,
     }
   end
 

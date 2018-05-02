@@ -3,7 +3,6 @@
 require 'json'
 require 'pathname'
 
-
 class Config
   attr_reader :values
 
@@ -19,7 +18,7 @@ class Config
       if values[:languages]
         values[:languages]
       else
-        puts "WARNING: config.json should now use a list of language codes"
+        puts 'WARNING: config.json should now use a list of language codes'
         values[:language_map].values
       end
     end
