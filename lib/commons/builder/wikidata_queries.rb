@@ -27,7 +27,7 @@ class WikidataQueries < Wikidata
     "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages_with_en.join(',')}\". }"
   end
 
-  def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_)
+  def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_rest)
     unless !!term_item_id ^ !!(start_date and end_date)
       raise 'You must specify either a term item or a start and end date (and not both)'
     end
@@ -76,7 +76,7 @@ class WikidataQueries < Wikidata
   SPARQL
   end
 
-  def query_executive(executive_item_id:, positions:, **_)
+  def query_executive(executive_item_id:, positions:, **_rest)
     space_separated_role_superclass = positions.map { |p| "wd:#{p.position_item_id}" }.join(' ')
     <<~SPARQL
       SELECT ?statement
