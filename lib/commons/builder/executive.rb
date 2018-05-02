@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Executive < Branch
   KNOWN_PROPERTIES = %i[comment executive_item_id positions].freeze
 
@@ -48,7 +50,7 @@ class Executive < Branch
       new(comment:           row[:executiveLabel]&.value,
           executive_item_id: row[:executive].value,
           positions:         [{ comment:          row[:positionLabel]&.value,
-                                position_item_id: row[:position].value }])
+                                position_item_id: row[:position].value, },])
     end
   end
 
@@ -56,7 +58,7 @@ class Executive < Branch
     {
       comment:           comment,
       executive_item_id: executive_item_id,
-      positions:         positions.map(&:as_json)
+      positions:         positions.map(&:as_json),
     }
   end
 end

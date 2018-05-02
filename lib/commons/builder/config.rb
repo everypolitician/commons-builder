@@ -3,9 +3,7 @@
 require 'json'
 require 'pathname'
 
-
 class Config
-
   attr_reader :values
 
   def initialize(file)
@@ -14,5 +12,4 @@ class Config
       symbolize_names: true
     )
   end
-
 end

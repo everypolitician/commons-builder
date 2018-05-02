@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LegislativeTerm
   def initialize(legislature:, term_item_id: nil, start_date: nil, end_date: nil, comment: nil)
     @legislature = legislature
@@ -15,7 +17,7 @@ class LegislativeTerm
       house_item_id: legislature.house_item_id,
       term_item_id: term_item_id,
       start_date: start_date,
-      end_date: end_date,
+      end_date: end_date
     )
   end
 

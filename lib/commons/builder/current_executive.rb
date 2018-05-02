@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CurrentExecutive
   def initialize(executive:)
     @executive = executive

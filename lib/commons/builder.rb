@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'commons/builder/area_filter'
 require 'commons/builder/boundary_data'
 require 'commons/builder/branch'

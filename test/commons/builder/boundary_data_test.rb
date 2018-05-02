@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Commons::BoundaryDataTest < Minitest::Test
-
   def test_accepts_boundaries_dir
     options = { boundaries_dir: 'test/fixtures/boundaries_init' }
     boundary_data = BoundaryData.new(nil, options)
@@ -38,14 +39,13 @@ class Commons::BoundaryDataTest < Minitest::Test
 
   def test_popolo_areas_warns_on_boundaries_without_area_type_wikidata_item_id
     output_stream = StringIO.new
-    expected = <<-EOF
-WARNING: No :area_type_wikidata_item_id entry for boundary boundaries
+    expected = <<~EOF
+      WARNING: No :area_type_wikidata_item_id entry for boundary boundaries
 EOF
     options = { boundaries_dir: 'test/fixtures/entry_without_area_type_wikidata_item',
-                output_stream: output_stream }
+                output_stream: output_stream, }
     boundary_data = BoundaryData.new(nil, options)
     boundary_data.popolo_areas
     assert_equal(expected, output_stream.string)
   end
-
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class WikidataQueries < Wikidata
 
+class WikidataQueries < Wikidata
   def date_condition(start_date, end_date)
     return '' unless start_date
     end_date ||= '9999-12-31'
@@ -23,7 +23,7 @@ class WikidataQueries < Wikidata
   # to end-users, as that needs potentially multiple language-tagged labels.
   # For that, use `lang_select` and `lang_options`.
   def label_service
-    languages = (["en"] + language_map.values).uniq
+    languages = (['en'] + language_map.values).uniq
     "SERVICE wikibase:label { bd:serviceParam wikibase:language \"#{languages.join(',')}\". }"
   end
 
@@ -148,7 +148,7 @@ class WikidataQueries < Wikidata
   end
 
   def query_legislative_index(country)
-    country = "wd:#{country}" if not country.start_with?('wd:')
+    country = "wd:#{country}" unless country.start_with?('wd:')
     <<~SPARQL
       SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
         {

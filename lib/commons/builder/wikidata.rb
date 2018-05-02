@@ -12,25 +12,23 @@ class Wikidata
 
   def perform(sparql_query)
     headers = { 'Content-Type': 'application/sparql-query',
-                'Accept':       'application/sparql-results+json' }
+                'Accept':       'application/sparql-results+json', }
     result = RestClient.post(url, sparql_query, headers)
     bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
     bindings.map { |row| WikidataRow.new(row, language_map) }
   end
 
-  def lang_select(prefix='name')
+  def lang_select(prefix = 'name')
     language_map.values.map { |l| variable(prefix, l) }.join(' ')
   end
 
-  def variable(prefix, lang_code, query=true)
-    variable = "#{prefix}_#{lang_code.gsub('-', '_')}"
-    if query
-      variable = "?#{variable}"
-    end
+  def variable(prefix, lang_code, query = true)
+    variable = "#{prefix}_#{lang_code.tr('-', '_')}"
+    variable = "?#{variable}" if query
     variable
   end
 
-  def lang_options(prefix='name', item='?item')
+  def lang_options(prefix = 'name', item = '?item')
     language_map.values.map do |l|
       "OPTIONAL {
           #{item} rdfs:label #{variable(prefix, l)}
@@ -38,5 +36,4 @@ class Wikidata
         }"
     end.join("\n")
   end
-
 end

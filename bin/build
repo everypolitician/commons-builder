@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 # frozen_string_literal: true
+
 require 'bundler/setup'
 require 'json'
 require 'commons/builder'
@@ -8,7 +9,7 @@ require 'rest-client'
 
 URL = 'https://query.wikidata.org/sparql'
 
-config = Config.new("config.json").values
+config = Config.new('config.json').values
 LANGUAGE_MAP = config[:language_map]
 COUNTRY_WIKIDATA_ID = config[:country_wikidata_id]
 

@@ -1,5 +1,7 @@
 
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'commons/builder/version'
 
@@ -27,18 +29,16 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = 'bin'
-  spec.executables = ['build', 'generate_legislative_index', 'generate_executive_index']
+  spec.bindir = 'bin'
+  spec.executables = %w[build generate_legislative_index generate_executive_index]
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.16'
-  spec.add_development_dependency 'minitest', '~> 5.0'
-  spec.add_development_dependency 'webmock', '~> 2.0'
-  spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'codecov'
+  spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rubocop', '~> 0.53.0'
   spec.add_development_dependency 'timecop', '~> 0.9.1'
+  spec.add_development_dependency 'webmock', '~> 2.0'
   spec.add_dependency 'rest-client', '~> 2.0.2'
-
-
 end
