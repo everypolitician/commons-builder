@@ -43,21 +43,6 @@ Style/CaseEquality:
   Exclude:
     - 'lib/commons/builder/area_filter.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'test/commons/builder/area_filter_test.rb'
-    - 'test/commons/builder/boundary_data_test.rb'
-    - 'test/commons/builder/config_test.rb'
-    - 'test/commons/builder/membership_data_test.rb'
-    - 'test/commons/builder/wikidata_results_test.rb'
-    - 'test/commons/builder/wikidata_test.rb'
-    - 'test/commons/builder_test.rb'
-    - 'test/commons/legislative_index_test.rb'
-
 # Offense count: 2
 Style/DoubleNegation:
   Exclude:
