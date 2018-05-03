@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
 
 # frozen_string_literal: true
+
 require 'bundler/setup'
 require 'json'
 require 'commons/builder'
 
-
-config = Config.new("config.json")
+config = Config.new('config.json')
 
 legislatures = Legislature.list(config.country_wikidata_id,
                                 config.languages,
                                 save_queries: true)
 
-open("legislative/index.json", 'w') do |file|
-  file.write(JSON.pretty_generate(legislatures.map &:as_json ))
+open('legislative/index.json', 'w') do |file|
+  file.write(JSON.pretty_generate(legislatures.map(&:as_json)))
 end

@@ -4,7 +4,6 @@
 # query service https://query.wikidata.org/
 
 class WikidataCell < Wikidata
-
   def initialize(value_h)
     @value_h = value_h
   end
@@ -41,7 +40,6 @@ class WikidataCell < Wikidata
 end
 
 class WikidataRow < Wikidata
-
   attr_accessor :languages
 
   def initialize(row_h, languages)

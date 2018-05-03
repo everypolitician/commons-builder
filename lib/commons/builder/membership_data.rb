@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 # This class handles the data we have from Wikidata about memberships
 
 class MembershipData
-
   attr_reader :membership_rows, :language_map, :political_entity_kind
 
   def initialize(membership_rows, language_map, political_entity_kind)
@@ -14,13 +15,9 @@ class MembershipData
     persons = {}
     membership_rows.each do |membership|
       person_id = membership[:item].value
-      unless persons[person_id]
-        persons[person_id] = person(membership)
-      end
+      persons[person_id] = person(membership) unless persons[person_id]
       link = link(membership)
-      if link
-        persons[person_id][:links] << link
-      end
+      persons[person_id][:links] << link if link
     end
     persons.values.sort_by { |p| p[:id] }
   end
@@ -62,7 +59,7 @@ class MembershipData
           if seat_count.to_s.empty?
             puts "WARNING: no seat count found for the legislature #{wikidata_labels.item_with_label(membership[:org].value)}"
           end
-          o['seat_counts'] = {membership[:role].value => seat_count}
+          o['seat_counts'] = { membership[:role].value => seat_count }
         end
       end
     end.uniq.sort_by { |o| o[:id] }
@@ -115,9 +112,8 @@ class MembershipData
     if url
       {
         note: 'facebook',
-        url: url
+        url: url,
       }
     end
   end
-
 end

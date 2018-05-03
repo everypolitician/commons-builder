@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Branch
   def initialize(**properties)
     self.class::KNOWN_PROPERTIES.each do |p|

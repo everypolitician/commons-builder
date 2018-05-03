@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Legislature < Branch
   KNOWN_PROPERTIES = %i[comment house_item_id position_item_id terms].freeze
 

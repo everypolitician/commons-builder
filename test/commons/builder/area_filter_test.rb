@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Commons::AreaFilterTest < Minitest::Test
-
   def test_factory_for_returns_identity_filter_for_nil_param
     filter = AreaFilterFactory.for(nil)
     assert_kind_of(AreaIdentityFilter, filter)
@@ -18,7 +19,7 @@ class Commons::AreaFilterTest < Minitest::Test
   end
 
   def test_factory_for_raises_error_for_hash_with_other_key
-    error = assert_raises{ AreaFilterFactory.for(something: 'xxx') }
+    error = assert_raises { AreaFilterFactory.for(something: 'xxx') }
     expected_message = 'Unknown filter specification: {:something=>"xxx"}'
     assert_equal(expected_message, error.message)
   end
@@ -47,5 +48,4 @@ class Commons::AreaFilterTest < Minitest::Test
     filter = AreaMatchFilter.new('xxx', 'MS_FB')
     assert_equal(true, filter.should_include?('MS_FB' => 'xxx'))
   end
-
 end
