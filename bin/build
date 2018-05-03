@@ -70,7 +70,8 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
 
       missing_jurisdictions = membership_data.entity_organizations.reject { |o| o[:area_id] }
       missing_jurisdictions.each do |o|
-        puts "ERROR: no P1001 (applies to jurisdiction) on #{political_entity_kind} #{wikidata_labels.item_with_label(o[:id])}"
+        puts 'ERROR: no P1001 (applies to jurisdiction) on %<kind>s %<organization>s' %
+             { kind: political_entity_kind, organization: wikidata_labels.item_with_label(o[:id]) }
       end
       exit(1) unless missing_jurisdictions.empty?
 
@@ -82,7 +83,8 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       # All position_item_ids should be referenced somewhere in the boundary data
       related_positions.each do |position_item_id|
         unless boundary_position_ids.include? position_item_id
-          puts "WARNING: Position #{wikidata_labels.item_with_label(position_item_id)} not in boundary associated_wikidata_positions"
+          puts 'WARNING: Position %<position>s not in boundary associated_wikidata_positions' %
+               { position: wikidata_labels.item_with_label(position_item_id) }
         end
       end
       known_areas = Set.new(areas.map { |a| a[:id] })
@@ -98,9 +100,10 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       # in our boundary data:
       membership_rows.select { |m| m[:district] }.map do |m|
         area_wikidata_id = m[:district].value
-        unless known_areas.include?(area_wikidata_id)
-          puts "WARNING: the district #{wikidata_labels.item_with_label(area_wikidata_id)} wasn't found in the boundary data for position #{wikidata_labels.item_with_label(m[:role]&.value)}"
-        end
+        next if known_areas.include?(area_wikidata_id)
+        puts "WARNING: the district %<district>s wasn't found in the boundary data for position %<position>s" %
+             { district: wikidata_labels.item_with_label(area_wikidata_id),
+               position: wikidata_labels.item_with_label(m[:role]&.value), }
       end
 
       # Check that none of these have a null person_id - we should only

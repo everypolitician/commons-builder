@@ -13,7 +13,7 @@ Metrics/AbcSize:
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/BlockLength:
-  Max: 71
+  Max: 75
 
 # Offense count: 2
 # Configuration parameters: CountComments.
@@ -30,21 +30,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Max: 6
 
-# Offense count: 3
-# Configuration parameters: Blacklist.
-# Blacklist: END, (?-mix:EO[A-Z]{1})
-Naming/HeredocDelimiterNaming:
-  Exclude:
-    - 'test/commons/builder/boundary_data_test.rb'
-    - 'test/commons/builder/wikidata_test.rb'
-
-# Offense count: 2
-# Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
-# AllowedNames: io, id
-Naming/UncommunicativeMethodParamName:
-  Exclude:
-    - 'lib/commons/builder/wikidata_queries.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -58,32 +43,16 @@ Style/CaseEquality:
   Exclude:
     - 'lib/commons/builder/area_filter.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'test/commons/builder/area_filter_test.rb'
-    - 'test/commons/builder/boundary_data_test.rb'
-    - 'test/commons/builder/config_test.rb'
-    - 'test/commons/builder/membership_data_test.rb'
-    - 'test/commons/builder/wikidata_results_test.rb'
-    - 'test/commons/builder/wikidata_test.rb'
-    - 'test/commons/builder_test.rb'
-    - 'test/commons/legislative_index_test.rb'
-
 # Offense count: 2
 Style/DoubleNegation:
   Exclude:
     - 'lib/commons/builder/wikidata_queries.rb'
 
-# Offense count: 2
+# Offense count: 1
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Exclude:
     - 'lib/commons/builder/area_filter.rb'
-    - 'lib/commons/builder/membership_data.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -98,9 +67,3 @@ Style/MultilineBlockChain:
   Exclude:
     - 'lib/commons/builder/boundary_data.rb'
     - 'lib/commons/builder/membership_data.rb'
-
-# Offense count: 61
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 190
