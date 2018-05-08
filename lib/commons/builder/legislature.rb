@@ -26,8 +26,8 @@ class Legislature < Branch
     sparql_query = wikidata_queries.query_legislative_index_terms(
       *legislatures.map { |legislature| legislature[:legislature].value }
     )
-    term_rows = wikidata_queries.perform(sparql_query)
     open('legislative/index-terms-query-used.rq', 'w').write(sparql_query) if save_queries
+    term_rows = wikidata_queries.perform(sparql_query)
 
     terms_by_legislature = Hash.new { |h, k| h[k] = [] }
 

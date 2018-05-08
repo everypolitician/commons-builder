@@ -26,8 +26,8 @@ class Executive < Branch
     wikidata_labels = WikidataLabels.new(languages)
     sparql_query = wikidata_queries.query_executive_index(country_id)
 
-    executives = wikidata_queries.perform(sparql_query)
     open('executive/index-query-used.rq', 'w').write(sparql_query) if save_queries
+    executives = wikidata_queries.perform(sparql_query)
 
     executives.select! do |row|
       unless row[:position]&.value
