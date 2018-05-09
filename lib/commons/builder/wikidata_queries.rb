@@ -140,7 +140,7 @@ class WikidataQueries < Wikidata
              wdt:P1082 ?population .
           FILTER (?population > 250000)
           # Make sure the city is not also a FLACS
-          FILTER NOT EXISTS { ?adminArea wdt:P31/wdt:P279* wd:Q10864048 }
+          MINUS { ?adminArea wdt:P31/wdt:P279* wd:Q10864048 }
           VALUES (?primarySort ?adminAreaType) { (3 wd:Q515) }
         }
       } ORDER BY ?primarySort
