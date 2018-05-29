@@ -7,8 +7,6 @@ require 'json'
 require 'commons/builder'
 require 'rest-client'
 
-URL = 'https://query.wikidata.org/sparql'
-
 config = Config.new('config.json')
 
 root_dir = Pathname.new('').dirname
@@ -35,16 +33,14 @@ boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir
 boundary_positions_pn = boundaries_dir_pn.join('position-data-query-results.json')
 
 if actions.include? 'update'
-  sparql_query = WikidataQueries.new(config.languages).query_information_from_positions(
-    boundary_data.all_positions, config.country_wikidata_id
+  query = Query.new(
+    sparql_query: WikidataQueries.new(config.languages).query_information_from_positions(
+      boundary_data.all_positions, config.country_wikidata_id
+    ),
+    output_dir_pn: boundaries_dir_pn,
+    output_fname_prefix: 'position-data-'
   )
-  boundaries_dir_pn.join('position-data-query-used.rq').write(sparql_query)
-  query_params = {
-    query: sparql_query,
-    format: 'json',
-  }
-  result = RestClient.get(URL, params: query_params)
-  boundary_positions_pn.write(result)
+  query.run
 end
 
 boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
@@ -59,23 +55,17 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       output_dir = political_entity_kind_dir.join(term.output_relative)
       output_dir.mkpath
       output_pathname = output_dir.join('popolo-m17n.json')
-      raw_results_pathname = output_dir.join('query-results.json')
+      query = Query.new(
+        sparql_query: term.query(config.languages),
+        output_dir_pn: output_dir
+      )
 
       if actions.include? 'update'
-        sparql_query = term.query(config.languages)
-        output_dir.join('query-used.rq').write(sparql_query)
-
-        query_params = {
-          query: sparql_query,
-          format: 'json',
-        }
-        result = RestClient.get(URL, params: query_params)
-
-        raw_results_pathname.write(result)
+        query.run
       end
 
       next unless actions.include?('build')
-      data = JSON.parse(raw_results_pathname.read, symbolize_names: true)
+      data = query.last_saved_results
 
       membership_rows = data[:results][:bindings].map do |row|
         WikidataRow.new(row, config.languages)
