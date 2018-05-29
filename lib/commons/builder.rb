@@ -17,6 +17,7 @@ require 'commons/builder/wikidata_labels'
 require 'commons/builder/wikidata_queries'
 require 'commons/builder/wikidata_results_parser'
 require 'commons/builder/wikidata_results'
+require 'commons/builder/query'
 
 module Commons
   module Builder
