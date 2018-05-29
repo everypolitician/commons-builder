@@ -15,6 +15,7 @@ require 'commons/builder/wikidata'
 require 'commons/builder/wikidata_labels'
 require 'commons/builder/wikidata_queries'
 require 'commons/builder/wikidata_results'
+require 'commons/builder/query'
 
 module Commons
   module Builder
