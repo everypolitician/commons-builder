@@ -30,7 +30,22 @@ actions = if ARGV.empty?
 wikidata_labels = WikidataLabels.new(config.languages)
 
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
+boundaries_dir_pn = Pathname.new(boundaries_dir)
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
+boundary_positions_pn = boundaries_dir_pn.join('position-data-query-results.json')
+
+if actions.include? 'update'
+  sparql_query = WikidataQueries.new(config.languages).query_information_from_positions(
+    boundary_data.all_positions, config.country_wikidata_id
+  )
+  boundaries_dir_pn.join('position-data-query-used.rq').write(sparql_query)
+  query_params = {
+    query: sparql_query,
+    format: 'json',
+  }
+  result = RestClient.get(URL, params: query_params)
+  boundary_positions_pn.write(result)
+end
 
 boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
 

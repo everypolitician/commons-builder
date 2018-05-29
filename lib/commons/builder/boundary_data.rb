@@ -63,6 +63,12 @@ class BoundaryData
     results
   end
 
+  def all_positions
+    index_data.flat_map do |e|
+      e[:associations].map { |a| a[:position_item_id] }
+    end
+  end
+
   private
 
   attr_reader :position_item_id
