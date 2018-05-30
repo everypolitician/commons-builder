@@ -43,6 +43,35 @@ if actions.include? 'update'
   query.run
 end
 
+if actions.include? 'build'
+  wd_rows = JSON.parse(boundary_positions_pn.read, symbolize_names: true)[:results][:bindings].map do |row|
+    WikidataRow.new(row, config.languages)
+  end
+  position_data = wd_rows.map do |wd_row|
+    {
+      role_id: wd_row[:position].value,
+      role_name: wd_row.name_object('position_name'),
+      generic_role_id: wd_row[:positionSuperclass].value,
+      generic_role_name: wd_row.name_object('position_superclass'),
+      role_level: wd_row[:adminAreaType].value,
+      role_type: wd_row[:positionType]&.value,
+      organization_id: wd_row[:legislature].value,
+      organization_name: wd_row.name_object('legislature'),
+    }
+  end
+  # There might be multiple generic_roles (e.g. President of Brazil is
+  # sublassed both from 'head of government' and 'president') but we
+  # don't need both. Sort predictably but arbitrarily and pick the
+  # first of those:
+  deduplicated = position_data.group_by { |e| e[:role_id] }.values.map do |roles|
+    roles.sort_by { |r| r[:generic_role_id] }[0]
+  end
+  # Now write it to disk:
+  boundaries_dir_pn.join('position-data.json').write(
+    JSON.pretty_generate(deduplicated) + "\n"
+  )
+end
+
 boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
 
 %w[legislative executive].each do |political_entity_kind|
