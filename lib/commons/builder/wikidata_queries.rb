@@ -52,8 +52,11 @@ class WikidataQueries < Wikidata
         }
         ?item p:P39 ?statement .
         #{lang_options}
-        ?statement ps:P39 ?role .
+	?statement ps:P39 ?role .
         #{lang_options('role', '?role')}
+	# Ignore deprecated statements
+	?statement wikibase:rank ?statementRank .
+	FILTER (?statementRank != wikibase:DeprecatedRank)
         OPTIONAL {
           ?role wdt:P279 ?role_superclass .
           ?role_superclass wdt:P279+ wd:Q4175034
@@ -98,6 +101,9 @@ class WikidataQueries < Wikidata
         #{lang_options}
         ?statement ps:P39 ?role .
         #{lang_options('role', '?role')}
+        # Ignore deprecated statements
+        ?statement wikibase:rank ?statementRank .
+        FILTER (?statementRank != wikibase:DeprecatedRank)
         ?role wdt:P279* ?role_superclass .
         #{lang_options('role_superclass', '?role_superclass')}
         ?role wdt:P361 ?org .
@@ -114,6 +120,9 @@ class WikidataQueries < Wikidata
           ?item p:P102 ?party_statement .
           ?party_statement ps:P102 ?party .
           #{lang_options('party_name', '?party')}
+          # Ignore deprecated party statements
+          ?party_statement wikibase:rank ?party_statementRank .
+          FILTER (?party_statementRank != wikibase:DeprecatedRank)
           OPTIONAL { ?party_statement pq:P582 ?end_party }
           BIND(COALESCE(?end_party, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?party_end_or_sentinel)
           FILTER(?party_end_or_sentinel >= NOW())
@@ -189,8 +198,9 @@ class WikidataQueries < Wikidata
       SELECT DISTINCT ?house ?houseLabel ?legislature ?legislatureLabel ?term ?termLabel ?termStart ?termEnd WHERE {
         VALUES ?house { #{houses} }
         ?house (p:P361/ps:P361)* ?legislature .
-            ?baseTerm p:P31|p:P279 [ ps:P279|ps:P31 wd:Q15238777 ; pq:P642 ?legislature ] .
+            ?baseTerm p:P31|p:P279 [ ps:P279|ps:P31 wd:Q15238777 ; pq:P642 ?legislature ; wikibase:rank ?houseLegislatureRank] .
             OPTIONAL { ?subTerm wdt:P31 ?baseTerm }
+        FILTER (?houseLegislatureRank != wikibase:DeprecatedRank)
 
         BIND(COALESCE(?subTerm, ?baseTerm) AS ?term)
 
