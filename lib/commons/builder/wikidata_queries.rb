@@ -3,41 +3,6 @@
 require 'liquid'
 
 class WikidataQueries < Wikidata
-  def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_rest)
-    templated_query('legislative',
-                    position_item_id: position_item_id,
-                    house_item_id: house_item_id,
-                    term_item_id: term_item_id,
-                    start_date: start_date,
-                    end_date: end_date)
-  end
-
-  def query_executive(executive_item_id:, positions:, **_rest)
-    templated_query('executive',
-                    executive_item_id: executive_item_id,
-                    position_item_ids: positions.map(&:position_item_id))
-  end
-
-  def select_admin_areas_for_country(country)
-    templated_query('select_admin_areas_for_country',
-                    country: country)
-  end
-
-  def query_legislative_index(country)
-    templated_query('legislative_index',
-                    country: country)
-  end
-
-  def query_legislative_index_terms(*houses)
-    templated_query('legislative_index_terms',
-                    houses: houses)
-  end
-
-  def query_executive_index(country)
-    templated_query('executive_index',
-                    country: country)
-  end
-
   class LangTag < Liquid::Tag
     def variable(prefix, lang_code, query = true)
       variable = "#{prefix}_#{lang_code.tr('-', '_')}"

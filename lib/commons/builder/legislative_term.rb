@@ -13,13 +13,12 @@ class LegislativeTerm
   attr_accessor :legislature, :term_item_id, :start_date, :end_date, :comment
 
   def query(languages)
-    WikidataQueries.new(languages).query_legislative(
-      position_item_id: legislature.position_item_id,
-      house_item_id: legislature.house_item_id,
-      term_item_id: term_item_id,
-      start_date: start_date,
-      end_date: end_date
-    )
+    WikidataQueries.new(languages).templated_query('legislative',
+                                                   position_item_id: legislature.position_item_id,
+                                                   house_item_id: legislature.house_item_id,
+                                                   term_item_id: term_item_id,
+                                                   start_date: start_date,
+                                                   end_date: end_date)
   end
 
   def output_relative
