@@ -1,0 +1,6 @@
+{% if start_date %}{% unless term_item_id -%}
+BIND(COALESCE(?start, "1000-01-01T00:00:00Z"^^xsd:dateTime) AS ?start_or_sentinel)
+BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
+FILTER (?end_or_sentinel >= "{{ start_date }}"^^xsd:dateTime)
+FILTER (?start_or_sentinel <= "{{ end_date }}"^^xsd:dateTime)
+{% endunless %}{% endif -%}

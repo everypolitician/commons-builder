@@ -1,0 +1,11 @@
+{% comment %}
+  Use this to generate a `SERVICE wikibase:label` SPARQL pattern, for use in
+  situations where you want a single label to help the humans that maintain
+  a democratic commons repository. Do not use it for labels to be presented
+  to end-users, as that needs potentially multiple language-tagged labels.
+  For that, use `lang_select` and `lang_options`.
+{% endcomment -%}
+SERVICE wikibase:label { bd:serviceParam wikibase:language "en
+  {%- for language in languages %}
+    {%- if language != "en" %},{{ language }}{% endif %}
+  {%- endfor %}". }

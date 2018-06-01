@@ -46,7 +46,7 @@ Style/CaseEquality:
 # Offense count: 2
 Style/DoubleNegation:
   Exclude:
-    - 'lib/commons/builder/wikidata_queries.rb'
+    - 'lib/commons/builder/legislative_term.rb'
 
 # Offense count: 1
 # Configuration parameters: MinBodyLength.

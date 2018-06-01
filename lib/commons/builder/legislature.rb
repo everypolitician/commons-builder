@@ -19,14 +19,15 @@ class Legislature < Branch
 
   def self.list(country_id, languages, save_queries: false)
     wikidata_queries = WikidataQueries.new(languages)
-    sparql_query = wikidata_queries.query_legislative_index(country_id)
+    sparql_query = wikidata_queries.templated_query('legislative_index', country: country_id)
 
     open('legislative/index-query-used.rq', 'w').write(sparql_query) if save_queries
     legislatures = wikidata_queries.perform(sparql_query)
 
     # Now collect term information
-    sparql_query = wikidata_queries.query_legislative_index_terms(
-      *legislatures.map { |legislature| legislature[:legislature].value }
+    sparql_query = wikidata_queries.templated_query(
+      'legislative_index_terms',
+      houses: legislatures.map { |legislature| legislature[:legislature].value }
     )
     open('legislative/index-terms-query-used.rq', 'w').write(sparql_query) if save_queries
     term_rows = wikidata_queries.perform(sparql_query)

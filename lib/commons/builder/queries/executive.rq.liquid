@@ -1,0 +1,41 @@
+SELECT ?statement
+       ?item {% lang_select 'name' %}
+       ?party {% lang_select 'party_name' %}
+       ?district {% lang_select 'district_name' %}
+       ?role {% lang_select 'role' %}
+       ?start ?end ?facebook
+       ?role_superclass {% lang_select 'role_superclass' %}
+       ?org {% lang_select 'org' %} ?org_jurisdiction
+WHERE {
+  VALUES ?role_superclass { {% for position_item_id in position_item_ids %}wd:{{ position_item_id }} {% endfor %}}
+  BIND(wd:{{ executive_item_id }} AS ?org)
+  {% lang_options 'org' '?org' %}
+  OPTIONAL {
+    ?org wdt:P1001 ?org_jurisdiction
+  }
+  ?item p:P39 ?statement .
+  {% lang_options 'name' '?item' %}
+  ?statement ps:P39 ?role .
+  {% lang_options 'role' '?role' %}
+  ?role wdt:P279* ?role_superclass .
+  {% lang_options 'role_superclass' '?role_superclass' %}
+  ?role wdt:P361 ?org .
+  OPTIONAL {
+    ?role p:P1001/ps:P1001 ?district .
+    {% lang_options 'district_name' '?district' %}
+  }
+  OPTIONAL { ?statement pq:P580 ?start }
+  OPTIONAL { ?statement pq:P582 ?end }
+  BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
+  FILTER(?end_or_sentinel >= NOW())
+  # Find any current party membership:
+  OPTIONAL {
+    ?item p:P102 ?party_statement .
+    ?party_statement ps:P102 ?party .
+    {% lang_options 'party_name' '?party' %}
+    OPTIONAL { ?party_statement pq:P582 ?end_party }
+    BIND(COALESCE(?end_party, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?party_end_or_sentinel)
+    FILTER(?party_end_or_sentinel >= NOW())
+  }
+  OPTIONAL { ?item wdt:P2013 ?facebook }
+} ORDER BY ?item ?role ?district ?start ?end

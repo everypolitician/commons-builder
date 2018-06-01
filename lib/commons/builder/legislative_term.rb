@@ -2,6 +2,7 @@
 
 class LegislativeTerm
   def initialize(legislature:, term_item_id: nil, start_date: nil, end_date: nil, comment: nil)
+    raise 'You must specify a term item or a start and end date' if !term_item_id && !(start_date and end_date)
     @legislature = legislature
     @term_item_id = term_item_id
     @start_date = start_date
@@ -12,13 +13,12 @@ class LegislativeTerm
   attr_accessor :legislature, :term_item_id, :start_date, :end_date, :comment
 
   def query(languages)
-    WikidataQueries.new(languages).query_legislative(
-      position_item_id: legislature.position_item_id,
-      house_item_id: legislature.house_item_id,
-      term_item_id: term_item_id,
-      start_date: start_date,
-      end_date: end_date
-    )
+    WikidataQueries.new(languages).templated_query('legislative',
+                                                   position_item_id: legislature.position_item_id,
+                                                   house_item_id: legislature.house_item_id,
+                                                   term_item_id: term_item_id,
+                                                   start_date: start_date,
+                                                   end_date: end_date)
   end
 
   def output_relative

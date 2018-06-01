@@ -26,7 +26,7 @@ class Executive < Branch
   def self.list(country_id, languages, save_queries: false)
     wikidata_queries = WikidataQueries.new(languages)
     wikidata_labels = WikidataLabels.new(languages)
-    sparql_query = wikidata_queries.query_executive_index(country_id)
+    sparql_query = wikidata_queries.templated_query('executive_index', country: country_id)
 
     open('executive/index-query-used.rq', 'w').write(sparql_query) if save_queries
     executives = wikidata_queries.perform(sparql_query)
