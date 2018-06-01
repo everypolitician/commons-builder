@@ -1,0 +1,41 @@
+SELECT ?statement
+       ?item {% lang_select 'name' %}
+       ?party {% lang_select 'party_name' %}
+       ?district {% lang_select 'district_name' %}
+       ?role {% lang_select 'role' %}
+       ?role_superclass {% lang_select 'role_superclass' %}
+       ?start ?end ?facebook
+       ?org {% lang_select 'org' %} ?org_jurisdiction ?org_seat_count
+WHERE {
+  BIND(wd:{{ position_item_id }} as ?role) .
+  BIND(wd:{{ house_item_id }} as ?org) .
+  {% lang_options 'org' '?org' %}
+  OPTIONAL {
+    ?org wdt:P1001 ?org_jurisdiction
+  }
+  OPTIONAL {
+    ?org wdt:P1342 ?org_seat_count
+  }
+  ?item p:P39 ?statement .
+  {% lang_options 'name' '?item' %}
+  ?statement ps:P39 ?role .
+  {% lang_options 'role' '?role' %}
+  OPTIONAL {
+    ?role wdt:P279 ?role_superclass .
+    ?role_superclass wdt:P279+ wd:Q4175034
+    {% lang_options 'role_superclass' '?role_superclass' %}
+  }
+  {% include 'term_condition' %}
+  OPTIONAL { ?statement pq:P580 ?start }
+  OPTIONAL { ?statement pq:P582 ?end }
+  OPTIONAL {
+    ?statement pq:P768 ?district.
+    {% lang_options 'district_name' '?district' %}
+  }
+  OPTIONAL {
+    ?statement pq:P4100 ?party.
+    {% lang_options 'party_name' '?party' %}
+  }
+  OPTIONAL { ?item wdt:P2013 ?facebook }
+  {% include 'date_condition' %}
+} ORDER BY ?item ?role {% if term_item_id %}?term {% endif %}?start ?end

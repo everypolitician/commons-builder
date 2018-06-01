@@ -1,0 +1,30 @@
+SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
+  {
+    {% include 'select_admin_areas_for_country' %}
+  }
+
+  ?adminArea wdt:P194/wdt:P527? ?legislature .
+
+  VALUES ?legislatureType { wd:Q11204 wd:Q10553309 }
+  ?legislature wdt:P31/wdt:P279* ?legislatureType .
+  FILTER (?legislatureType != wd:Q11204 || NOT EXISTS { ?legislature wdt:P527 ?legislaturePart . ?legislaturePart  wdt:P31/wdt:P279* wd:Q10553309 })
+
+  # Attempt to find the position for members of the legislature
+  OPTIONAL {
+    # Both "has part" and "has parts of class" seem to be used; with the latter not in keeping with the draft model
+    ?legislature wdt:P527|wdt:P2670 ?legislaturePost .
+    ?legislaturePost wdt:P31/wdt:P279* wd:Q4164871 .
+    # Make sure positions are either legislators or councillors (and so exclude e.g. mayors)
+    FILTER EXISTS {
+      VALUES ?legislaturePostSuperType { wd:Q4175034 wd:Q708492 }
+      ?legislaturePost wdt:P279+ ?legislaturePostSuperType .
+    }
+  }
+  OPTIONAL {
+    ?legislature wdt:P1342 ?numberOfSeats .
+  }
+
+  # Remove legislatures that have ended
+  FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
+  {% include 'label_service' %}
+} ORDER BY ?primarySort ?country ?adminAreaType ?legislature ?legislaturePost
