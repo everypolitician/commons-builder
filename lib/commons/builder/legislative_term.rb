@@ -2,6 +2,7 @@
 
 class LegislativeTerm
   def initialize(legislature:, term_item_id: nil, start_date: nil, end_date: nil, comment: nil)
+    raise 'You must specify a term item or a start and end date' if !term_item_id && !(start_date and end_date)
     @legislature = legislature
     @term_item_id = term_item_id
     @start_date = start_date

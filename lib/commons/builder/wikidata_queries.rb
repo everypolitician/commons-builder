@@ -4,9 +4,6 @@ require 'liquid'
 
 class WikidataQueries < Wikidata
   def query_legislative(position_item_id:, house_item_id:, term_item_id: nil, start_date: nil, end_date: nil, **_rest)
-    unless !!term_item_id ^ !!(start_date and end_date)
-      raise 'You must specify either a term item or a start and end date (and not both)'
-    end
     templated_query('legislative',
                     position_item_id: position_item_id,
                     house_item_id: house_item_id,
