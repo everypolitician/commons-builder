@@ -6,6 +6,6 @@
   For that, use `lang_select` and `lang_options`.
 {% endcomment -%}
 SERVICE wikibase:label { bd:serviceParam wikibase:language "en
-  {%- for language in languages %}
+  {%- for language in config.languages %}
     {%- if language != "en" %},{{ language }}{% endif %}
   {%- endfor %}". }
