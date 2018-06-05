@@ -6,7 +6,7 @@ require 'bundler/setup'
 require 'json'
 require 'commons/builder'
 
-config = Config.new('config.json')
+config = Config.new_from_file('config.json')
 
 legislatures = Legislature.list(config.country_wikidata_id,
                                 config.languages,
