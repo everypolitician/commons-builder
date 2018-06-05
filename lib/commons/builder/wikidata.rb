@@ -3,11 +3,15 @@
 require 'rest-client'
 
 class Wikidata
-  attr_accessor :languages, :url
+  attr_accessor :config, :url
 
-  def initialize(languages, url: 'https://query.wikidata.org/sparql')
-    @languages = languages
+  def initialize(config, url: 'https://query.wikidata.org/sparql')
+    @config = config
     @url = url
+  end
+
+  def languages
+    config.languages
   end
 
   def perform(sparql_query)

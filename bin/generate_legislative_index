@@ -8,9 +8,7 @@ require 'commons/builder'
 
 config = Config.new_from_file('config.json')
 
-legislatures = Legislature.list(config.country_wikidata_id,
-                                config.languages,
-                                save_queries: true)
+legislatures = Legislature.list(config, save_queries: true)
 
 open('legislative/index.json', 'w') do |file|
   file.write(JSON.pretty_generate(legislatures.map(&:as_json)))

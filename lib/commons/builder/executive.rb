@@ -23,10 +23,10 @@ class Executive < Branch
     @positions.map { |t| Position.new(branch: self, **t) }
   end
 
-  def self.list(country_id, languages, save_queries: false)
-    wikidata_queries = WikidataQueries.new(languages)
-    wikidata_labels = WikidataLabels.new(languages)
-    sparql_query = wikidata_queries.templated_query('executive_index', country: country_id)
+  def self.list(config, save_queries: false)
+    wikidata_queries = WikidataQueries.new(config)
+    wikidata_labels = WikidataLabels.new(config)
+    sparql_query = wikidata_queries.templated_query('executive_index')
 
     open('executive/index-query-used.rq', 'w').write(sparql_query) if save_queries
     executives = wikidata_queries.perform(sparql_query)

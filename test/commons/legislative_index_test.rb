@@ -8,6 +8,11 @@ require 'commons/builder/legislative_term'
 
 module Commons
   class LegislativeIndexTest < Minitest::Test
+    def config(languages: ['en'])
+      data = { 'languages': languages, 'country_wikidata_id': 'Q16' }
+      Config.new(data)
+    end
+
     def test_legislative_term_item_as_json
       term = LegislativeTerm.new({ legislature: nil, term_item_id: 'Q123', comment: 'Test term' })
       assert_equal term.as_json, {
@@ -45,8 +50,7 @@ module Commons
         .to_return(body: open('test/fixtures/legislative-index-terms.srj', 'r'))
 
       Timecop.freeze(Date.new(2010, 0o1, 0o1)) do
-        languages = ['en']
-        legislatures = Legislature.list('Q16', languages)
+        legislatures = Legislature.list(config)
         assert_equal 'Senate of Canada', legislatures[0].comment
         assert_equal LegislativeTerm.new(legislature: legislatures[0],
                                          term_item_id: 'Q21157957',

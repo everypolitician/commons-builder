@@ -7,10 +7,10 @@ class CurrentExecutive
 
   attr_accessor :executive
 
-  def query(languages)
-    WikidataQueries.new(languages).templated_query('executive',
-                                                   executive_item_id: executive.executive_item_id,
-                                                   positions: executive.positions.map(&:position_item_id))
+  def query(config)
+    WikidataQueries.new(config).templated_query('executive',
+                                                executive_item_id: executive.executive_item_id,
+                                                position_item_ids: executive.positions.map(&:position_item_id))
   end
 
   def output_relative

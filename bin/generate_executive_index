@@ -8,9 +8,7 @@ require 'commons/builder'
 
 config = Config.new_from_file('config.json')
 
-executives = Executive.list(config.country_wikidata_id,
-                            config.languages,
-                            save_queries: true)
+executives = Executive.list(config, save_queries: true)
 
 open('executive/index.json', 'w') do |file|
   file.write(JSON.pretty_generate(executives.map(&:as_json)))
