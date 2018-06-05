@@ -30,9 +30,14 @@ class Config
     @country_wikidata_id ||= values[:country_wikidata_id]
   end
 
+  def additional_admin_area_ids
+    @additional_admin_area_ids ||= values[:additional_admin_area_ids] || []
+  end
+
   def to_liquid
     # These variables are available in liquid templates
     {
+      'additional_admin_area_ids' => additional_admin_area_ids,
       'country_wikidata_id' => country_wikidata_id,
       'languages' => languages,
     }
