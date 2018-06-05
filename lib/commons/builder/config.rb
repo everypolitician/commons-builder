@@ -29,4 +29,12 @@ class Config
   def country_wikidata_id
     @country_wikidata_id ||= values[:country_wikidata_id]
   end
+
+  def to_liquid
+    # These variables are available in liquid templates
+    {
+      'country_wikidata_id' => country_wikidata_id,
+      'languages' => languages,
+    }
+  end
 end
