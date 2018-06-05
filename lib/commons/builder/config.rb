@@ -6,11 +6,13 @@ require 'pathname'
 class Config
   attr_reader :values
 
-  def initialize(file)
-    @values = JSON.parse(
-      Pathname.new(file).read,
-      symbolize_names: true
-    )
+  def initialize(values)
+    @values = values
+  end
+
+  def self.new_from_file(filename)
+    Config.new(JSON.parse(Pathname.new(filename).read,
+                          symbolize_names: true))
   end
 
   def languages
@@ -26,5 +28,13 @@ class Config
 
   def country_wikidata_id
     @country_wikidata_id ||= values[:country_wikidata_id]
+  end
+
+  def to_liquid
+    # These variables are available in liquid templates
+    {
+      'country_wikidata_id' => country_wikidata_id,
+      'languages' => languages,
+    }
   end
 end

@@ -9,7 +9,7 @@ require 'rest-client'
 
 URL = 'https://query.wikidata.org/sparql'
 
-config = Config.new('config.json')
+config = Config.new_from_file('config.json')
 
 root_dir = Pathname.new('').dirname
 
@@ -27,7 +27,7 @@ actions = if ARGV.empty?
             ARGV.clone
           end
 
-wikidata_labels = WikidataLabels.new(config.languages)
+wikidata_labels = WikidataLabels.new(config)
 
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
@@ -47,7 +47,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       raw_results_pathname = output_dir.join('query-results.json')
 
       if actions.include? 'update'
-        sparql_query = term.query(config.languages)
+        sparql_query = term.query(config)
         output_dir.join('query-used.rq').write(sparql_query)
 
         query_params = {

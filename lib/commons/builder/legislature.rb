@@ -17,9 +17,9 @@ class Legislature < Branch
     @terms.map { |t| LegislativeTerm.new(legislature: self, **t) }
   end
 
-  def self.list(country_id, languages, save_queries: false)
-    wikidata_queries = WikidataQueries.new(languages)
-    sparql_query = wikidata_queries.templated_query('legislative_index', country: country_id)
+  def self.list(config, save_queries: false)
+    wikidata_queries = WikidataQueries.new(config)
+    sparql_query = wikidata_queries.templated_query('legislative_index')
 
     open('legislative/index-query-used.rq', 'w').write(sparql_query) if save_queries
     legislatures = wikidata_queries.perform(sparql_query)

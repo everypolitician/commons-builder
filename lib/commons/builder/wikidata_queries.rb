@@ -17,7 +17,7 @@ class WikidataQueries < Wikidata
     end
 
     def render(context)
-      context['languages'].map { |l| variable(@prefix.render(context), l) }.join(' ')
+      context['config']['languages'].map { |l| variable(@prefix.render(context), l) }.join(' ')
     end
   end
 
@@ -29,7 +29,7 @@ class WikidataQueries < Wikidata
     end
 
     def render(context)
-      context['languages'].map do |l|
+      context['config']['languages'].map do |l|
         <<~CLAUSE
           OPTIONAL {
             #{@item.render(context)} rdfs:label #{variable(@prefix.render(context), l)}
@@ -49,7 +49,7 @@ class WikidataQueries < Wikidata
     @templated_queries[name] ||= Liquid::Template.parse(query, error_mode: :strict)
 
     options = options.map { |k, v| [k.to_s, v] }.to_h
-    options['languages'] = languages
+    options['config'] = config
     options['self'] = self
 
     @templated_queries[name].render!(options)

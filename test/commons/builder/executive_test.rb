@@ -3,6 +3,11 @@
 require 'test_helper'
 
 class ExecutiveTest < Minitest::Test
+  def config(languages: ['en'])
+    data = { 'languages': languages, 'country_wikidata_id': 'Q16' }
+    Config.new(data)
+  end
+
   def test_as_json_round_trip
     data = {
       comment:           'Test Executive',
@@ -20,8 +25,7 @@ class ExecutiveTest < Minitest::Test
     stub_request(:post, 'https://query.wikidata.org/sparql')
       .to_return(body: open('test/fixtures/executive-index.srj', 'r'))
 
-    languages = ['en']
-    executives = Executive.list('Q16', languages)
+    executives = Executive.list(config)
     assert_equal 3, executives.length
     assert_equal "Queen's Privy Council for Canada", executives[0].comment
     assert_equal 'Q1631137', executives[0].executive_item_id
@@ -35,8 +39,7 @@ class ExecutiveTest < Minitest::Test
       .to_return(body: open('test/fixtures/executive-index-missing-executive.srj', 'r')).then
       .to_return(body: '[]')
 
-    languages = ['en']
-    executives = Executive.list('Q16', languages)
+    executives = Executive.list(config)
     assert_equal [], executives
   end
 
@@ -45,8 +48,7 @@ class ExecutiveTest < Minitest::Test
       .to_return(body: open('test/fixtures/executive-index-missing-position.srj', 'r')).then
       .to_return(body: '[]')
 
-    languages = ['en']
-    executives = Executive.list('Q16', languages)
+    executives = Executive.list(config)
     assert_equal [], executives
   end
 end
