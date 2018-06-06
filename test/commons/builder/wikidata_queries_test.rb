@@ -78,4 +78,12 @@ class WikidataQueriesTest < Minitest::Test
     template = '{% for l in config.languages %}{{ l }}{% unless forloop.last %}, {% endunless %}{% endfor %}'
     assert_equal 'en, es', wikidata_queries.templated_query_from_string('q5', template)
   end
+
+  def test_label_service_has_all_langs
+    languages = %w[es en zh-tw]
+    wikidata_queries = WikidataQueries.new config(languages: languages)
+    template = "{% include 'label_service' %}"
+    expected = 'SERVICE wikibase:label { bd:serviceParam wikibase:language "en,es,zh-tw". }'
+    assert_equal expected, wikidata_queries.templated_query_from_string('q5', template)
+  end
 end
