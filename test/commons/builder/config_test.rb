@@ -28,5 +28,15 @@ module Commons
       config = Config.new_from_file('test/fixtures/config/config-with-language-map.json')
       assert_equal(%w[en es], config.languages)
     end
+
+    def test_no_additional_admin_areas
+      config = Config.new_from_file('test/fixtures/config/config.json')
+      assert_equal([], config.additional_admin_area_ids)
+    end
+
+    def test_additional_admin_areas
+      config = Config.new_from_file('test/fixtures/config/config-additional-admin-areas.json')
+      assert_equal(%w[Q1 Q2], config.additional_admin_area_ids)
+    end
   end
 end
