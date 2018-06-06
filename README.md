@@ -28,21 +28,39 @@ In an empty repository, create `config.json` a bit like this one:
 
 ```json
 {
-  "language_map": {
-    "lang:it_IT": "it",
-    "lang:en_US": "en"
-  },
+  "languages": [
+    "it",
+    "en"
+  ],
   "country_wikidata_id": "Q38"
 }
 ```
 
-Create the directory structure and `index.json` files in each, each containing an empty array to be populated later:
+If you have additional administrative areas for which you want to include
+legislatures and executives, then add a `additional_admin_area_ids` key:
+
+```json
+{
+  "languages": [
+    "it",
+    "en"
+  ],
+  "country_wikidata_id": "Q38",
+  "additional_admin_area_ids: [
+    "Q1234",
+    "Q1235"
+  ]
+}
+```
+
+Create the directory structure and `index.json` files in each, each containing
+an empty array to be populated later:
 
 ```bash
 mkdir -p boundaries executive legislative
 for d in boundaries executive legislative ; do
     if [ ! -e $d/index.json ] ; then
-        echo -e "[]\n" > $d/index.json
+        echo -e "[\n\n]" > $d/index.json
     fi
 done
 ```
@@ -52,15 +70,17 @@ done
 
 In the Democratic Commons repository you should run:
 
-    $ bundle exec generate_legislative_index
-    $ bundle exec generate_executive_index
+    $ bundle exec generate_legislative_index | tee legislative/index-warnings.txt
+    $ bundle exec generate_executive_index | tee executive/index-warnings.txt
 
 Caveats:
 
 * There's sometimes a disconnect between cities and the administrative areas
   covered by their mayors. For example, the Mayor of London is associated with
   Greater London, so won't be picked up to be automatically included in
-  `executive/index.json`, but the entry can still be maintained by hand.
+  `executive/index.json`, but the entry can still be maintained by hand. As a
+  workaround, you could explicitly add the appropriate admin areas as explained
+  above.
 
 TODO: Explain `boundaries/index.json`
 
@@ -69,9 +89,12 @@ TODO: Explain `boundaries/index.json`
 
 In the Democratic Commons repository you should run:
 
-    $ bundle exec build
+    $ bundle exec build update
+    $ bundle exec build build | tee build_output.txt
 
 ... to build the output files.
+
+You ought to commit changes after each of these commands separately.
 
 
 ## Development
