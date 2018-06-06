@@ -85,5 +85,12 @@ class WikidataQueriesTest < Minitest::Test
                                                       additional_admin_area_ids: %w[Q1234 Q1235])
     assert_match(/\(wd:Q1234 4 wd:Q24238356\)\s+\(wd:Q1235 4 wd:Q24238356\)/,
                  wikidata_queries.templated_query('select_admin_areas_for_country'))
+
+  def test_label_service_has_all_langs
+    languages = %w[es en zh-tw]
+    wikidata_queries = WikidataQueries.new config(languages: languages)
+    template = "{% include 'label_service' %}"
+    expected = 'SERVICE wikibase:label { bd:serviceParam wikibase:language "en,es,zh-tw". }'
+    assert_equal expected, wikidata_queries.templated_query_from_string('q5', template)
   end
 end
