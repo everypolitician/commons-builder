@@ -9,6 +9,10 @@ class Legislature < Branch
     Pathname.new(house_item_id)
   end
 
+  def item_id
+    house_item_id
+  end
+
   def positions_item_ids
     [position_item_id]
   end
@@ -63,6 +67,20 @@ class Legislature < Branch
           position_item_id: l[:legislaturePost]&.value,
           terms:            terms)
     end
+  end
+
+  def self.constituencies(config, legislatures)
+    wikidata_queries = WikidataQueries.new(config)
+    sparql_query = wikidata_queries.templated_query(
+      'legislative_constituencies',
+      legislatures: legislatures.map(&:house_item_id),
+    )
+    puts sparql_query
+    wikidata_queries.perform(sparql_query)
+  end
+
+  def constituencies(config)
+    Legislature.constituencies(config, [self])
   end
 
   def as_json

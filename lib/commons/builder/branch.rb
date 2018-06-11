@@ -8,10 +8,14 @@ class Branch
     raise "Unknown properties: #{properties}" unless properties.empty?
   end
 
-  def self.for(type, properties)
+  def self.branch_types
     {
-      'legislative' => Legislature,
-      'executive' => Executive,
-    }.fetch(type).new(**properties)
+        'legislative' => Legislature,
+        'executive' => Executive,
+    }
+  end
+
+  def self.for(type, properties)
+    branch_types.fetch(type).new(**properties)
   end
 end

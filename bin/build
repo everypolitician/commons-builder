@@ -13,11 +13,11 @@ config = Config.new_from_file('config.json')
 
 root_dir = Pathname.new('').dirname
 
-valid_actions = %w[update build]
+valid_actions = %w[constituencies update build]
 
 unknown_args = Set.new(ARGV) - Set.new(valid_actions)
 unless unknown_args.empty?
-  STDERR.puts "Usage: #{$PROGRAM_NAME} update|build"
+  STDERR.puts "Usage: #{$PROGRAM_NAME} constituencies|update|build"
   exit(1)
 end
 
@@ -38,8 +38,77 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
   political_entity_kind_dir = root_dir.join(political_entity_kind)
   index_file = political_entity_kind_dir.join('index.json')
 
-  JSON.parse(index_file.read, symbolize_names: true).each do |political_entity_h|
-    branch = Branch.for(political_entity_kind, political_entity_h)
+  branches = JSON.parse(index_file.read, symbolize_names: true).map do |political_entity_h|
+    Branch.for(political_entity_kind, political_entity_h)
+  end
+  branches_by_id = branches.group_by(&:item_id)
+
+  branch_type = Branch.branch_types[political_entity_kind]
+
+  if actions.include?('constituencies') && branch_type.respond_to?(:constituencies)
+    index_entries = []
+
+    areas = branch_type.constituencies(config, branches)
+    areas = areas.group_by { |area| [area[:legislature_jurisdiction_type].value, area[:is_lower_house].value] }
+    areas.each do |(type_id, is_lower_house), areas|
+      puts "Area type: #{type_id}, Lower house?: #{is_lower_house}, Numer of areas: #{areas.length}"
+      areas_by_legislature = areas.group_by { |area| area[:legislature].value }
+      boundary_names = {
+        ['Q6256', false] => 'senate-constituencies',
+        ['Q6256', true] => 'chamber-constituencies',
+        ['Q590080', false] => 'regional-constituencies',
+      }
+      boundary_name = boundary_names.fetch [type_id, is_lower_house]
+      full_boundary_dir_name = Pathname(boundaries_dir).join(boundary_name)
+      Dir.mkdir(full_boundary_dir_name) unless Dir.exist?(full_boundary_dir_name)
+
+      CSV.open(full_boundary_dir_name.join(boundary_name + '.csv'), "wb") do |boundary_csv|
+
+        boundary_csv << [
+          'WIKIDATA',
+          'LEGIS_ID',
+        ] + config.languages.map { |lang| "name_#{lang}" }
+
+
+        areas_by_legislature.each do |legislature, areas|
+          index_entry = {
+            directory: boundary_name,
+            area_type_wikidata_item_id: type_id,
+            associations: [
+              {
+                comment: wikidata_labels.label_for(branches_by_id[legislature][0].position_item_id),
+                position_item_id: branches_by_id[legislature][0].position_item_id,
+              },
+            ],
+            #name_columns: config.languages.map { |lang| ["lang:#{lang}", "name_#{lang}"] }.to_h,
+            name_columns: {
+                "lang:es": "NOM"
+            }
+          }
+          if areas_by_legislature.length > 1
+            index_entry[:filter] = {
+              match: legislature,
+              #column: 'LEGIS_ID',
+              column: 'MS_FB_PARE',
+            }
+          end
+          areas.each do |area|
+            boundary_csv << [
+              area[:constituency].value,
+              area[:legislature].value,
+            ] + config.languages.map { |lang| area[:"constituency_name_#{lang}"]&.value }
+          end
+          #puts JSON.pretty_generate index_entry
+          index_entries.push index_entry
+        end
+      end
+    end
+
+    Pathname.new('boundaries/build/index-new.json').open('wb').write(JSON.pretty_generate(index_entries))
+  end
+
+  branches.each do |branch|
+
     branch.terms.each do |term|
       output_dir = political_entity_kind_dir.join(term.output_relative)
       output_dir.mkpath

@@ -9,6 +9,7 @@ class WikidataCell < Wikidata
   end
 
   def value
+    return raw_value == 'true' if datatype == 'http://www.w3.org/2001/XMLSchema#boolean'
     return raw_value.split('/').last if wikidata_item?
     return raw_value.to_s[0...10] if date?
     raw_value
