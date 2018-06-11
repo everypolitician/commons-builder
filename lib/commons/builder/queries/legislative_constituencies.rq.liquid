@@ -1,0 +1,46 @@
+SELECT DISTINCT ?legislature {% lang_select 'legislature_name' %}
+                ?is_lower_house
+                ?constituency {% lang_select 'constituency_name' %}
+                ?constituency_area_type {% lang_select 'constituency_area_type_name' %}
+                ?legislature_jurisdiction {% lang_select 'legislature_jurisdiction_name' %}
+                ?legislature_jurisdiction_type {% lang_select 'legislature_jurisdiction_type_name' %} {
+  {
+    SELECT ?legislature ?is_lower_house ?constituency ?constituency_area_type ?legislature_jurisdiction
+           (MAX(?legislature_jurisdiction_type) AS ?legislature_jurisdiction_type) {
+      VALUES ?legislature { {% for legislature in legislatures %}wd:{{ legislature }} {% endfor %}}
+      BIND ((EXISTS { ?legislature wdt:P31 wd:Q375928 }) AS ?is_lower_house)
+
+      {
+        ?constituency wdt:P194 ?legislature ;
+                      wdt:P31/wdt:P279* wd:Q192611 .
+      } UNION {
+               ?statement ps:P279/wdt:P279* wd:Q192611 ;
+                          pq:P642/wdt:P527? ?legislature ;
+                          wikibase:rank ?statementRank .
+               FILTER (?statementRank != wikibase:DeprecatedRank)
+               ?constituencySuperclass p:P279 ?statement .
+               ?constituency wdt:P31/wdt:P279* ?constituencySuperclass .
+      } UNION {
+        ?statement ps:P31 wd:Q192611 ;
+                   pq:P642/wdt:P527? ?legislature ;
+                   wikibase:rank ?statementRank .
+        FILTER (?statementRank != wikibase:DeprecatedRank)
+        ?constituency p:P31 ?statement .
+      }
+      MINUS {
+        ?constituency wdt:P576 ?dissolvedDate .
+        FILTER (?dissolvedDate < NOW())
+      }
+      ?constituency wdt:P31 ?constituency_area_type .
+      ?legislature wdt:P1001 ?legislature_jurisdiction .
+
+      ?legislature_jurisdiction wdt:P31 ?legislature_jurisdiction_type .
+    } GROUP BY ?legislature ?is_lower_house ?constituency ?constituency_area_type ?legislature_jurisdiction
+  }
+
+  {% lang_options 'constituency_name' '?constituency' %}
+  {% lang_options 'constituency_area_type_name' '?constituency_area_type' %}
+  {% lang_options 'legislature_name' '?legislature' %}
+  {% lang_options 'legislature_jurisdiction_name' '?legislature_jurisdiction' %}
+  {% lang_options 'legislature_jurisdiction_type_name' '?legislature_jurisdiction_type' %}
+}
