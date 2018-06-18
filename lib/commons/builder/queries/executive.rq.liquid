@@ -13,7 +13,8 @@ WHERE {
   OPTIONAL {
     ?org wdt:P1001 ?org_jurisdiction
   }
-  ?item p:P39 ?statement .
+  ?item wdt:P31 wd:Q5 ;
+        p:P39 ?statement .
   {% lang_options 'name' '?item' %}
   ?statement ps:P39 ?role .
   {% lang_options 'role' '?role' %}
