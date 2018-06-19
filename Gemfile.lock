@@ -2,12 +2,18 @@ PATH
   remote: .
   specs:
     commons-builder (0.1.0)
+      commons-integrity
       liquid
       rest-client (~> 2.0.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (5.2.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     ast (2.4.0)
@@ -15,6 +21,11 @@ GEM
       json
       simplecov
       url
+    commons-integrity (0.1)
+      activesupport
+      json
+      require_all
+    concurrent-ruby (1.0.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     docile (1.1.5)
@@ -23,6 +34,8 @@ GEM
     hashdiff (0.3.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    i18n (1.0.1)
+      concurrent-ruby (~> 1.0)
     json (2.1.0)
     liquid (4.0.0)
     mime-types (3.1)
@@ -37,6 +50,7 @@ GEM
     public_suffix (3.0.2)
     rainbow (3.0.0)
     rake (10.5.0)
+    require_all (2.0.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -55,7 +69,10 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    thread_safe (0.3.6)
     timecop (0.9.1)
+    tzinfo (1.2.5)
+      thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
