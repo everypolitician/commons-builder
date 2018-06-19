@@ -1,0 +1,6 @@
+WikidataIdentifiers:
+  AppliesTo: 'boundaries/**/*.csv'
+  column_name: 'WIKIDATA'
+  column_case: 'fixed'
+AreaPositionsKnown:
+  AppliesTo: 'boundaries/build/position-data.json'
