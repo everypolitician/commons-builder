@@ -30,14 +30,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Max: 6
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'test/commons/legislative_index_test.rb'
-
 # Offense count: 1
 Style/CaseEquality:
   Exclude:
