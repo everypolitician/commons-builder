@@ -3,8 +3,13 @@ SELECT DISTINCT
   ?legislature ?legislatureLabel
   ?term ?termLabel
   ?termStart ?termEnd
+  ?termSpecificPosition
 WHERE {
-  VALUES ?house { {% for house in houses %}wd:{{ house }} {% endfor %}}
+  VALUES (?house ?position) {
+{%- for house_position in house_positions %}
+    (wd:{{ house_position.house }} {% if house_position.position %}wd:{{ house_position.position }}{% else %}rdf:nil{% endif %})
+{%- endfor %}
+  }
   ?house (p:P361/ps:P361)* ?legislature .
       ?baseTerm p:P31|p:P279 [ ps:P279|ps:P31 wd:Q15238777 ; pq:P642 ?legislature ] .
       OPTIONAL { ?subTerm wdt:P31 ?baseTerm }
@@ -15,6 +20,11 @@ WHERE {
   OPTIONAL { ?term (wdt:P582|wdt:P576) ?termEnd. }
   OPTIONAL { ?term (wdt:P155|wdt:P1365) ?termReplaces }
   OPTIONAL { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+  OPTIONAL {
+    ?termSpecificPosition wdt:P31/wdt:P279* wd:Q4164871 ;
+                          p:P279 [ ps:P279 ?position ;
+                                   pq:P2937 ?term ] .
+  }
 
   FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
   FILTER (!BOUND(?termReplacedBy))

@@ -32,7 +32,10 @@ class Legislature < Branch
     query = Query.new(
       sparql_query: WikidataQueries.new(config).templated_query(
         'legislative_index_terms',
-        houses: legislatures.map { |legislature| legislature[:legislature].value }
+        house_positions: legislatures.map do |legislature|
+          { 'house'    => legislature[:legislature].value,
+            'position' => legislature[:legislaturePost]&.value, }
+        end
       ),
       output_dir_pn: Pathname.new('legislative'),
       output_fname_prefix: 'index-terms-'
