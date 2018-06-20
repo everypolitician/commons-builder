@@ -45,6 +45,19 @@ class Legislature < Branch
     )
   end
 
+  def self.terms_or_default(terms)
+    if terms.empty?
+      [
+        {
+          start_date: "#{Time.new.year}-01-01",
+          end_date:   "#{Time.new.year}-12-31",
+        },
+      ]
+    else
+      terms
+    end
+  end
+
   def self.list(config, save_queries: false)
     legislatures = legislatures_from_wikidata(config, save_queries)
 
@@ -59,27 +72,18 @@ class Legislature < Branch
       }
       term[:start_date] = term_row[:termStart].value if term_row[:termStart]
       term[:end_date] = term_row[:termEnd].value if term_row[:termEnd]
+      term[:position_item_id] = term_row[:termSpecificPosition].value if term_row[:termSpecificPosition]
 
       terms_by_legislature[term_row[:house].value]
       terms_by_legislature[term_row[:house].value].push(term)
     end
 
-    this_year_term = {
-      start_date: "#{Time.new.year}-01-01",
-      end_date:   "#{Time.new.year}-12-31",
-    }
-
     # Return the rows as Legislature objects
     legislatures.map do |l|
-      terms = if terms_by_legislature[l[:legislature].value].empty?
-                [this_year_term]
-              else
-                terms_by_legislature[l[:legislature].value]
-              end
       new(comment:          l[:legislatureLabel].value,
           house_item_id:    l[:legislature].value,
           position_item_id: l[:legislaturePost]&.value,
-          terms:            terms)
+          terms:            terms_or_default(terms_by_legislature[l[:legislature].value]))
     end
   end
 

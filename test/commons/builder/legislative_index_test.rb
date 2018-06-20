@@ -31,6 +31,16 @@ module Commons
       assert_equal expected, term.as_json
     end
 
+    def test_legislative_term_with_position_as_json
+      term = LegislativeTerm.new legislature: nil, term_item_id: 'Q123', comment: 'Test term', position_item_id: 'Q456'
+      expected = {
+        comment:          'Test term',
+        term_item_id:     'Q123',
+        position_item_id: 'Q456',
+      }
+      assert_equal expected, term.as_json
+    end
+
     def test_legislature_as_json
       term = { comment: 'Term', term_item_id: 'Q3' }
       legislature = Legislature.new terms: [term], house_item_id: 'Q1',
@@ -60,7 +70,8 @@ module Commons
         assert_equal LegislativeTerm.new(legislature: legislatures[0],
                                          term_item_id: 'Q21157957',
                                          start_date: '2015-12-03',
-                                         comment: '42nd Canadian Parliament'), legislatures[0].terms[0]
+                                         comment: '42nd Canadian Parliament',
+                                         position_item_id: 'Q30524710'), legislatures[0].terms[0]
 
         # This one has no term in the fixture data
         assert_equal 'Calgary City Council', legislatures[2].comment
