@@ -1,4 +1,4 @@
-SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?position ?positionLabel {
+SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminAreaTypes ?position ?positionLabel {
   {
     {% include 'select_admin_areas_for_country' %}
   }
@@ -26,4 +26,4 @@ SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminArea
   }
 
   {% include 'label_service' %}
-} ORDER BY ?primarySort ?country ?adminAreaType ?executive ?position
+} ORDER BY ?primarySort ?executive ?position
