@@ -1,4 +1,6 @@
-SELECT DISTINCT ?primarySort ?adminArea ?adminAreaType {
+SELECT DISTINCT ?adminArea
+                (MIN(?primarySort) AS ?primarySort)
+                (GROUP_CONCAT(DISTINCT REPLACE(STR(?adminAreaType), '^.*/', ''); SEPARATOR=" ") AS ?adminAreaTypes) {
   {
     VALUES (?adminArea ?primarySort ?adminAreaType) { (wd:{{ config.country_wikidata_id }} 1 wd:Q6256) }
   } UNION {
@@ -7,14 +9,13 @@ SELECT DISTINCT ?primarySort ?adminArea ?adminAreaType {
           wdt:P31/wdt:P279* wd:Q10864048
     VALUES (?primarySort ?adminAreaType) { (2 wd:Q10864048) }
   } UNION {
-    # Find cities with populations of over 250k
+    # Find cities or municipalities with populations of over 250k
+    VALUES ?adminAreaType { wd:Q515 wd:Q15284 }
     ?adminArea wdt:P17 wd:{{ config.country_wikidata_id }} ;
-       wdt:P31/wdt:P279* wd:Q515 ;
+       wdt:P31/wdt:P279* ?adminAreaType ;
        wdt:P1082 ?population .
     FILTER (?population > 250000)
-    # Make sure the city is not also a FLACS
-    MINUS { ?adminArea wdt:P31/wdt:P279* wd:Q10864048 }
-    VALUES (?primarySort ?adminAreaType) { (3 wd:Q515) }
+    VALUES ?primarySort { 3 }
   }{% if config.additional_admin_area_ids %} UNION {
     VALUES (?adminArea ?primarySort ?adminAreaType) {
 {%- for admin_area_id in config.additional_admin_area_ids %}
@@ -22,4 +23,4 @@ SELECT DISTINCT ?primarySort ?adminArea ?adminAreaType {
 {%- endfor %}
     }
   }{% endif %}
-} ORDER BY ?primarySort
+} GROUP BY ?adminArea ORDER BY ?primarySort ?adminArea
