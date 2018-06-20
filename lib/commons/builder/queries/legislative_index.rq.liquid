@@ -1,4 +1,4 @@
-SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea ?adminAreaLabel ?adminAreaType ?adminAreaTypeLabel ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
+SELECT DISTINCT ?legislature ?legislatureLabel ?adminArea ?adminAreaLabel ?adminAreaTypes ?legislaturePost ?legislaturePostLabel ?numberOfSeats WHERE {
   {
     {% include 'select_admin_areas_for_country' %}
   }
@@ -27,4 +27,4 @@ SELECT DISTINCT ?legislature ?legislatureLabel ?country ?countryLabel ?adminArea
   # Remove legislatures that have ended
   FILTER NOT EXISTS { ?legislature wdt:P576 ?legislatureEnd . FILTER (?legislatureEnd < NOW()) }
   {% include 'label_service' %}
-} ORDER BY ?primarySort ?country ?adminAreaType ?legislature ?legislaturePost
+} ORDER BY ?primarySort ?legislature ?legislaturePost
