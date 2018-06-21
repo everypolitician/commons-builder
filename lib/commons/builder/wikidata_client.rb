@@ -9,10 +9,14 @@ class WikidataClient
     @url = url
   end
 
-  def perform(sparql_query, parser)
+  def perform_raw(sparql_query)
     headers = { 'Content-Type': 'application/sparql-query',
                 'Accept':       'application/sparql-results+json', }
-    result = RestClient.post(url, sparql_query, headers)
-    parser.parse(result)
+    response = RestClient.post(url, sparql_query, headers)
+    response.body
+  end
+
+  def perform(sparql_query, parser)
+    parser.parse(perform_raw(sparql_query))
   end
 end
