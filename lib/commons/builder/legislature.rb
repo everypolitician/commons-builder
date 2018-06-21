@@ -17,32 +17,35 @@ class Legislature < Branch
     @terms.map { |t| LegislativeTerm.new(legislature: self, **t) }
   end
 
-  def self.list(config, save_queries: false)
-    wikidata_client = WikidataClient.new
-    wikidata_queries = WikidataQueries.new(config)
-    wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
-
+  def self.legislatures_from_wikidata(config, save_queries)
     query = Query.new(
-      sparql_query: wikidata_queries.templated_query('legislative_index'),
+      sparql_query: WikidataQueries.new(config).templated_query('legislative_index'),
       output_dir_pn: Pathname.new('legislative'),
       output_fname_prefix: 'index-'
     )
-    legislatures = wikidata_results_parser.parse(
-      query.run(wikidata_client: wikidata_client, save_query_used: save_queries, save_query_results: false)
+    WikidataResultsParser.new(languages: config.languages).parse(
+      query.run(wikidata_client: WikidataClient.new, save_query_used: save_queries, save_query_results: false)
     )
+  end
 
-    # Now collect term information
+  def self.terms_from_wikidata(config, save_queries, legislatures)
     query = Query.new(
-      sparql_query: wikidata_queries.templated_query(
+      sparql_query: WikidataQueries.new(config).templated_query(
         'legislative_index_terms',
         houses: legislatures.map { |legislature| legislature[:legislature].value }
       ),
       output_dir_pn: Pathname.new('legislative'),
       output_fname_prefix: 'index-terms-'
     )
-    term_rows = wikidata_results_parser.parse(
-      query.run(wikidata_client: wikidata_client, save_query_used: save_queries, save_query_results: false)
+    WikidataResultsParser.new(languages: config.languages).parse(
+      query.run(wikidata_client: WikidataClient.new, save_query_used: save_queries, save_query_results: false)
     )
+  end
+
+  def self.list(config, save_queries: false)
+    legislatures = legislatures_from_wikidata(config, save_queries)
+
+    term_rows = terms_from_wikidata(config, save_queries, legislatures)
 
     terms_by_legislature = Hash.new { |h, k| h[k] = [] }
 
