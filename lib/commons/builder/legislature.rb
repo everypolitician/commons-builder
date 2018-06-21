@@ -21,18 +21,28 @@ class Legislature < Branch
     wikidata_client = WikidataClient.new
     wikidata_queries = WikidataQueries.new(config)
     wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
-    sparql_query = wikidata_queries.templated_query('legislative_index')
 
-    open('legislative/index-query-used.rq', 'w').write(sparql_query) if save_queries
-    legislatures = wikidata_client.perform(sparql_query, wikidata_results_parser)
+    query = Query.new(
+      sparql_query: wikidata_queries.templated_query('legislative_index'),
+      output_dir_pn: Pathname.new('legislative'),
+      output_fname_prefix: 'index-'
+    )
+    legislatures = wikidata_results_parser.parse(
+      query.run(wikidata_client: wikidata_client, save_query_used: save_queries, save_query_results: false)
+    )
 
     # Now collect term information
-    sparql_query = wikidata_queries.templated_query(
-      'legislative_index_terms',
-      houses: legislatures.map { |legislature| legislature[:legislature].value }
+    query = Query.new(
+      sparql_query: wikidata_queries.templated_query(
+        'legislative_index_terms',
+        houses: legislatures.map { |legislature| legislature[:legislature].value }
+      ),
+      output_dir_pn: Pathname.new('legislative'),
+      output_fname_prefix: 'index-terms-'
     )
-    open('legislative/index-terms-query-used.rq', 'w').write(sparql_query) if save_queries
-    term_rows = wikidata_client.perform(sparql_query, wikidata_results_parser)
+    term_rows = wikidata_results_parser.parse(
+      query.run(wikidata_client: wikidata_client, save_query_used: save_queries, save_query_results: false)
+    )
 
     terms_by_legislature = Hash.new { |h, k| h[k] = [] }
 
