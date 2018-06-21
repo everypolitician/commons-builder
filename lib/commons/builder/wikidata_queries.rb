@@ -4,11 +4,7 @@ require 'liquid'
 
 class WikidataQueries < WikidataClient
   class LangTag < Liquid::Tag
-    def variable(prefix, lang_code, query = true)
-      variable = "#{prefix}_#{lang_code.tr('-', '_')}"
-      variable = "?#{variable}" if query
-      variable
-    end
+    include SPARQLLanguageHelper
   end
 
   class LangSelect < LangTag
