@@ -15,6 +15,7 @@ require 'commons/builder/sparql_language_helper'
 require 'commons/builder/wikidata_client'
 require 'commons/builder/wikidata_labels'
 require 'commons/builder/wikidata_queries'
+require 'commons/builder/wikidata_results_parser'
 require 'commons/builder/wikidata_results'
 
 module Commons

@@ -24,13 +24,14 @@ class Executive < Branch
   end
 
   def self.list(config, save_queries: false)
-    wikidata_client = WikidataClient.new(config)
+    wikidata_client = WikidataClient.new
     wikidata_queries = WikidataQueries.new(config)
+    wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
     wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
     sparql_query = wikidata_queries.templated_query('executive_index')
 
     open('executive/index-query-used.rq', 'w').write(sparql_query) if save_queries
-    executives = wikidata_client.perform(sparql_query)
+    executives = wikidata_client.perform(sparql_query, wikidata_results_parser)
 
     executives.select! do |row|
       unless row[:position]&.value

@@ -39,10 +39,14 @@ class WikidataLabels
     @labels_cache ||= {}
   end
 
+  def parser
+    @parser ||= WikidataResultsParser.new(languages: config.languages)
+  end
+
   # This function returns a multilingual name object for a Wikidata item
   def fetch_labels(wikidata_item_id)
     query = WikidataQueries.new(config).templated_query('labels', wikidata_item_id: wikidata_item_id)
-    results = wikidata_client.perform(query)
+    results = wikidata_client.perform(query, parser)
     result = results[0].name_object('name')
     raise "No language labels found for #{wikidata_item_id}" if result.empty?
     result

@@ -3,22 +3,16 @@
 require 'rest-client'
 
 class WikidataClient
-  attr_accessor :config, :url
+  attr_accessor :url
 
-  def initialize(config, url: 'https://query.wikidata.org/sparql')
-    @config = config
+  def initialize(url: 'https://query.wikidata.org/sparql')
     @url = url
   end
 
-  def languages
-    config.languages
-  end
-
-  def perform(sparql_query)
+  def perform(sparql_query, parser)
     headers = { 'Content-Type': 'application/sparql-query',
                 'Accept':       'application/sparql-results+json', }
     result = RestClient.post(url, sparql_query, headers)
-    bindings = JSON.parse(result, symbolize_names: true)[:results][:bindings]
-    bindings.map { |row| WikidataRow.new(row, languages) }
+    parser.parse(result)
   end
 end

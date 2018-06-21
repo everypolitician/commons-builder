@@ -18,12 +18,13 @@ class Legislature < Branch
   end
 
   def self.list(config, save_queries: false)
-    wikidata_client = WikidataClient.new(config)
+    wikidata_client = WikidataClient.new
     wikidata_queries = WikidataQueries.new(config)
+    wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
     sparql_query = wikidata_queries.templated_query('legislative_index')
 
     open('legislative/index-query-used.rq', 'w').write(sparql_query) if save_queries
-    legislatures = wikidata_client.perform(sparql_query)
+    legislatures = wikidata_client.perform(sparql_query, wikidata_results_parser)
 
     # Now collect term information
     sparql_query = wikidata_queries.templated_query(
@@ -31,7 +32,7 @@ class Legislature < Branch
       houses: legislatures.map { |legislature| legislature[:legislature].value }
     )
     open('legislative/index-terms-query-used.rq', 'w').write(sparql_query) if save_queries
-    term_rows = wikidata_client.perform(sparql_query)
+    term_rows = wikidata_client.perform(sparql_query, wikidata_results_parser)
 
     terms_by_legislature = Hash.new { |h, k| h[k] = [] }
 
