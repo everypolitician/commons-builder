@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WikidataLabels < Wikidata
+class WikidataLabels < WikidataClient
   def item_with_label(wikidata_item_id)
     return '[no item]' if wikidata_item_id.nil?
     "#{label_for(wikidata_item_id)} (#{wikidata_item_id})"

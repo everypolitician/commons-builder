@@ -2,7 +2,7 @@
 
 require 'rest-client'
 
-class Wikidata
+class WikidataClient
   attr_accessor :config, :url
 
   def initialize(config, url: 'https://query.wikidata.org/sparql')
