@@ -94,4 +94,15 @@ class WikidataQueriesTest < Minitest::Test
     assert_match(/\(wd:Q1234 4 wd:Q24238356\)\s+\(wd:Q1235 4 wd:Q24238356\)/,
                  wikidata_queries.templated_query('select_admin_areas_for_country'))
   end
+
+  def test_query_real_people
+    # Ensure branch person queries always return humans (and not e.g. fictional humans)
+    wikidata_queries = WikidataQueries.new Config.new(languages: ['en'],
+                                                      country_wikidata_id: 'Q16',
+                                                      additional_admin_area_ids: %w[Q1234 Q1235])
+    assert_match(/\?item\s+wdt:P31\s+wd:Q5/,
+                 wikidata_queries.templated_query('executive'))
+    assert_match(/\?item\s+wdt:P31\s+wd:Q5/,
+                 wikidata_queries.templated_query('legislative'))
+  end
 end
