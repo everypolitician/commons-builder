@@ -3,8 +3,6 @@
 require 'rest-client'
 
 class WikidataClient
-  include SPARQLLanguageHelper
-
   attr_accessor :config, :url
 
   def initialize(config, url: 'https://query.wikidata.org/sparql')

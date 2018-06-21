@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-class WikidataLabels < WikidataClient
+class WikidataLabels
+  def initialize(client)
+    @client = client
+  end
+
   def item_with_label(wikidata_item_id)
     return '[no item]' if wikidata_item_id.nil?
     "#{label_for(wikidata_item_id)} (#{wikidata_item_id})"
@@ -28,6 +32,8 @@ class WikidataLabels < WikidataClient
 
   private
 
+  attr_reader :client
+
   def labels_cache
     @labels_cache ||= {}
   end
@@ -40,7 +46,7 @@ class WikidataLabels < WikidataClient
         #{lang_options}
       }
   SPARQL
-    results = perform(query)
+    results = client.perform(query)
     result = results[0].name_object('name')
     raise "No language labels found for #{wikidata_item_id}" if result.empty?
     result

@@ -28,7 +28,8 @@ actions = if ARGV.empty?
             ARGV.clone
           end
 
-wikidata_labels = WikidataLabels.new(config)
+wikidata_client = WikidataClient.new(config)
+wikidata_labels = WikidataLabels.new(wikidata_client)
 
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)

@@ -13,43 +13,5 @@ module Commons
       wikidata = WikidataClient.new config(languages: %w[en es])
       assert_equal(%w[en es], wikidata.languages)
     end
-
-    def test_lang_select_returns_space_delimited_names
-      languages = ['en']
-      wikidata = WikidataClient.new config(languages: languages)
-      expected = '?name_en'
-      assert_equal(expected, wikidata.lang_select)
-    end
-
-    def test_lang_select_converts_hypens
-      languages = ['zh-tw']
-      wikidata = WikidataClient.new config(languages: languages)
-      expected = '?name_zh_tw'
-      assert_equal(expected, wikidata.lang_select)
-    end
-
-    def test_lang_options_returns_optional_filter
-      languages = ['en']
-      wikidata = WikidataClient.new config(languages: languages)
-      expected = <<~OPTIONAL_CLAUSE
-        OPTIONAL {
-                  ?item rdfs:label ?name_en
-                  FILTER(LANG(?name_en) = "en")
-                }
-      OPTIONAL_CLAUSE
-      assert_equal(expected.strip, wikidata.lang_options)
-    end
-
-    def test_lang_options_converts_hypens
-      languages = ['zh-tw']
-      wikidata = WikidataClient.new config(languages: languages)
-      expected = <<~OPTIONAL_CLAUSE
-        OPTIONAL {
-                  ?item rdfs:label ?name_zh_tw
-                  FILTER(LANG(?name_zh_tw) = "zh-tw")
-                }
-      OPTIONAL_CLAUSE
-      assert_equal(expected.strip, wikidata.lang_options)
-    end
   end
 end
