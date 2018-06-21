@@ -29,7 +29,7 @@ actions = if ARGV.empty?
           end
 
 wikidata_client = WikidataClient.new(config)
-wikidata_labels = WikidataLabels.new(wikidata_client)
+wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
 
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)

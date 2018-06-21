@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class WikidataLabels
-  def initialize(client)
-    @client = client
+  def initialize(config:, wikidata_client:)
+    @config = config
+    @wikidata_client = wikidata_client
   end
 
   def item_with_label(wikidata_item_id)
@@ -14,7 +15,7 @@ class WikidataLabels
     all_labels = labels_for(wikidata_item_id)
     return nil if all_labels.nil?
     label_languages = all_labels.keys.sort_by do |l|
-      languages.index(l)
+      config.languages.index(l)
     end
     all_labels.values_at(*label_languages).first
   end
@@ -32,7 +33,7 @@ class WikidataLabels
 
   private
 
-  attr_reader :client
+  attr_reader :wikidata_client, :config
 
   def labels_cache
     @labels_cache ||= {}
@@ -40,13 +41,8 @@ class WikidataLabels
 
   # This function returns a multilingual name object for a Wikidata item
   def fetch_labels(wikidata_item_id)
-    query = <<~SPARQL
-      SELECT #{lang_select} WHERE {
-        BIND(wd:#{wikidata_item_id} as ?item)
-        #{lang_options}
-      }
-  SPARQL
-    results = client.perform(query)
+    query = WikidataQueries.new(config).templated_query('labels', wikidata_item_id: wikidata_item_id)
+    results = wikidata_client.perform(query)
     result = results[0].name_object('name')
     raise "No language labels found for #{wikidata_item_id}" if result.empty?
     result
