@@ -1,0 +1,129 @@
+{
+  "head" : {
+    "vars" : [ "position", "position_name_pt", "position_name_en", "positionType", "adminAreaTypes", "adminArea", "admin_area_pt", "admin_area_en", "positionSuperclass", "position_superclass_pt", "position_superclass_en", "legislature", "legislature_pt", "legislature_en" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "position" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q18964326"
+      },
+      "position_name_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Member of the Senate of Brazil"
+      },
+      "positionType" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q4175034"
+      },
+      "adminAreaTypes" : {
+        "type" : "literal",
+        "value" : "Q6256"
+      },
+      "adminArea" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q155"
+      },
+      "admin_area_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "Brasil"
+      },
+      "admin_area_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Brazil"
+      },
+      "positionSuperclass" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q15686806"
+      },
+      "position_superclass_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "senador"
+      },
+      "position_superclass_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "senator"
+      },
+      "legislature" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q2119413"
+      },
+      "legislature_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "Senado Federal do Brasil"
+      },
+      "legislature_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Federal Senate of Brazil"
+      }
+    }, {
+      "position" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q24255165"
+      },
+      "position_name_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Mayor of São Paulo"
+      },
+      "adminAreaTypes" : {
+        "type" : "literal",
+        "value" : "Q15284 Q515"
+      },
+      "adminArea" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q174"
+      },
+      "admin_area_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "São Paulo"
+      },
+      "admin_area_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "São Paulo"
+      },
+      "positionSuperclass" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q30185"
+      },
+      "position_superclass_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "prefeito"
+      },
+      "position_superclass_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "mayor"
+      },
+      "legislature" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q10351100"
+      },
+      "legislature_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "Prefeitura do Município de São Paulo"
+      },
+      "legislature_en" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "municipal prefecture of São Paulo"
+      },
+      "position_name_pt" : {
+        "xml:lang" : "pt",
+        "type" : "literal",
+        "value" : "Prefeito de São Paulo"
+      }
+    } ]
+  }
+}

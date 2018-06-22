@@ -18,6 +18,7 @@ require 'commons/builder/wikidata_queries'
 require 'commons/builder/wikidata_results_parser'
 require 'commons/builder/wikidata_results'
 require 'commons/builder/query'
+require 'commons/builder/position_data'
 
 module Commons
   module Builder

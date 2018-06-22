@@ -35,6 +35,15 @@ wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
 
+position_data = PositionData.new(
+  output_dir_pn: Pathname.new(boundaries_dir),
+  wikidata_client: wikidata_client,
+  config: config
+)
+
+position_data.update if actions.include? 'update'
+position_data.build if actions.include? 'build'
+
 boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
 
 %w[legislative executive].each do |political_entity_kind|
