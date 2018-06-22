@@ -8,7 +8,9 @@
             "term",
             "termLabel",
             "termStart",
-            "termEnd"
+            "termEnd",
+            "termSpecificPosition",
+            "termSpecificPositionLabel"
         ]
     },
     "results": {
@@ -45,6 +47,15 @@
                     "xml:lang": "en",
                     "type": "literal",
                     "value": "42nd Canadian Parliament"
+                },
+                "termSpecificPosition": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q30524710"
+                },
+                "termSpecificPositionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Member of the 57th Parliament of the United Kingdom"
                 }
             },
             {
