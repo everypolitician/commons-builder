@@ -28,7 +28,9 @@ actions = if ARGV.empty?
             ARGV.clone
           end
 
-wikidata_labels = WikidataLabels.new(config)
+wikidata_client = WikidataClient.new
+wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
+wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
 
 boundaries_dir = Dir.exist?('boundaries/build') ? 'boundaries/build' : 'boundaries'
 boundary_data = BoundaryData.new(wikidata_labels, boundaries_dir: boundaries_dir)
@@ -45,27 +47,16 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       output_dir = political_entity_kind_dir.join(term.output_relative)
       output_dir.mkpath
       output_pathname = output_dir.join('popolo-m17n.json')
-      raw_results_pathname = output_dir.join('query-results.json')
-
+      query = Query.new(
+        sparql_query: term.query(config),
+        output_dir_pn: output_dir
+      )
       if actions.include? 'update'
-        sparql_query = term.query(config)
-        output_dir.join('query-used.rq').write(sparql_query)
-
-        query_params = {
-          query: sparql_query,
-          format: 'json',
-        }
-        result = RestClient.get(URL, params: query_params)
-
-        raw_results_pathname.write(result)
+        query.run(wikidata_client: wikidata_client)
       end
 
       next unless actions.include?('build')
-      data = JSON.parse(raw_results_pathname.read, symbolize_names: true)
-
-      membership_rows = data[:results][:bindings].map do |row|
-        WikidataRow.new(row, config.languages)
-      end
+      membership_rows = wikidata_results_parser.parse(query.last_saved_results)
 
       membership_data = MembershipData.new(membership_rows, config.languages, political_entity_kind)
 

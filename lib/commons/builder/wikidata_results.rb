@@ -3,7 +3,7 @@
 # Classes for handling the JSON-formatted results from the Wikidata
 # query service https://query.wikidata.org/
 
-class WikidataCell < Wikidata
+class WikidataCell
   def initialize(value_h)
     @value_h = value_h
   end
@@ -39,7 +39,9 @@ class WikidataCell < Wikidata
   end
 end
 
-class WikidataRow < Wikidata
+class WikidataRow
+  include SPARQLLanguageHelper
+
   attr_accessor :languages
 
   def initialize(row_h, languages)

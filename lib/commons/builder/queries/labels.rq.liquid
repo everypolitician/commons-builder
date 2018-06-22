@@ -1,0 +1,4 @@
+SELECT {% lang_select 'name' %} WHERE {
+  BIND(wd:{{ wikidata_item_id }} as ?item)
+  {% lang_options 'name' '?item' %}
+}

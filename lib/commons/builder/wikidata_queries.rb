@@ -2,13 +2,9 @@
 
 require 'liquid'
 
-class WikidataQueries < Wikidata
+class WikidataQueries
   class LangTag < Liquid::Tag
-    def variable(prefix, lang_code, query = true)
-      variable = "#{prefix}_#{lang_code.tr('-', '_')}"
-      variable = "?#{variable}" if query
-      variable
-    end
+    include SPARQLLanguageHelper
   end
 
   class LangSelect < LangTag
@@ -40,6 +36,10 @@ class WikidataQueries < Wikidata
     end
   end
 
+  def initialize(config)
+    @config = config
+  end
+
   def templated_query_from_string(name, query, options = {})
     Liquid::Template.file_system = Liquid::LocalFileSystem.new(Pathname.new(__dir__).join('queries'), '%s.rq.liquid')
     Liquid::Template.register_tag('lang_select', LangSelect)
@@ -58,4 +58,8 @@ class WikidataQueries < Wikidata
   def templated_query(name, options = {})
     templated_query_from_string name, Pathname.new(__dir__).join('queries', name + '.rq.liquid').read, options
   end
+
+  private
+
+  attr_reader :config
 end
