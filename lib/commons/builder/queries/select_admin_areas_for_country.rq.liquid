@@ -23,4 +23,7 @@ SELECT DISTINCT ?adminArea
 {%- endfor %}
     }
   }{% endif %}
+
+  # Remove admin areas that have ended
+  FILTER NOT EXISTS { ?adminArea wdt:P582|wdt:P576 ?adminAreaEnd . FILTER (?adminAreaEnd < NOW()) }
 } GROUP BY ?adminArea ORDER BY ?primarySort ?adminArea
