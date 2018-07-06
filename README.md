@@ -53,6 +53,10 @@ legislatures and executives, then add a `additional_admin_area_ids` key:
 }
 ```
 
+If the regional administrative admin areas you want aren't FLACSen, use
+`regional_admin_area_type_id` to specify the Wikidata ID of the superclass you
+want to use.
+
 Create the directory structure and `index.json` files in each, each containing
 an empty array to be populated later:
 
