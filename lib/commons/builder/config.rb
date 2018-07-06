@@ -30,6 +30,10 @@ class Config
     @country_wikidata_id ||= values[:country_wikidata_id]
   end
 
+  def regional_admin_area_type_id
+    values[:regional_admin_area_type_id] || 'Q10864048' # default to FLACS
+  end
+
   def additional_admin_area_ids
     @additional_admin_area_ids ||= values[:additional_admin_area_ids] || []
   end
@@ -40,6 +44,7 @@ class Config
       'additional_admin_area_ids' => additional_admin_area_ids,
       'country_wikidata_id' => country_wikidata_id,
       'languages' => languages,
+      'regional_admin_area_type_id' => regional_admin_area_type_id,
     }
   end
 end

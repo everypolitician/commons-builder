@@ -95,6 +95,14 @@ class WikidataQueriesTest < Minitest::Test
                  wikidata_queries.templated_query('select_admin_areas_for_country'))
   end
 
+  def test_override_regional_admin_area_type_id
+    wikidata_queries = WikidataQueries.new Config.new(languages: ['en'],
+                                                      country_wikidata_id: 'Q16',
+                                                      regional_admin_area_type_id: 'Q953822')
+    assert_match(%r{\?adminArea[^.]+wdt:P31/wdt:P279\*\s+wd:Q953822},
+                 wikidata_queries.templated_query('select_admin_areas_for_country'))
+  end
+
   def test_query_real_people
     # Ensure branch person queries always return humans (and not e.g. fictional humans)
     wikidata_queries = WikidataQueries.new Config.new(languages: ['en'],

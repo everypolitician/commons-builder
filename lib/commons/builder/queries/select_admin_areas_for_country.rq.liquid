@@ -4,10 +4,10 @@ SELECT DISTINCT ?adminArea
   {
     VALUES (?adminArea ?primarySort ?adminAreaType) { (wd:{{ config.country_wikidata_id }} 1 wd:Q6256) }
   } UNION {
-    # Find FLACSen of this country
+    # Find regional admin areas of this country (generally FLACSen)
     ?adminArea wdt:P17 wd:{{ config.country_wikidata_id }} ;
-          wdt:P31/wdt:P279* wd:Q10864048
-    VALUES (?primarySort ?adminAreaType) { (2 wd:Q10864048) }
+          wdt:P31/wdt:P279* wd:{{ config.regional_admin_area_type_id }}
+    VALUES (?primarySort ?adminAreaType) { (2 wd:{{ config.regional_admin_area_type_id }}) }
   } UNION {
     # Find cities or municipalities with populations of over 250k
     VALUES ?adminAreaType { wd:Q515 wd:Q15284 }
