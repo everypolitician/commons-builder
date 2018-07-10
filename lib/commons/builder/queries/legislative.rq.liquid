@@ -8,6 +8,7 @@ SELECT ?statement
        ?org {% lang_select 'org' %} ?org_jurisdiction ?org_seat_count
 WHERE {
   BIND(wd:{{ position_item_id }} as ?role) .
+  BIND(wd:{{ specific_position_item_id }} as ?specific_role) .
   BIND(wd:{{ house_item_id }} as ?org) .
   {% lang_options 'org' '?org' %}
   OPTIONAL {
@@ -19,7 +20,7 @@ WHERE {
   ?item wdt:P31 wd:Q5 ;
         p:P39 ?statement .
   {% lang_options 'name' '?item' %}
-  ?statement ps:P39 ?role .
+  ?statement ps:P39 ?specific_role .
   {% lang_options 'role' '?role' %}
   OPTIONAL {
     ?role wdt:P279 ?role_superclass .

@@ -9,7 +9,8 @@ class LegislativeTermTest < Minitest::Test
     legislature = Legislature.new terms: [term], house_item_id: 'Q1',
                                   position_item_id: 'Q1234', comment: 'Test legislature'
     query = legislature.terms[0].query(config)
-    assert_match(/\Wwd:Q1234\W/, query)
+    assert_match(/\WBIND\(wd:Q1234 as \?role\)\W/, query)
+    assert_match(/\WBIND\(wd:Q1234 as \?specific_role\)\W/, query)
   end
 
   def test_legislative_term_query_contains_term_position_item_id
@@ -19,6 +20,7 @@ class LegislativeTermTest < Minitest::Test
     legislature = Legislature.new terms: [term], house_item_id: 'Q1',
                                   position_item_id: 'Q1234', comment: 'Test legislature'
     query = legislature.terms[0].query(config)
-    assert_match(/\Wwd:Q5678\W/, query)
+    assert_match(/\WBIND\(wd:Q1234 as \?role\)\W/, query)
+    assert_match(/\WBIND\(wd:Q5678 as \?specific_role\)\W/, query)
   end
 end
