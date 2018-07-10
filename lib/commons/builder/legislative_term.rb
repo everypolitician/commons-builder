@@ -16,11 +16,16 @@ class LegislativeTerm
 
   def query(config)
     WikidataQueries.new(config).templated_query('legislative',
-                                                position_item_id: position_item_id || legislature.position_item_id,
+                                                position_item_id: legislature.position_item_id,
+                                                specific_position_item_id: specific_position_item_id,
                                                 house_item_id: legislature.house_item_id,
                                                 term_item_id: term_item_id,
                                                 start_date: start_date,
                                                 end_date: end_date)
+  end
+
+  def specific_position_item_id
+    position_item_id || legislature.position_item_id
   end
 
   def output_relative
