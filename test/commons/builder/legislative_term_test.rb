@@ -23,4 +23,13 @@ class LegislativeTermTest < Minitest::Test
     assert_match(/\WBIND\(wd:Q1234 as \?role\)\W/, query)
     assert_match(/\WBIND\(wd:Q5678 as \?specific_role\)\W/, query)
   end
+
+  def test_extra_serialization
+    # Any unknown parameters should be serialized verbatim
+    term = { comment: 'Term', term_item_id: 'Q3', position_item_id: 'Q5678',
+             number_of_seats: 5, building_name: 'Big Building', }
+    legislature = Legislature.new terms: [term], house_item_id: 'Q1',
+                                  position_item_id: 'Q1234', comment: 'Test legislature'
+    assert_equal term, legislature.terms[0].as_json
+  end
 end
