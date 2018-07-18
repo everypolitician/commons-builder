@@ -17,10 +17,13 @@ WHERE {
 
   BIND(COALESCE(?subTerm, ?baseTerm) AS ?term)
 
-  OPTIONAL { ?term (wdt:P580|wdt:P571) ?termStart. }
-  OPTIONAL { ?term (wdt:P582|wdt:P576) ?termEnd. }
-  OPTIONAL { ?term (wdt:P155|wdt:P1365) ?termReplaces }
-  OPTIONAL { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+  OPTIONAL { ?term wdt:P582 ?termEndEndTime }
+  OPTIONAL { ?term wdt:P576 ?termEndDissolved }
+  BIND(COALESCE(?termEndEndTime, ?termEndDissolved) AS ?termEnd)
+
+  FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
+  MINUS { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+
   OPTIONAL {
     ?termSpecificPosition wdt:P31/wdt:P279* wd:Q4164871 ;
                           p:P279 [ ps:P279 ?position ;
@@ -30,8 +33,12 @@ WHERE {
   OPTIONAL {
     ?house p:P1342 ?numberOfSeatsHouseStatement .
     ?numberOfSeatsHouseStatement ps:P1342 ?numberOfSeatsHouse .
-    OPTIONAL { ?term (wdt:P580|wdt:P571) ?termStart }
-    OPTIONAL { ?term (wdt:P582|wdt:P576) ?termEnd }
+    OPTIONAL { ?term wdt:P580 ?termStartStartTime }
+    OPTIONAL { ?term wdt:P571 ?termStartInception }
+    BIND(COALESCE(?termStartStartTime, ?termStartInception) AS ?termStart)
+    OPTIONAL { ?term wdt:P582 ?termEndEndTime }
+    OPTIONAL { ?term wdt:P576 ?termEndDissolved }
+    BIND(COALESCE(?termEndEndTime, ?termEndDissolved) AS ?termEnd)
     OPTIONAL {
       ?numberOfSeatsHouseStatement pq:P580 ?numberOfSeatsHouseStatementStart .
     }
@@ -52,7 +59,5 @@ WHERE {
   }
   BIND(COALESCE(?numberOfSeatsTerm, ?numberOfSeatsHouse) AS ?numberOfSeats)
 
-  FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
-  FILTER (!BOUND(?termReplacedBy))
   {% include 'label_service' %}
 } ORDER BY ?termStart ?term
