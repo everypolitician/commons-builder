@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Legislature < Branch
-  KNOWN_PROPERTIES = %i[comment house_item_id position_item_id terms].freeze
+  KNOWN_PROPERTIES = %i[comment house_item_id position_item_id number_of_seats terms].freeze
 
   attr_accessor(*(KNOWN_PROPERTIES - [:terms]))
 
@@ -83,6 +83,7 @@ class Legislature < Branch
       new(comment:          l[:legislatureLabel].value,
           house_item_id:    l[:legislature].value,
           position_item_id: l[:legislaturePost]&.value,
+          number_of_seats:  l[:numberOfSeats]&.value,
           terms:            terms_or_default(terms_by_legislature[l[:legislature].value]))
     end
   end
@@ -92,6 +93,7 @@ class Legislature < Branch
       comment:          @comment,
       house_item_id:    @house_item_id,
       position_item_id: @position_item_id,
+      number_of_seats:  @number_of_seats,
       terms:            terms.map(&:as_json),
     }
   end
