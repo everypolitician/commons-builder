@@ -79,12 +79,14 @@ class Legislature < Branch
     end
 
     # Return the rows as Legislature objects
-    legislatures.map do |l|
+    legislatures_unsorted = legislatures.map do |l|
       new(comment:          l[:legislatureLabel].value,
           house_item_id:    l[:legislature].value,
           position_item_id: l[:legislaturePost]&.value,
           terms:            terms_or_default(terms_by_legislature[l[:legislature].value]))
     end
+
+    legislatures_unsorted.sort_by { |h| [h.house_item_id, h.position_item_id] }
   end
 
   def as_json

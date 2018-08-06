@@ -53,12 +53,14 @@ class Executive < Branch
       true
     end
 
-    executives.map do |row|
+    executives_unsorted = executives.map do |row|
       new(comment:           row[:executiveLabel]&.value,
           executive_item_id: row[:executive].value,
           positions:         [{ comment:          row[:positionLabel]&.value,
                                 position_item_id: row[:position].value, },])
     end
+
+    executives_unsorted.sort_by { |h| [h.executive_item_id, h.positions] }
   end
 
   def as_json

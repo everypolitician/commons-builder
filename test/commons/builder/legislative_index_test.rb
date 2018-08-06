@@ -66,18 +66,19 @@ module Commons
 
       Timecop.freeze(Date.new(2010, 0o1, 0o1)) do
         legislatures = Legislature.list(config)
-        assert_equal 'Senate of Canada', legislatures[0].comment
-        assert_equal LegislativeTerm.new(legislature: legislatures[0],
+
+        assert_equal 'Legislative Assembly of Alberta', legislatures[0].comment
+        assert_equal LegislativeTerm.new(legislature: legislatures[2],
                                          term_item_id: 'Q21157957',
                                          start_date: '2015-12-03',
                                          comment: '42nd Canadian Parliament',
-                                         position_item_id: 'Q30524710'), legislatures[0].terms[0]
+                                         position_item_id: 'Q30524710'), legislatures[2].terms[0]
 
         # This one has no term in the fixture data
-        assert_equal 'Calgary City Council', legislatures[2].comment
-        assert_equal LegislativeTerm.new(legislature: legislatures[2],
+        assert_equal 'Calgary City Council', legislatures[1].comment
+        assert_equal LegislativeTerm.new(legislature: legislatures[1],
                                          start_date: '2010-01-01',
-                                         end_date: '2010-12-31'), legislatures[2].terms[0]
+                                         end_date: '2010-12-31'), legislatures[1].terms[0]
       end
     end
   end
