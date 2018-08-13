@@ -1,0 +1,116 @@
+{
+    "head": {
+        "vars": [
+            "executive",
+            "executiveLabel",
+            "adminArea",
+            "adminAreaLabel",
+            "adminAreaTypes",
+            "position",
+            "positionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q2665914"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Northern Ireland Executive"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q26"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Northern Ireland"
+                },
+                "adminAreaTypes": {
+                    "type": "literal",
+                    "value": "Q10864048"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q22979263"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "First Minister of Northern Ireland"
+                }
+            },
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q2665914"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Northern Ireland Executive"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q26"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Northern Ireland"
+                },
+                "adminAreaTypes": {
+                    "type": "literal",
+                    "value": "Q10864048"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q23729452"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "deputy First Minister"
+                }
+            },
+            {
+                "executive": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q32859621"
+                },
+                "executiveLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Cabinet of Scotland"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q22"
+                },
+                "adminAreaLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Scotland"
+                },
+                "adminAreaTypes": {
+                    "type": "literal",
+                    "value": "Q10864048"
+                },
+                "position": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1362216"
+                },
+                "positionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "First Minister of Scotland"
+                }
+            }
+        ]
+    }
+}

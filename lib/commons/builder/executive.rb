@@ -52,15 +52,19 @@ class Executive < Branch
 
       true
     end
+    executives_sorted = executives.sort_by { |row| row[:executive].value }
+    executives_grouped = executives_sorted.group_by { |row| [row[:executive].value, row[:executiveLabel]&.value] }
 
-    executives_unsorted = executives.map do |row|
-      new(comment:           row[:executiveLabel]&.value,
-          executive_item_id: row[:executive].value,
-          positions:         [{ comment:          row[:positionLabel]&.value,
-                                position_item_id: row[:position].value, },])
+    executives_grouped.map do |(executive_item_id, comment), rows|
+      new(
+        executive_item_id: executive_item_id,
+        comment:           comment,
+        positions:         rows.map do |row|
+          { comment:          row[:positionLabel]&.value,
+            position_item_id: row[:position].value, }
+        end
+      )
     end
-
-    executives_unsorted.sort_by { |h| [h.executive_item_id, h.positions] }
   end
 
   def as_json
