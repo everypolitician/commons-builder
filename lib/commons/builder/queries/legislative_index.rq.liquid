@@ -19,6 +19,15 @@ SELECT DISTINCT ?legislature ?legislatureLabel ?adminArea ?adminAreaLabel ?admin
       VALUES ?legislaturePostSuperType { wd:Q4175034 wd:Q708492 }
       ?legislaturePost wdt:P279+ ?legislaturePostSuperType .
     }
+    # Some legislatures, e.g. Q633872 have multiple 'has part's pointing at
+    # posts, where one subclasses the other. In this case, we want to only
+    # return the parent, and then consider superclasses in the legislative
+    # membership query, so that we don't end up with duplicate legislature
+    # entries in the legislative index.
+    FILTER NOT EXISTS {
+      ?legislature wdt:P527|wdt:P2670 ?legislaturePostOther .
+      ?legislaturePost wdt:P279+ ?legislaturePostOther .
+    }
   }
   OPTIONAL {
     ?legislature wdt:P1342 ?numberOfSeats .
