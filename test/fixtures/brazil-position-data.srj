@@ -1,6 +1,6 @@
 {
   "head" : {
-    "vars" : [ "position", "position_name_pt", "position_name_en", "positionType", "adminAreaTypes", "adminArea", "admin_area_pt", "admin_area_en", "positionSuperclass", "position_superclass_pt", "position_superclass_en", "legislature", "legislature_pt", "legislature_en" ]
+    "vars" : [ "position", "position_name_pt", "position_name_en", "positionType", "adminAreaTypes", "adminArea", "admin_area_pt", "admin_area_en", "positionSuperclass", "position_superclass_pt", "position_superclass_en", "body", "body_pt", "body_en" ]
   },
   "results" : {
     "bindings" : [ {
@@ -49,16 +49,16 @@
         "type" : "literal",
         "value" : "senator"
       },
-      "legislature" : {
+      "body" : {
         "type" : "uri",
         "value" : "http://www.wikidata.org/entity/Q2119413"
       },
-      "legislature_pt" : {
+      "body_pt" : {
         "xml:lang" : "pt",
         "type" : "literal",
         "value" : "Senado Federal do Brasil"
       },
-      "legislature_en" : {
+      "body_en" : {
         "xml:lang" : "en",
         "type" : "literal",
         "value" : "Federal Senate of Brazil"
@@ -105,16 +105,16 @@
         "type" : "literal",
         "value" : "mayor"
       },
-      "legislature" : {
+      "body" : {
         "type" : "uri",
         "value" : "http://www.wikidata.org/entity/Q10351100"
       },
-      "legislature_pt" : {
+      "body_pt" : {
         "xml:lang" : "pt",
         "type" : "literal",
         "value" : "Prefeitura do Município de São Paulo"
       },
-      "legislature_en" : {
+      "body_en" : {
         "xml:lang" : "en",
         "type" : "literal",
         "value" : "municipal prefecture of São Paulo"
