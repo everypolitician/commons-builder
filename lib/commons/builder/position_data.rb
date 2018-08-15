@@ -20,8 +20,8 @@ class PositionData
         generic_role_name: wd_row.name_object('position_superclass'),
         role_level: wd_row[:adminAreaTypes].value,
         role_type: wd_row[:positionType]&.value,
-        organization_id: wd_row[:legislature].value,
-        organization_name: wd_row.name_object('legislature'),
+        organization_id: wd_row[:body].value,
+        organization_name: wd_row.name_object('body'),
       }
     end
     # There might be multiple generic_roles (e.g. President of Brazil is
