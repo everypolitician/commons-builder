@@ -56,12 +56,6 @@
                     "xml:lang": "en",
                     "type": "literal",
                     "value": "Member of the 57th Parliament of the United Kingdom"
-                },
-                "numberOfSeats": {
-                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
-                    "type": "literal",
-                    "value": 123
-
                 }
             },
             {
@@ -96,12 +90,6 @@
                     "xml:lang": "en",
                     "type": "literal",
                     "value": "29th Alberta Legislature"
-                },
-                "numberOfSeats": {
-                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
-                    "type": "literal",
-                    "value": 456
-
                 }
             }
         ]

@@ -72,8 +72,7 @@ module Commons
                                          term_item_id: 'Q21157957',
                                          start_date: '2015-12-03',
                                          comment: '42nd Canadian Parliament',
-                                         position_item_id: 'Q30524710',
-                                         number_of_seats: 123), legislatures[2].terms[0]
+                                         position_item_id: 'Q30524710'), legislatures[2].terms[0]
 
         # This one has no term in the fixture data
         assert_equal 'Calgary City Council', legislatures[1].comment

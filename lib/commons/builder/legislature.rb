@@ -73,7 +73,6 @@ class Legislature < Branch
       term[:start_date] = term_row[:termStart].value if term_row[:termStart]
       term[:end_date] = term_row[:termEnd].value if term_row[:termEnd]
       term[:position_item_id] = term_row[:termSpecificPosition].value if term_row[:termSpecificPosition]
-      term[:number_of_seats] = term_row[:numberOfSeats].value if term_row[:numberOfSeats]
 
       terms_by_legislature[term_row[:house].value]
       terms_by_legislature[term_row[:house].value].push(term)
