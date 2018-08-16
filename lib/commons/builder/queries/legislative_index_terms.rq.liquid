@@ -4,6 +4,7 @@ SELECT DISTINCT
   ?term ?termLabel
   ?termStart ?termEnd
   ?termSpecificPosition
+  ?numberOfSeats
 WHERE {
   VALUES (?house ?position) {
 {%- for house_position in house_positions %}
@@ -16,17 +17,47 @@ WHERE {
 
   BIND(COALESCE(?subTerm, ?baseTerm) AS ?term)
 
-  OPTIONAL { ?term (wdt:P580|wdt:P571) ?termStart. }
-  OPTIONAL { ?term (wdt:P582|wdt:P576) ?termEnd. }
-  OPTIONAL { ?term (wdt:P155|wdt:P1365) ?termReplaces }
-  OPTIONAL { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+  OPTIONAL { ?term wdt:P582 ?termEndEndTime }
+  OPTIONAL { ?term wdt:P576 ?termEndDissolved }
+  BIND(COALESCE(?termEndEndTime, ?termEndDissolved) AS ?termEnd)
+
+  FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
+  MINUS { ?term (wdt:P156|wdt:P1366) ?termReplacedBy }
+
   OPTIONAL {
     ?termSpecificPosition wdt:P31/wdt:P279* wd:Q4164871 ;
                           p:P279 [ ps:P279 ?position ;
                                    pq:P2937 ?term ] .
   }
 
-  FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
-  FILTER (!BOUND(?termReplacedBy))
+  OPTIONAL {
+    ?house p:P1342 ?numberOfSeatsHouseStatement .
+    ?numberOfSeatsHouseStatement ps:P1342 ?numberOfSeatsHouse .
+    OPTIONAL { ?term wdt:P580 ?termStartStartTime }
+    OPTIONAL { ?term wdt:P571 ?termStartInception }
+    BIND(COALESCE(?termStartStartTime, ?termStartInception) AS ?termStart)
+    OPTIONAL { ?term wdt:P582 ?termEndEndTime }
+    OPTIONAL { ?term wdt:P576 ?termEndDissolved }
+    BIND(COALESCE(?termEndEndTime, ?termEndDissolved) AS ?termEnd)
+    OPTIONAL {
+      ?numberOfSeatsHouseStatement pq:P580 ?numberOfSeatsHouseStatementStart .
+    }
+    OPTIONAL {
+      ?numberOfSeatsHouseStatement pq:P582 ?numberOfSeatsHouseStatementEnd .
+    }
+    FILTER (!(BOUND(?numberOfSeatsHouseStatementStart) && BOUND(?termStart) && (?numberOfSeatsHouseStatementStart > ?termStart)))
+    FILTER (!(BOUND(?numberOfSeatsHouseStatementEnd) && BOUND(?termEnd) && (?numberOfSeatsHouseStatementEnd < ?termEnd)))
+    FILTER (!(BOUND(?numberOfSeatsHouseStatementEnd) && BOUND(?termStart) && (?numberOfSeatsHouseStatementEnd < ?termStart)))
+  }
+  OPTIONAL {
+    ?term p:P1342 ?numberOfSeatsTermStatement .
+    ?numberOfSeatsTermStatement ps:P1342 ?numberOfSeatsTerm .
+    OPTIONAL {
+      ?numberOfSeatsTermStatement pq:P518 ?numberOfSeatsTermStatementAppliesToPart .
+    }
+    FILTER (!BOUND(?numberOfSeatsTermStatementAppliesToPart) || ?numberOfSeatsTermStatementAppliesToPart = ?house)
+  }
+  BIND(COALESCE(?numberOfSeatsTerm, ?numberOfSeatsHouse) AS ?numberOfSeats)
+
   {% include 'label_service' %}
 } ORDER BY ?termStart ?term
