@@ -20,7 +20,7 @@ WHERE {
   ?item wdt:P31 wd:Q5 ;
         p:P39 ?statement .
   {% lang_options 'name' '?item' %}
-  ?statement ps:P39 ?specific_role .
+  ?statement ps:P39/wdt:P279* ?specific_role .
   {% lang_options 'role' '?role' %}
   OPTIONAL {
     ?role wdt:P279 ?role_superclass .
