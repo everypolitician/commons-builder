@@ -10,7 +10,8 @@ class CurrentExecutive
   def query(config)
     WikidataQueries.new(config).templated_query('executive',
                                                 executive_item_id: executive.executive_item_id,
-                                                position_item_ids: executive.positions.map(&:position_item_id))
+                                                position_item_ids: executive.positions.map(&:position_item_id),
+                                                current: true)
   end
 
   def output_relative
