@@ -34,6 +34,8 @@ WHERE {
   }
   BIND(COALESCE(?end, "9999-12-31T00:00:00Z"^^xsd:dateTime) AS ?end_or_sentinel)
   FILTER(?end_or_sentinel >= NOW())
+  # Exclude memberships that explicitly didn't start, e.g. died before inauguration
+  FILTER NOT EXISTS { ?statement rdf:type wdno:P580 }
   # Find any current party membership:
   OPTIONAL {
     ?item p:P102 ?party_statement .
