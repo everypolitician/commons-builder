@@ -20,6 +20,7 @@ class MembershipData
       link = link(membership)
       persons[person_id][:links] << link if link
     end
+    persons.each_value { |p| p[:links].uniq! }
     persons.values.sort_by { |p| p[:id] }
   end
 
