@@ -19,17 +19,17 @@ WHERE {
   }
   ?item wdt:P31 wd:Q5 ;
         p:P39 ?statement .
-  {% lang_options 'name' '?item' %}
   ?statement ps:P39/wdt:P279* ?specific_role .
+  OPTIONAL { ?statement pq:P580 ?start }
+  OPTIONAL { ?statement pq:P582 ?end }
+  {% include 'term_condition' %}
+  {% lang_options 'name' '?item' %}
   {% lang_options 'role' '?role' %}
   OPTIONAL {
     ?role wdt:P279 ?role_superclass .
     ?role_superclass wdt:P279+ wd:Q4175034
     {% lang_options 'role_superclass' '?role_superclass' %}
   }
-  OPTIONAL { ?statement pq:P580 ?start }
-  OPTIONAL { ?statement pq:P582 ?end }
-  {% include 'term_condition' %}
   OPTIONAL {
     ?statement pq:P768 ?district.
     {% lang_options 'district_name' '?district' %}
