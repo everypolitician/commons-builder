@@ -6,7 +6,7 @@
   #  * starts before it and either doesn't end, or ends after the term start (3), or
   #  * starts after the term, and if the term ends, starts before it ends (4)
   FILTER (
-    (EXISTS { ?statement pq:P2937 wd:Q21157957 })                        # (1)
+    (EXISTS { ?statement pq:P2937 wd:{{ term_item_id }} })                        # (1)
     ||
     (BOUND(?start) && BOUND(?termStart) && (                             # (2)
       (?start <= ?termStart && (!BOUND(?end) || ?end > ?termStart))      # (4)
