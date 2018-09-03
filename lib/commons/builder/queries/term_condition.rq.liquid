@@ -1,1 +1,17 @@
-{% if term_item_id %}?statement pq:P2937 wd:{{ term_item_id }} .{% endif -%}
+{% if term_item_id -%}
+  OPTIONAL { wd:{{ term_item_id }} wdt:P571|wdt:P580 ?termStart }
+  OPTIONAL { wd:{{ term_item_id }} wdt:P576|wdt:P582 ?termEnd }
+  # A P39 is relevant if it's directly related to the term with a "parliamentary term" qualifier (1), or
+  # it overlaps it. In the latter case, the P39 and term must each have a start date (2), and either
+  #  * starts before it and either doesn't end, or ends after the term start (3), or
+  #  * starts after the term, and if the term ends, starts before it ends (4)
+  FILTER (
+    (EXISTS { ?statement pq:P2937 wd:Q21157957 })                        # (1)
+    ||
+    (BOUND(?start) && BOUND(?termStart) && (                             # (2)
+      (?start <= ?termStart && (!BOUND(?end) || ?end > ?termStart))      # (4)
+      ||
+      (?start > ?termStart && (!BOUND(?termEnd) || ?start < ?termEnd))   # (5)
+    ))
+  )
+{% endif -%}

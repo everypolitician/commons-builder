@@ -27,9 +27,9 @@ WHERE {
     ?role_superclass wdt:P279+ wd:Q4175034
     {% lang_options 'role_superclass' '?role_superclass' %}
   }
-  {% include 'term_condition' %}
   OPTIONAL { ?statement pq:P580 ?start }
   OPTIONAL { ?statement pq:P582 ?end }
+  {% include 'term_condition' %}
   OPTIONAL {
     ?statement pq:P768 ?district.
     {% lang_options 'district_name' '?district' %}
