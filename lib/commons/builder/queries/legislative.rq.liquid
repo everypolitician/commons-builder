@@ -40,4 +40,4 @@ WHERE {
   }
   OPTIONAL { ?item wdt:P2013 ?facebook }
   {% include 'date_condition' %}
-} ORDER BY ?item ?role {% if term_item_id %}?term {% endif %}?start ?end
+} ORDER BY ?item ?role {% if term_item_id %}?term {% endif %}?start ?end ?role_superclass ?party ?org ?district
