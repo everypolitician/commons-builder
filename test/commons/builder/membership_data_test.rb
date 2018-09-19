@@ -56,28 +56,5 @@ module Commons
       expected_data = json_data('test/fixtures/two_links/expected.json')
       assert_equal(expected_data[:organizations], membership_data.organizations)
     end
-
-    def test_entity_organizations_warns_on_missing_legislative_seat_count
-      output_stream = StringIO.new
-      expected = <<~EXPECTED
-        WARNING: no seat count found for the legislature departmental assembly of Nariño
-      EXPECTED
-      options = { output_stream: output_stream }
-      wikidata_labels = wikidata_labels
-      def wikidata_labels.item_with_label(_item)
-        'departmental assembly of Nariño'
-      end
-      membership_rows = membership_rows('test/fixtures/seat_count/missing_results.json')
-      membership_data = MembershipData.new(membership_rows, wikidata_labels, 'legislative', options)
-      membership_data.entity_organizations
-      assert_equal(expected, output_stream.string)
-    end
-
-    def test_entity_organizations_includes_seat_count
-      membership_rows = membership_rows('test/fixtures/seat_count/results.json')
-      membership_data = MembershipData.new(membership_rows, wikidata_labels, 'legislative')
-      assert_equal({ 'Q51093302' => '102' },
-                   membership_data.entity_organizations.first['seat_counts'])
-    end
   end
 end

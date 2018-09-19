@@ -1,0 +1,102 @@
+{
+    "head": {
+        "vars": [
+            "house",
+            "houseLabel",
+            "legislature",
+            "legislatureLabel",
+            "adminArea",
+            "term",
+            "termLabel",
+            "termStart",
+            "termEnd",
+            "termSpecificPosition",
+            "termSpecificPositionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "term": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q21157957"
+                },
+                "termStart": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2015-12-03T00:00:00Z"
+                },
+                "house": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q841180"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q475689"
+                },
+                "houseLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Senate of Canada"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Parliament of Canada"
+                },
+                    "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q16"
+                },
+                "termLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "42nd Canadian Parliament"
+                },
+                "termSpecificPosition": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q30524710"
+                },
+                "termSpecificPositionLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Member of the 57th Parliament of the United Kingdom"
+                }
+            },
+            {
+                "term": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q19876139"
+                },
+                "termStart": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2015-06-15T00:00:00Z"
+                },
+                "house": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q1812866"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q6560903"
+                },
+                "houseLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Legislative Assembly of Alberta"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Legislature of Alberta"
+                },
+                "termLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "29th Alberta Legislature"
+                }
+            }
+        ]
+    }
+}

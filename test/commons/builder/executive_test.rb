@@ -11,6 +11,7 @@ class ExecutiveTest < Minitest::Test
   def test_as_json_round_trip
     data = {
       comment:           'Test Executive',
+      area_id:           'Q515',
       executive_item_id: 'Q1',
       positions:         [{
         position_item_id: 'Q2',
@@ -19,6 +20,28 @@ class ExecutiveTest < Minitest::Test
     }
     executive = Executive.new(**data)
     assert_equal data, executive.as_json
+  end
+
+  def test_popolo_json
+    data = {
+      area_id:           'Q515',
+      executive_item_id: 'Q1',
+    }
+    wikidata_labels = Minitest::Mock.new
+    def wikidata_labels.labels_for(_item)
+      { 'lang:en': 'Test executive' }
+    end
+    executive = Executive.new(**data)
+    expected = {
+      name:               { 'lang:en': 'Test executive' },
+      id:  'Q1',
+      classification:     'branch',
+      identifiers:        [{
+        scheme: 'wikidata', identifier: 'Q1',
+      },],
+      area_id:            'Q515',
+    }
+    assert_equal expected, executive.as_popolo_json(wikidata_labels)
   end
 
   def test_list_with_good_data

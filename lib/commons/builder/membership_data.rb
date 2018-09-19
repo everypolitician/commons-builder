@@ -42,34 +42,8 @@ class MembershipData
     end.uniq.sort_by { |o| o[:id] }
   end
 
-  def entity_organizations
-    membership_rows.map do |membership|
-      {
-        name: membership.name_object('org'),
-        id: membership[:org].value,
-        classification: 'branch',
-        identifiers: [
-          {
-            scheme: 'wikidata',
-            identifier: membership[:org].value,
-          },
-        ],
-        area_id: membership[:org_jurisdiction]&.value,
-      }.tap do |o|
-        if political_entity_kind == 'legislative'
-          seat_count = membership[:org_seat_count]&.value
-          unless seat_count
-            @output_stream.puts 'WARNING: no seat count found for the legislature ' +
-                                wikidata_labels.item_with_label(membership[:org].value)
-          end
-          o['seat_counts'] = { membership[:role].value => seat_count }
-        end
-      end
-    end.uniq.sort_by { |o| o[:id] }
-  end
-
   def organizations
-    entity_organizations + party_organizations
+    party_organizations
   end
 
   def memberships

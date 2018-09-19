@@ -44,11 +44,14 @@ module Commons
     def test_legislature_as_json
       term = { comment: 'Term', term_item_id: 'Q3' }
       legislature = Legislature.new terms: [term], house_item_id: 'Q1',
-                                    position_item_id: 'Q2', comment: 'Test legislature'
+                                    position_item_id: 'Q2', comment: 'Test legislature',
+                                    seat_count: 23, area_id: 'Q515'
       expected = {
         comment:          'Test legislature',
         house_item_id:    'Q1',
         position_item_id: 'Q2',
+        seat_count:       23,
+        area_id:          'Q515',
         terms: [
           {
             comment:      'Term',
@@ -80,6 +83,19 @@ module Commons
                                          start_date: '2010-01-01',
                                          end_date: '2010-12-31'), legislatures[1].terms[0]
       end
+    end
+
+    def test_legislature_list_warns_on_missing_seat_count
+      stub_request(:post, 'https://query.wikidata.org/sparql')
+        .to_return(body: open('test/fixtures/seat_count/legislative-index.srj', 'r')).then
+        .to_return(body: open('test/fixtures/legislative-index-terms.srj', 'r'))
+      output_stream = StringIO.new
+      expected = <<~EXPECTED
+        WARNING: no seat count found for the legislature Senate of Canada
+      EXPECTED
+      options = { output_stream: output_stream }
+      Legislature.list(config, options)
+      assert_equal(expected, output_stream.string)
     end
   end
 end
