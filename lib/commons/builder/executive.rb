@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Executive < Branch
-  KNOWN_PROPERTIES = %i[comment executive_item_id positions].freeze
+  KNOWN_PROPERTIES = %i[comment executive_item_id area_id positions].freeze
 
   attr_accessor(*KNOWN_PROPERTIES - [:positions])
 
@@ -23,21 +23,24 @@ class Executive < Branch
     @positions.map { |t| Position.new(branch: self, **t) }
   end
 
-  def self.list(config, save_queries: false)
-    wikidata_client = WikidataClient.new
+  def self.executives(config, wikidata_client, save_queries)
     wikidata_queries = WikidataQueries.new(config)
     wikidata_results_parser = WikidataResultsParser.new(languages: config.languages)
-    wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
-
     query = Query.new(
       sparql_query: wikidata_queries.templated_query('executive_index'),
       output_dir_pn: Pathname.new('executive'),
       output_fname_prefix: 'index-'
     )
-    executives = wikidata_results_parser.parse(
+    wikidata_results_parser.parse(
       query.run(wikidata_client: wikidata_client, save_query_used: save_queries, save_query_results: false)
     )
+  end
 
+  def self.list(config, save_queries: false)
+    wikidata_client = WikidataClient.new
+    wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
+
+    executives = executives(config, wikidata_client, save_queries)
     executives.select! do |row|
       unless row[:position]&.value
         puts "WARNING: no head of government position for #{wikidata_labels.item_with_label(row[:adminArea].value)}"
@@ -53,11 +56,16 @@ class Executive < Branch
       true
     end
     executives_sorted = executives.sort_by { |row| row[:executive].value }
-    executives_grouped = executives_sorted.group_by { |row| [row[:executive].value, row[:executiveLabel]&.value] }
+    executives_grouped = executives_sorted.group_by do |row|
+      [row[:executive].value,
+       row[:executiveLabel]&.value,
+       row[:adminArea]&.value,]
+    end
 
-    executives_grouped.map do |(executive_item_id, comment), rows|
+    executives_grouped.map do |(executive_item_id, comment, area_id), rows|
       new(
         executive_item_id: executive_item_id,
+        area_id:           area_id,
         comment:           comment,
         positions:         rows.map do |row|
           { comment:          row[:positionLabel]&.value,
@@ -70,6 +78,7 @@ class Executive < Branch
   def as_json
     {
       comment:           comment,
+      area_id:           area_id,
       executive_item_id: executive_item_id,
       positions:         positions.map(&:as_json),
     }

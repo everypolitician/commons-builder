@@ -11,6 +11,7 @@
             "legislatureLabel",
             "legislaturePost",
             "legislaturePostLabel",
+            "adminArea",
             "numberOfSeats"
         ]
     },
@@ -52,11 +53,6 @@
                     "xml:lang": "en",
                     "type": "literal",
                     "value": "Member of the Senate of Canada"
-                },
-                "numberOfSeats": {
-                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                    "type": "literal",
-                    "value": "105"
                 },
                 "adminArea": {
                     "type": "uri",
