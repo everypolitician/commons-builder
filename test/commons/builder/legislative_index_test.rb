@@ -44,11 +44,13 @@ module Commons
     def test_legislature_as_json
       term = { comment: 'Term', term_item_id: 'Q3' }
       legislature = Legislature.new terms: [term], house_item_id: 'Q1',
-                                    position_item_id: 'Q2', comment: 'Test legislature'
+                                    position_item_id: 'Q2', comment: 'Test legislature',
+                                    number_of_seats: 22
       expected = {
         comment:          'Test legislature',
         house_item_id:    'Q1',
         position_item_id: 'Q2',
+        number_of_seats:   22,
         terms: [
           {
             comment:      'Term',
