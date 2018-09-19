@@ -97,6 +97,22 @@ class Legislature < Branch
     legislatures_unsorted.sort_by { |h| [h.house_item_id, h.position_item_id] }
   end
 
+  def as_popolo_json(wikidata_labels)
+    {
+      name: wikidata_labels.labels_for(@house_item_id),
+      id: @house_item_id,
+      classification: 'branch',
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: @house_item_id,
+        },
+      ],
+      area_id: area_id,
+      seat_counts: { @position_item_id => @seat_count },
+    }
+  end
+
   def as_json
     {
       comment:          @comment,

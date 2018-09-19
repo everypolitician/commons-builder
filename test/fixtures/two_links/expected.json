@@ -77,22 +77,6 @@
   "organizations": [
     {
       "name": {
-        "lang:en": "Executive Yuan",
-        "lang:zh-tw": "中華民國行政院",
-        "lang:zh": "中華民國行政院"
-      },
-      "id": "Q715055",
-      "classification": "branch",
-      "identifiers": [
-        {
-          "scheme": "wikidata",
-          "identifier": "Q715055"
-        }
-      ],
-      "area_id": "Q865"
-    },
-    {
-      "name": {
         "lang:en": "Kuomintang",
         "lang:zh-tw": "中國國民黨",
         "lang:zh": "中國國民黨"

@@ -69,13 +69,6 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
 
       membership_data = MembershipData.new(membership_rows, wikidata_labels, political_entity_kind)
 
-      missing_jurisdictions = membership_data.entity_organizations.reject { |o| o[:area_id] }
-      missing_jurisdictions.each do |o|
-        puts 'ERROR: no P1001 (applies to jurisdiction) on %<kind>s %<organization>s' %
-             { kind: political_entity_kind, organization: wikidata_labels.item_with_label(o[:id]) }
-      end
-      exit(1) unless missing_jurisdictions.empty?
-
       # We should have all the relevant areas from the boundary data...
       related_positions = branch.positions_item_ids
       areas = boundary_data.popolo_areas.reject do |a|
@@ -119,9 +112,17 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
         raise 'Some areas has a null parent_id'
       end
 
+      branch_entity = branch.as_popolo_json(wikidata_labels)
+
+      unless branch_entity[:area_id]
+        puts 'ERROR: no P1001 (applies to jurisdiction) on %<kind>s %<organization>s' %
+             { kind: political_entity_kind, organization: wikidata_labels.item_with_label(branch_entity[:id]) }
+        exit(1)
+      end
+
       all_data = {
         persons: membership_data.persons,
-        organizations: membership_data.entity_organizations + membership_data.party_organizations,
+        organizations: [branch_entity] + membership_data.party_organizations,
         areas: areas,
         memberships: membership_data.memberships,
       }

@@ -75,6 +75,21 @@ class Executive < Branch
     end
   end
 
+  def as_popolo_json(wikidata_labels)
+    {
+      name: wikidata_labels.labels_for(@executive_item_id),
+      id: @executive_item_id,
+      classification: 'branch',
+      identifiers: [
+        {
+          scheme: 'wikidata',
+          identifier: @executive_item_id,
+        },
+      ],
+      area_id: @area_id,
+    }
+  end
+
   def as_json
     {
       comment:           comment,
