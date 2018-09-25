@@ -1,0 +1,21 @@
+{
+    "head": {
+        "vars": [
+            "house",
+            "houseLabel",
+            "legislature",
+            "legislatureLabel",
+            "adminArea",
+            "term",
+            "termLabel",
+            "termStart",
+            "termEnd",
+            "termSpecificPosition",
+            "termSpecificPositionLabel"
+        ]
+    },
+    "results": {
+        "bindings": [
+        ]
+    }
+}

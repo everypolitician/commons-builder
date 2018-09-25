@@ -28,6 +28,25 @@ class Legislature < Branch
     )
   end
 
+  def self.legislature_objects(legislature_rows, terms_by_legislature, output_stream)
+    legislature_rows.map do |l|
+      seat_count = l[:numberOfSeats]&.value
+      unless seat_count
+        output_stream.puts "WARNING: no seat count found for the legislature #{l[:legislatureLabel].value}"
+      end
+      unless l[:legislaturePost]&.value
+        output_stream.puts "WARNING: no position found for the legislature #{l[:legislatureLabel].value}"
+        next
+      end
+      new(comment:          l[:legislatureLabel].value,
+          house_item_id:    l[:legislature].value,
+          position_item_id: l[:legislaturePost].value,
+          seat_count:       seat_count,
+          area_id:          l[:adminArea].value,
+          terms:            terms_or_default(terms_by_legislature[l[:legislature].value]))
+    end.compact
+  end
+
   def self.terms_from_wikidata(config, save_queries, legislatures)
     query = Query.new(
       sparql_query: WikidataQueries.new(config).templated_query(
@@ -61,8 +80,8 @@ class Legislature < Branch
   def self.list(config, options = {})
     save_queries = options.fetch(:save_queries) { false }
     output_stream = options.fetch(:output_stream) { $stdout }
-    legislatures = legislatures_from_wikidata(config, save_queries)
 
+    legislatures = legislatures_from_wikidata(config, save_queries)
     term_rows = terms_from_wikidata(config, save_queries, legislatures)
 
     terms_by_legislature = Hash.new { |h, k| h[k] = [] }
@@ -80,21 +99,8 @@ class Legislature < Branch
       terms_by_legislature[term_row[:house].value].push(term)
     end
 
-    # Return the rows as Legislature objects
-    legislatures_unsorted = legislatures.map do |l|
-      seat_count = l[:numberOfSeats]&.value
-      unless seat_count
-        output_stream.puts "WARNING: no seat count found for the legislature #{l[:legislatureLabel].value}"
-      end
-      new(comment:          l[:legislatureLabel].value,
-          house_item_id:    l[:legislature].value,
-          position_item_id: l[:legislaturePost]&.value,
-          seat_count:       seat_count,
-          area_id:          l[:adminArea].value,
-          terms:            terms_or_default(terms_by_legislature[l[:legislature].value]))
-    end
-
-    legislatures_unsorted.sort_by { |h| [h.house_item_id, h.position_item_id] }
+    legislature_objects(legislatures, terms_by_legislature, output_stream) \
+      .sort_by { |h| [h.house_item_id, h.position_item_id] }
   end
 
   def as_popolo_json(wikidata_labels)
