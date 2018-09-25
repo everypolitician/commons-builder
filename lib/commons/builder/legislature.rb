@@ -98,7 +98,7 @@ class Legislature < Branch
   end
 
   def as_popolo_json(wikidata_labels)
-    {
+    output = {
       name: wikidata_labels.labels_for(@house_item_id),
       id: @house_item_id,
       classification: 'branch',
@@ -109,8 +109,9 @@ class Legislature < Branch
         },
       ],
       area_id: area_id,
-      seat_counts: { @position_item_id => @seat_count },
     }
+    output[:seat_counts] = { @position_item_id => @seat_count } if @position_item_id && @seat_count
+    output
   end
 
   def as_json
