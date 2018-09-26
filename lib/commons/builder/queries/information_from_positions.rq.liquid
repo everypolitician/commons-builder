@@ -10,7 +10,7 @@ WHERE {
     {% include 'select_admin_areas_for_country' %}
   }
   {% lang_options 'position_name' '?position' %}
-  ?body wdt:P527|wdt:P2670 ?position .
+  ?body wdt:P527|wdt:P2670|wdt:P2388 ?position .
   MINUS { ?body wdt:P576|wdt:P582 ?bodyEnd . FILTER(?bodyEnd < NOW()) }
   {% lang_options 'body' '?body' %}
   ?body wdt:P1001 ?adminArea .
