@@ -1,5 +1,5 @@
 WikidataIdentifiers:
-  AppliesTo: 'boundaries/**/*.csv'
+  AppliesTo: 'boundaries/build/*/*.csv'
   column_name: 'WIKIDATA'
   column_case: 'fixed'
 AreaPositionsKnown:
