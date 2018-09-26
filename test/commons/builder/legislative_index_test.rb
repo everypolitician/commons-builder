@@ -97,5 +97,19 @@ module Commons
       Legislature.list(config, options)
       assert_equal(expected, output_stream.string)
     end
+
+    def test_legislature_list_warns_and_excludes_on_missing_position
+      stub_request(:post, 'https://query.wikidata.org/sparql')
+        .to_return(body: open('test/fixtures/missing_position/legislative-index.srj', 'r')).then
+        .to_return(body: open('test/fixtures/missing_position/legislative-index-terms.srj', 'r'))
+      output_stream = StringIO.new
+      expected = <<~EXPECTED
+        WARNING: no position found for the legislature Senate of Canada
+      EXPECTED
+      options = { output_stream: output_stream }
+      legislatures = Legislature.list(config, options)
+      assert_equal(expected, output_stream.string)
+      assert_equal([], legislatures)
+    end
   end
 end

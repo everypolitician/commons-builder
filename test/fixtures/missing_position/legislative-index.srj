@@ -1,0 +1,60 @@
+{
+    "head": {
+        "vars": [
+            "country",
+            "countryLabel",
+            "body",
+            "bodyLabel",
+            "bodyType",
+            "bodyTypeLabel",
+            "legislature",
+            "legislatureLabel",
+            "legislaturePost",
+            "legislaturePostLabel",
+            "adminArea",
+            "numberOfSeats"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "body": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q16"
+                },
+                "bodyLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Canada"
+                },
+                "bodyType": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q6256"
+                },
+                "bodyTypeLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "country"
+                },
+                "legislature": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q841180"
+                },
+                "legislatureLabel": {
+                    "xml:lang": "en",
+                    "type": "literal",
+                    "value": "Senate of Canada"
+                },
+                "adminArea": {
+                    "type": "uri",
+                    "value": "http://www.wikidata.org/entity/Q16"
+                },
+                "numberOfSeats": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                    "type": "literal",
+                    "value": "87"
+                }
+            }
+        ]
+    }
+}
