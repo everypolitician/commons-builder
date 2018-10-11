@@ -1,0 +1,12 @@
+{
+  "languages": [
+    "en",
+    "es"
+  ],
+  "country_wikidata_id": "Q23666",
+  "exclude_admin_area_ids": [
+    "Q2",
+    "Q1",
+    "Q3"
+  ]
+}
