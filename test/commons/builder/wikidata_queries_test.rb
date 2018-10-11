@@ -95,6 +95,14 @@ class WikidataQueriesTest < Minitest::Test
                  wikidata_queries.templated_query('select_admin_areas_for_country'))
   end
 
+  def test_exclude_areas_in_admin_areas
+    wikidata_queries = WikidataQueries.new Config.new(languages: ['en'],
+                                                      country_wikidata_id: 'Q16',
+                                                      exclude_admin_area_ids: %w[Q1235 Q1234])
+    assert_match(/FILTER \(\?adminArea NOT IN \(\s+wd:Q1234,\s+wd:Q1235\s+\)\)/,
+                 wikidata_queries.templated_query('select_admin_areas_for_country'))
+  end
+
   def test_override_regional_admin_area_type_id
     wikidata_queries = WikidataQueries.new Config.new(languages: ['en'],
                                                       country_wikidata_id: 'Q16',

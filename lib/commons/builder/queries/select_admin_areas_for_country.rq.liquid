@@ -24,6 +24,16 @@ SELECT DISTINCT ?adminArea
     }
   }{% endif %}
 
+{%- if config.exclude_admin_area_ids != empty %}
+
+  FILTER (?adminArea NOT IN (
+  {%- for admin_area_id in config.exclude_admin_area_ids %}
+    wd:{{ admin_area_id }}
+      {%- unless forloop.last %},{% endunless %}
+  {% endfor -%}
+  ))
+{%- endif %}
+
   # Remove admin areas that have ended
   FILTER NOT EXISTS { ?adminArea wdt:P582|wdt:P576 ?adminAreaEnd . FILTER (?adminAreaEnd < NOW()) }
 } GROUP BY ?adminArea ORDER BY ?primarySort ?adminArea

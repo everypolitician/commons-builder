@@ -38,10 +38,15 @@ class Config
     @additional_admin_area_ids ||= values[:additional_admin_area_ids] || []
   end
 
+  def exclude_admin_area_ids
+    @exclude_admin_area_ids ||= values.fetch(:exclude_admin_area_ids, []).sort
+  end
+
   def to_liquid
     # These variables are available in liquid templates
     {
       'additional_admin_area_ids' => additional_admin_area_ids,
+      'exclude_admin_area_ids' => exclude_admin_area_ids,
       'country_wikidata_id' => country_wikidata_id,
       'languages' => languages,
       'regional_admin_area_type_id' => regional_admin_area_type_id,
