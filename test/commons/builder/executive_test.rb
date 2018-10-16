@@ -87,4 +87,9 @@ class ExecutiveTest < Minitest::Test
     assert_equal %w[Q22979263 Q23729452], executives[0].positions.map(&:position_item_id)
     assert_equal 'Q32859621', executives[1].executive_item_id
   end
+
+  def test_branch_item_id
+    executive = Executive.new executive_item_id: 'Q123'
+    assert_equal 'Q123', executive.branch_item_id
+  end
 end

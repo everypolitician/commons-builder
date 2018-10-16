@@ -14,19 +14,28 @@ config = Config.new_from_file('config.json')
 
 root_dir = Pathname.new('').dirname
 
+branch_item_ids = []
+actions = []
+unknown_args = []
+
 valid_actions = %w[update build check]
 
-unknown_args = Set.new(ARGV) - Set.new(valid_actions)
+ARGV.each do |arg|
+  if arg.start_with? 'Q'
+    branch_item_ids.push arg
+  elsif valid_actions.include? arg
+    actions.push arg
+  else
+    unknown_args.push arg
+  end
+end
+
 unless unknown_args.empty?
-  STDERR.puts "Usage: #{$PROGRAM_NAME} update|build"
+  STDERR.puts "Usage: #{$PROGRAM_NAME} update|build|check [branch ID] [...]"
   exit(1)
 end
 
-actions = if ARGV.empty?
-            valid_actions.clone
-          else
-            ARGV.clone
-          end
+actions = valid_actions if actions.empty?
 
 wikidata_client = WikidataClient.new
 wikidata_labels = WikidataLabels.new(config: config, wikidata_client: wikidata_client)
@@ -41,8 +50,10 @@ position_data = PositionData.new(
   config: config
 )
 
-position_data.update if actions.include? 'update'
-position_data.build if actions.include? 'build'
+if branch_item_ids.empty?
+  position_data.update if actions.include? 'update'
+  position_data.build if actions.include? 'build'
+end
 
 boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikidata_positions] }.flatten.to_set
 
@@ -52,6 +63,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
 
   JSON.parse(index_file.read, symbolize_names: true).each do |political_entity_h|
     branch = Branch.for(political_entity_kind, political_entity_h)
+    next unless branch_item_ids.empty? or branch_item_ids.include? branch.branch_item_id
     branch.terms.each do |term|
       output_dir = political_entity_kind_dir.join(term.output_relative)
       output_dir.mkpath

@@ -54,4 +54,9 @@ class LegislatureTest < Minitest::Test
     }
     assert_equal expected, legislature.as_popolo_json(wikidata_labels)
   end
+
+  def test_branch_item_id
+    legislature = Legislature.new house_item_id: 'Q123'
+    assert_equal 'Q123', legislature.branch_item_id
+  end
 end
