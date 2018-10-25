@@ -13,6 +13,10 @@ class Executive < Branch
     positions.map(&:position_item_id)
   end
 
+  def branch_item_id
+    executive_item_id
+  end
+
   def terms
     # We only actually consider current executive positions, but treat
     # this as a "term".

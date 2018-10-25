@@ -13,6 +13,10 @@ class Legislature < Branch
     [position_item_id]
   end
 
+  def branch_item_id
+    house_item_id
+  end
+
   def terms
     @terms.map { |t| LegislativeTerm.new(legislature: self, **t) }
   end
