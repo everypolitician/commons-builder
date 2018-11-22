@@ -23,4 +23,23 @@ class LegislativeTermTest < Minitest::Test
     assert_match(/\WBIND\(wd:Q1234 as \?role\)\W/, query)
     assert_match(/\WBIND\(wd:Q5678 as \?specific_role\)\W/, query)
   end
+
+  def test_term_as_json
+    full_data = { comment: 'Test term',
+                  term_item_id: 'Q3',
+                  start_date: '2001-02-03',
+                  end_date: '2002-03-04', }.to_a
+    # Ensure that all combinations of term data are serialized as expected.
+    (1..4).flat_map { |n| full_data.combination(n).to_a }.map(&:to_h).each do |data|
+      exception_expected = !data[:term_item_id] && !(data[:start_date] && data[:end_date])
+      begin
+        term = LegislativeTerm.new legislature: nil, **data
+      rescue
+        assert_equal true, exception_expected
+      else
+        assert_equal false, exception_expected
+        assert_equal data, term.as_json
+      end
+    end
+  end
 end

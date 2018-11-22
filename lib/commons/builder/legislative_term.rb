@@ -47,12 +47,9 @@ class LegislativeTerm
     result = {}
     result[:comment] = @comment if @comment
     result[:position_item_id] = @position_item_id if @position_item_id
-    if @term_item_id
-      result[:term_item_id] = @term_item_id if @term_item_id
-    else
-      result[:start_date] = @start_date
-      result[:end_date] = @end_date
-    end
+    result[:term_item_id] = @term_item_id if @term_item_id
+    result[:start_date] = @start_date if @start_date
+    result[:end_date] = @end_date if @end_date
     result
   end
 end
