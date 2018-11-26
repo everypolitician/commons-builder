@@ -41,7 +41,7 @@ module Commons
 
     def test_run
       stub_request(:post, 'https://query.wikidata.org/sparql')
-        .to_return(body: '{"results": {"bindings": []}}')
+        .to_return(body: '{"head": {"vars": []}, "results": {"bindings": []}}')
       Dir.mktmpdir do |tmpdir|
         output_dir_pn = Pathname.new(tmpdir)
         query = Query.new(
@@ -50,14 +50,17 @@ module Commons
         )
         results = query.run(wikidata_client: WikidataClient.new)
         assert_equal(
-          output_dir_pn.join('query-results.json').read,
-          '{"results": {"bindings": []}}'
+          JSON.parse(output_dir_pn.join('query-results.json').read, symbolize_names: true),
+          JSON.parse('{"head": {"vars": []}, "results": {"bindings": []}}', symbolize_names: true)
         )
         assert_equal(
           output_dir_pn.join('query-used.rq').read,
           'some query'
         )
-        assert_equal(results, '{"results": {"bindings": []}}')
+        assert_equal(
+          JSON.parse(results, symbolize_names: true),
+          JSON.parse('{"head": {"vars": []}, "results": {"bindings": []}}', symbolize_names: true)
+        )
       end
     end
 

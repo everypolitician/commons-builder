@@ -11,7 +11,8 @@
             "legislatureLabel",
             "legislaturePost",
             "legislaturePostLabel",
-            "numberOfSeats"
+            "numberOfSeats",
+            "adminArea"
         ]
     },
     "results": {
