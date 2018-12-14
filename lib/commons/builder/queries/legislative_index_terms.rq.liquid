@@ -26,7 +26,10 @@ WHERE {
                                    pq:P2937 ?term ] .
   }
 
+  # Only include terms without end dates or whose end dates are in the future
   FILTER (!BOUND(?termEnd) || ?termEnd > NOW())
-  FILTER (!BOUND(?termReplacedBy))
+  # Only include terms which haven't been replaced unless they have end dates
+  # (and so by implication, as per above, have end dates in the future)
+  FILTER (!BOUND(?termReplacedBy) || BOUND(?termEnd))
   {% include 'label_service' %}
 } ORDER BY ?termStart ?term
