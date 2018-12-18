@@ -5,14 +5,21 @@
   # it overlaps it. In the latter case, the P39 and term must each have a start date (2), and either
   #  * starts before it and either doesn't end, or ends after the term start (3), or
   #  * starts after the term, and if the term ends, starts before it ends (4)
+  # If a membership is found because it overlaps, it must not be linked to another term (5) — this
+  # prevents open-ended memberships for a given term being returned for following terms.
   BIND ((EXISTS { ?statement pq:P2937 wd:{{ term_item_id }} }) AS ?linkedToTerm)
   FILTER (
     ?linkedToTerm                                                        # (1)
     ||
     (BOUND(?start) && BOUND(?termStart) && (                             # (2)
-      (?start <= ?termStart && (!BOUND(?end) || ?end > ?termStart))      # (4)
+      (?start <= ?termStart && (!BOUND(?end) || ?end > ?termStart))      # (3)
       ||
-      (?start > ?termStart && (!BOUND(?termEnd) || ?start < ?termEnd))   # (5)
+      (?start > ?termStart && (!BOUND(?termEnd) || ?start < ?termEnd))   # (4)
+    ) && (
+      NOT EXISTS {                                                       # (5)
+        ?statement pq:P2937 ?otherTerm .
+        FILTER (?otherTerm != wd:{{ term_item_id }})
+      }
     ))
   )
 {% endif -%}
