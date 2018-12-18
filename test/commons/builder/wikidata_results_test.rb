@@ -28,16 +28,16 @@ module Commons
     end
 
     def test_extract_boolean
-      data = { true: { type: 'literal',
-                       value: 'true',
-                       datatype: 'http://www.w3.org/2001/XMLSchema#boolean'},
-               false: { type: 'literal',
-                       value: 'false',
-                       datatype: 'http://www.w3.org/2001/XMLSchema#boolean'}, }
+      data = { true_binding: { type: 'literal',
+                               value: 'true',
+                               datatype: 'http://www.w3.org/2001/XMLSchema#boolean', },
+               false_binding: { type: 'literal',
+                                value: 'false',
+                                datatype: 'http://www.w3.org/2001/XMLSchema#boolean', }, }
       languages = ['en']
       row = WikidataRow.new(data, languages)
-      assert_equal(true, row[:true].value)
-      assert_equal(false, row[:false].value)
+      assert_equal(true, row[:true_binding].value)
+      assert_equal(false, row[:false_binding].value)
     end
   end
 end
