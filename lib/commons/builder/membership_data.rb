@@ -3,13 +3,14 @@
 # This class handles the data we have from Wikidata about memberships
 
 class MembershipData
-  attr_reader :membership_rows, :wikidata_labels, :political_entity_kind
+  attr_reader :membership_rows, :wikidata_labels, :political_entity_kind, :term
 
-  def initialize(membership_rows, wikidata_labels, political_entity_kind, options = {})
+  def initialize(membership_rows, wikidata_labels, political_entity_kind, term, options = {})
     @membership_rows = membership_rows
     @wikidata_labels = wikidata_labels
     @political_entity_kind = political_entity_kind
     @output_stream = options.fetch(:output_stream) { $stdout }
+    @term = term
   end
 
   def persons
@@ -60,6 +61,7 @@ class MembershipData
         role_superclass: membership[:role_superclass] && membership.name_object('role_superclass'),
         role_code: membership[:role].value,
         role: membership.name_object('role'),
+        term_id: (membership[:linkedToTerm]&.value ? term.term_item_id : nil),
       }.reject { |_, v| v.to_s.empty? }
       # The id here is the statement UUID, so you would have thought
       # that was enough to predictably order these, However, the

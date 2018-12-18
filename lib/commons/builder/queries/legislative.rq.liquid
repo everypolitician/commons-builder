@@ -6,6 +6,7 @@ SELECT ?statement
        ?role_superclass {% lang_select 'role_superclass' %}
        ?start ?end ?facebook
        ?org {% lang_select 'org' %} ?org_jurisdiction ?org_seat_count
+       ?linkedToTerm
 WHERE {
   BIND(wd:{{ position_item_id }} as ?role) .
   BIND(wd:{{ specific_position_item_id }} as ?specific_role) .

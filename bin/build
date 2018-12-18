@@ -79,7 +79,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       next unless actions.include?('build')
       membership_rows = wikidata_results_parser.parse(query.last_saved_results)
 
-      membership_data = MembershipData.new(membership_rows, wikidata_labels, political_entity_kind)
+      membership_data = MembershipData.new(membership_rows, wikidata_labels, political_entity_kind, term)
 
       # We should have all the relevant areas from the boundary data...
       related_positions = branch.positions_item_ids

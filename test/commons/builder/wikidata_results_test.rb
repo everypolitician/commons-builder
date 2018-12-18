@@ -26,5 +26,18 @@ module Commons
       expected = { "lang:en": 'Kuomintang', "lang:zh-tw": '中國國民黨' }
       assert_equal(expected, row.name_object('party_name'))
     end
+
+    def test_extract_boolean
+      data = { true_binding: { type: 'literal',
+                               value: 'true',
+                               datatype: 'http://www.w3.org/2001/XMLSchema#boolean', },
+               false_binding: { type: 'literal',
+                                value: 'false',
+                                datatype: 'http://www.w3.org/2001/XMLSchema#boolean', }, }
+      languages = ['en']
+      row = WikidataRow.new(data, languages)
+      assert_equal(true, row[:true_binding].value)
+      assert_equal(false, row[:false_binding].value)
+    end
   end
 end
