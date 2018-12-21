@@ -25,6 +25,9 @@ SELECT DISTINCT ?executive ?executiveLabel ?adminArea ?adminAreaLabel ?adminArea
       # Filter positions that have been dissolved
       FILTER NOT EXISTS { ?position wdt:P576 ?positionEnd . FILTER (?positionEnd < NOW()) }
     }
+
+      # Ensure that any executive has the same jurisdiction as the position.
+      FILTER (!BOUND(?executive) || EXISTS { ?executive wdt:P1001 ?adminArea })
   }
 
   {% include 'label_service' %}
