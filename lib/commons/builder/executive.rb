@@ -53,7 +53,7 @@ class Executive < Branch
 
       unless row[:executive]&.value
         puts "WARNING: no executive for #{wikidata_labels.item_with_label(row[:position]&.value)} " \
-	        "in #{wikidata_labels.item_with_label(row[:adminArea]&.value)}"
+	        "with matching admin area #{wikidata_labels.item_with_label(row[:adminArea]&.value)}"
         next
       end
 
