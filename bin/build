@@ -115,7 +115,7 @@ boundary_position_ids = boundary_data.popolo_areas.map { |a| a[:associated_wikid
       # Check that none of these have a null person_id - we should only
       # allow that for the whole-country area.
       areas_with_bad_parents = areas.select do |area|
-        area[:parent_id].nil? && !area[:id] == config.country_wikidata_id
+        area[:parent_id].nil? && area[:id] != config.country_wikidata_id
       end
       unless areas_with_bad_parents.empty?
         areas_with_bad_parents.each do |area|
